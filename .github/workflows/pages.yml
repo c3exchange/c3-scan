@@ -1,0 +1,40 @@
+name: Build and Deploy
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Increase Node.js memory
+        run: export NODE_OPTIONS=--max-old-space-size=4096
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install 
+
+      - name: Build
+        run: |
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './build'
+      
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2

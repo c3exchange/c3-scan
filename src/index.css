@@ -1,0 +1,32 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #000;
+  color: #fff;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src:
+    local('Manrope'),
+    url('./assets/fonts/Manrope/Manrope-VariableFont_wght.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src:
+    local('Bricolage Grotesque'),
+    url('./assets/fonts/Bricolage/Bricolage.ttf') format('truetype');
+}
+
+#root {
+  position: relative;
+  min-height: 100vh;
+}
+
+.content {
+  padding-bottom: 92px;
+  padding-left: 110px;
+  padding-right: 110px;
+}
