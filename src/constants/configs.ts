@@ -3,11 +3,13 @@ const configs = {
     c3ApiUrl: 'https://api.test.c3.io/v1',
     indexer: 'https://testnet-idx.algonode.cloud',
     algoNode: 'https://node.testnet.algoexplorerapi.io',
+    isMainnet: true,
   },
   testnet: {
     c3ApiUrl: 'https://api.test.c3.io/v1',
     indexer: 'https://testnet-idx.algonode.cloud',
     algoNode: 'https://node.testnet.algoexplorerapi.io',
+    isMainnet: false,
   },
 };
 

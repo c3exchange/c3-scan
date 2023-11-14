@@ -36,3 +36,18 @@ export const LinkRouter = styled(Link, {
     color: _active ? theme.palette.primary.contrastText : theme.palette.text.primary,
   },
 }));
+export const TestnetBtn = styled('div')(({ theme }) => ({
+  borderRadius: '20px',
+  border: `1px solid ${theme.palette.success.main}`,
+  height: '37px',
+  width: '98px',
+  color: theme.palette.primary.contrastText,
+  marginLeft: '12px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+export const Bullet = styled('span')(({ theme }) => ({
+  color: theme.palette.success.main,
+  fontSize: '20px',
+}));

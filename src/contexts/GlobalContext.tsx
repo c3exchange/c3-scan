@@ -7,14 +7,16 @@ interface GlobalContextType {
   algoIndexer: algosdk.Indexer;
   algoClient: algosdk.Algodv2;
   assetPrices: Price[];
+  isMainnet: boolean;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
+  const config = useConfig();
   const [coreAppId, setCoreAppId] = useState<number | undefined>();
   const [assetPrices, setAssetPrices] = useState<Price[]>([]);
-  const config = useConfig();
+  const [isMainnet, setIsMainnet] = useState<boolean>(config.isMainnet);
   const algoIndexer = new algosdk.Indexer('', config.indexer, '');
   const algoClient = new algosdk.Algodv2('', config.algoNode, '');
 
@@ -45,9 +47,14 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     fetchGlobalData();
     fetchAssetPrices();
   }, []);
+  useEffect(() => {
+    if (config) setIsMainnet(config.isMainnet);
+  }, [config]);
 
   return (
-    <GlobalContext.Provider value={{ coreAppId, algoIndexer, assetPrices, algoClient }}>
+    <GlobalContext.Provider
+      value={{ coreAppId, algoIndexer, assetPrices, algoClient, isMainnet }}
+    >
       {children}
     </GlobalContext.Provider>
   );

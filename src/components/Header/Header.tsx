@@ -4,19 +4,26 @@ import { ReactComponent as Logo } from '../../assets/images/logo.svg';
 import { AppRoutes } from '../../routes/routes';
 import Icon from '../Icon/Icon';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import * as S from './styles';
 import { useLocation } from 'react-router-dom';
+import { useGlobalContext } from '../../contexts/GlobalContext';
+import * as S from './styles';
 
 const Header = () => {
   const [sideBarOpen, setSideBarOpen] = useState(false);
   const location = useLocation();
-
+  const { isMainnet } = useGlobalContext();
   return (
     <S.Container container justifyContent="space-between">
-      <Grid item>
+      <Grid item display="flex">
         <S.C3ScanLogoContainer onClick={() => window.open('https://c3.io/')}>
           <Logo />
         </S.C3ScanLogoContainer>
+        {!isMainnet && (
+          <S.TestnetBtn>
+            <S.Bullet>•</S.Bullet>
+            Testnet
+          </S.TestnetBtn>
+        )}
       </Grid>
       <Grid item>
         <S.LinksContainer container spacing={2}>

@@ -6,6 +6,7 @@ interface Config {
   c3ApiUrl: string;
   indexer: string;
   algoNode: string;
+  isMainnet: boolean;
 }
 
 export const useConfig = (): Config => {
