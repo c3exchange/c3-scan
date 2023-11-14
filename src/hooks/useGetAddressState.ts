@@ -93,7 +93,7 @@ export const useGetAddressState = (
   };
 
   useEffect(() => {
-    if (!coreAppId) return;
+    if (!coreAppId || !address) return;
     getAddressOnCainState(address, coreAppId);
   }, [address, coreAppId]);
 

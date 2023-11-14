@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { ReactComponent as Logo } from '../../assets/images/logo.svg';
-import { AppRoutes } from '../../constants/routes';
+import { AppRoutes } from '../../routes/routes';
 import Icon from '../Icon/Icon';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import * as S from './styles';
