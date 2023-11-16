@@ -13,7 +13,7 @@ function App() {
       setShouldPersistEnv(true);
     }
   }, []);
-  const basename = process.env.NODE_ENV === 'production' ? '/c3-scan' : '/';
+  const basename = '/';
   return (
     <Router basename={basename}>
       <GlobalContextProvider>
