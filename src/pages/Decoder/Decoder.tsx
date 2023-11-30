@@ -13,8 +13,8 @@ import * as S from './styles';
 const Decoder = () => {
   const [message, setMessage] = useState('');
   const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
-  const c3Assets = useGetC3HoldingAssets();
-  const onChainC3State = useGetOnChainC3State(c3Assets);
+  const { holdingAssets } = useGetC3HoldingAssets();
+  const onChainC3State = useGetOnChainC3State(holdingAssets);
   const onDecode = () => {
     const messageDecoded = decodeMessage(message, onChainC3State);
     if (messageDecoded) setDecodedMessage(messageDecoded);

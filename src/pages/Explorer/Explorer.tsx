@@ -19,8 +19,8 @@ const Explorer = () => {
     setAddress('');
     setC3Address('');
   };
-  const c3Assets = useGetC3HoldingAssets();
-  const onChainC3State = useGetOnChainC3State(c3Assets);
+  const { holdingAssets, isLoading } = useGetC3HoldingAssets();
+  const onChainC3State = useGetOnChainC3State(holdingAssets);
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
 
   const onSearch = () => {
@@ -52,7 +52,12 @@ const Explorer = () => {
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Grid item xs={8}>
-            <Deposit c3Assets={c3Assets} C3Address={C3Address} userCash={userCash} />
+            <Deposit
+              c3Assets={holdingAssets}
+              isLoading={isLoading}
+              C3Address={C3Address}
+              userCash={userCash}
+            />
           </Grid>
           <Grid item xs={4}>
             <Banner />

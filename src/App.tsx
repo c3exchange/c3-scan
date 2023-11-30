@@ -9,13 +9,10 @@ function App() {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-    if (queryParams.get('env') === 'test') {
-      setShouldPersistEnv(true);
-    }
+    if (queryParams.get('env') === 'test') setShouldPersistEnv(true);
   }, []);
-  const basename = '/';
   return (
-    <Router basename={basename}>
+    <Router basename="/">
       <GlobalContextProvider>
         <Layout>
           <Routes>

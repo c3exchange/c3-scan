@@ -54,7 +54,7 @@ export const Footer = styled(Grid)(() => ({
 
 export const ScrollableContent = styled('div')(() => ({
   overflowY: 'auto',
-  maxHeight: 'calc(100% - 120px)',
+  height: 'calc(100% - 120px)',
 }));
 export const AssetIconContainer = styled(Grid)(() => ({
   display: 'flex',
