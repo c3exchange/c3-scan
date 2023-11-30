@@ -3,14 +3,16 @@ import TooltipInfo from '../../../../components/TooltipInfo/TooltipInfo';
 import { AssetHolding, Holding } from '../../../../interfaces/interfaces';
 import { getAssetIcon, formatNumber } from '../../../../utils';
 import * as S from './styles';
+import Loader from '../../../../components/Loader/Loader';
 
 interface IDeposit {
   c3Assets: Holding[];
   C3Address: string;
   userCash: AssetHolding[];
+  isLoading: boolean;
 }
 
-const Deposit = ({ c3Assets, C3Address, userCash }: IDeposit) => {
+const Deposit = ({ c3Assets, C3Address, userCash, isLoading }: IDeposit) => {
   const totalValueLocked = c3Assets.reduce((acc, { value }) => acc + value, 0);
   const totalAccountValue = userCash.reduce((acc, { value }) => acc + value, 0);
   return (
@@ -36,6 +38,7 @@ const Deposit = ({ c3Assets, C3Address, userCash }: IDeposit) => {
         </Grid>
       </S.AssetInfo>
       <S.ScrollableContent>
+        {isLoading && <Loader />}
         {C3Address
           ? userCash.map((asset) => (
               <S.Row container key={asset.instrument.id}>

@@ -7,6 +7,7 @@ import { ALGO_INSTRUMENT, InstrumentAmount } from '@c3exchange/common';
 
 export const useGetC3HoldingAssets = () => {
   const [holdingAssets, setHoldingAssets] = useState<Holding[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { assetPrices } = useGlobalContext();
   const { algoIndexer, coreAppId } = useGlobalContext();
 
@@ -50,14 +51,16 @@ export const useGetC3HoldingAssets = () => {
             }
           : null;
       });
-
+      setIsLoading(true);
       const resolvedAssets = await Promise.all(assetPromises);
       holdingAssets = holdingAssets.concat(
         resolvedAssets.filter((holding) => holding !== null)
       );
+      setIsLoading(false);
       setHoldingAssets(holdingAssets);
       return holdingAssets;
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
   };
@@ -67,5 +70,8 @@ export const useGetC3HoldingAssets = () => {
     searchHoldingAssets(coreAppId);
   }, [coreAppId]);
 
-  return holdingAssets;
+  return {
+    holdingAssets,
+    isLoading,
+  };
 };
