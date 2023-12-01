@@ -1,6 +1,6 @@
 import { ReactComponent as Avax } from '../../assets/icons/avax.svg';
 import { ReactComponent as Usdc } from '../../assets/icons/usdc.svg';
-import { ReactComponent as Bitcoin } from '../../assets/icons/bitcoin.svg';
+import { ReactComponent as Bitcoin } from '../../assets/icons/wbtc.svg';
 import { ReactComponent as Ethereum } from '../../assets/icons/ethereum.svg';
 import { ReactComponent as Algo } from '../../assets/icons/algo.svg';
 import { ReactComponent as Reddit } from '../../assets/icons/reddit.svg';
