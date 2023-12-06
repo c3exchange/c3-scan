@@ -1,6 +1,7 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
 import { createShouldForwardProp } from '../../../../utils';
+
 interface IContainer {
   _hasC3Address: boolean;
 }
@@ -9,14 +10,14 @@ export const Container = styled(Grid, {
 })<IContainer>(({ theme, _hasC3Address }) => ({
   borderRadius: theme.spacing(2),
   width: '100%',
-  height: _hasC3Address ? '170px' : '144px',
-  paddingTop: '20px',
-  paddingLeft: _hasC3Address ? 0 : '40px',
-  paddingBottom: '32px',
+  height: _hasC3Address ? '130px' : '144px',
+  paddingTop: _hasC3Address ? '0px' : '20px',
+  paddingLeft: _hasC3Address ? '0px' : '40px',
+  paddingBottom: _hasC3Address ? '0px' : '32px',
   background: _hasC3Address
     ? 'none'
     : `linear-gradient(180deg, #53308A -68.06%, #05061B 95.83%)`,
-  marginBottom: 16,
+  marginBottom: _hasC3Address ? '16px' : '32px',
 }));
 
 export const Title = styled('div', {

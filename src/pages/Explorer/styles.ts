@@ -1,6 +1,10 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
-export const Container = styled(Grid)(() => ({}));
+import gridBackground from '../../assets/images/grid-background.png';
+
+export const Container = styled(Grid)(() => ({
+  maxWidth: '1400px',
+}));
 
 export const MarginPoolContainer = styled(Grid)(() => ({
   marginTop: '16px',
@@ -10,7 +14,29 @@ export const AddressLabel = styled('div')(({ theme }) => ({
   color: theme.palette.secondary.main,
   marginRight: '2px',
 }));
+
 export const ShowAddressContainer = styled(Grid)(() => ({
+  display: 'flex',
   marginBottom: '32px',
   fontFamily: 'Manrope',
+}));
+
+export const Subtitle = styled('div')(({ theme }) => ({
+  fontFamily: 'Bricolage Grotesque',
+  fontSize: '30px',
+  fontWeight: 500,
+  marginBottom: 10,
+}));
+
+export const Background = styled(Grid)(() => ({
+  position: 'absolute',
+  top: '80px',
+  left: '70px',
+  right: '70px',
+  height: '45%',
+  width: 'calc(100% - 140px)',
+  backgroundImage: `url(${gridBackground})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  zIndex: -1,
 }));

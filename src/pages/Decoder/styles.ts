@@ -1,6 +1,10 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
-export const Container = styled(Grid)(() => ({}));
+
+export const Container = styled(Grid)(() => ({
+  maxWidth: '1400px',
+}));
+
 export const Title = styled(Grid)(() => ({
   fontFamily: 'Bricolage Grotesque',
   fontSize: '40px',

@@ -1,5 +1,9 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
+import { createShouldForwardProp } from '../../../../utils';
+interface IScrollableContent {
+  _empty: boolean;
+}
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
   width: '100%',
@@ -28,9 +32,15 @@ export const AssetInfo = styled(Grid)(({ theme }) => ({
   alignItems: 'center',
   paddingLeft: '32px',
 }));
-export const ScrollableContent = styled('div')(() => ({
+export const ScrollableContent = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_empty']),
+})<IScrollableContent>(({ _empty }) => ({
   overflowY: 'auto',
   maxHeight: 'calc(100% - 82px)',
+  ...(_empty && { height: '100%' }),
+  '&::-webkit-scrollbar': {
+    width: '4px',
+  },
 }));
 export const Row = styled(Grid)(({ theme }) => ({
   height: '46px',
@@ -57,4 +67,19 @@ export const AccountValue = styled('span')(({ theme }) => ({
   marginLeft: '8px',
   display: 'flex',
   alignItems: 'center',
+}));
+
+export const EmptyTableContainer = styled(Grid)(() => ({
+  height: '100%',
+}));
+export const EmptyTableItem = styled(Grid)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
+}));
+
+export const EmptyTableIconContainer = styled('div')(() => ({
+  display: 'block',
+  textAlign: 'center',
 }));

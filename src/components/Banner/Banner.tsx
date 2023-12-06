@@ -4,11 +4,20 @@ import Icon from '../Icon/Icon';
 import CustomButton from '../CustomButton/CustomButton';
 import * as S from './styles';
 
-const Banner = () => {
+interface IBanner {
+  separator?: boolean;
+}
+
+const Banner = (props: IBanner) => {
+  const { separator = true } = props;
   return (
-    <S.Container container>
-      <Grid item xs={12}>
-        <Grid container spacing={2}>
+    <S.Container
+      container
+      _separator={separator}
+      {...(!separator && { columnSpacing: 2 })}
+    >
+      <Grid item xs={12} lg="auto">
+        <Grid container spacing={2} alignItems="center">
           <Grid item>
             <C3ScanLogo height={102} width={102} />
           </Grid>
@@ -17,15 +26,16 @@ const Banner = () => {
               <Icon name="github" width={32} height={32} />
               <S.Title>C3 SCAN</S.Title>
             </S.TitleContainer>
-            <S.TextContainer>
+            <S.TextContainer _separator={separator}>
               It's an open source project. Everyone is invited to contribute!
             </S.TextContainer>
           </Grid>
         </Grid>
       </Grid>
-      <S.Separator />
-      <Grid item xs={12}>
+      {separator && <S.Separator />}
+      <S.ButtonContainer item xs={12} lg>
         <CustomButton
+          {...(!separator && { width: 'auto' })}
           height="54px"
           onClick={() => window.open('https://github.com/c3exchange/c3-scan/')}
         >
@@ -34,7 +44,7 @@ const Banner = () => {
             <Icon name="github" width={20} height={20} />
           </S.ViewDocumentationBtn>
         </CustomButton>
-      </Grid>
+      </S.ButtonContainer>
     </S.Container>
   );
 };

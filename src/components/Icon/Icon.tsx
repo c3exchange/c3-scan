@@ -14,6 +14,8 @@ import { ReactComponent as RightArrow } from '../../assets/icons/rightArrow.svg'
 import { ReactComponent as Search } from '../../assets/icons/search.svg';
 import { ReactComponent as Info } from '../../assets/icons/info-tooltip.svg';
 import { ReactComponent as InfoFilled } from '../../assets/icons/info-tooltip-filled.svg';
+import { ReactComponent as EmptyTable } from '../../assets/icons/empty-table.svg';
+import { ReactComponent as EmptyEarnTable } from '../../assets/icons/empty-earn-table.svg';
 
 export type IconName =
   | 'hamburger'
@@ -31,7 +33,9 @@ export type IconName =
   | 'rightArrow'
   | 'search'
   | 'info'
-  | 'infoFilled';
+  | 'infoFilled'
+  | 'emptyTable'
+  | 'emptyEarnTable';
 
 interface IIcon {
   name: IconName;
@@ -60,6 +64,8 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     info: <Info {...childProps} />,
     infoFilled: <InfoFilled {...childProps} />,
     algo: <Algo {...childProps} />,
+    emptyTable: <EmptyTable {...childProps} />,
+    emptyEarnTable: <EmptyEarnTable {...childProps} />,
   }[name];
 };
 

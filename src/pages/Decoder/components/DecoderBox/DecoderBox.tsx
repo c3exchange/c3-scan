@@ -26,6 +26,7 @@ const DecoderBox = ({ message, onChange, onDecode }: IDecoderBox) => {
         multiline
         value={message}
         autoComplete="off"
+        placeholder="Paste here the encoded message your wallet prompted to sign"
         onChange={(event) => onChange(event.target.value)}
       />
       <Grid item xs={12}>

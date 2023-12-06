@@ -18,8 +18,8 @@ const Deposit = ({ c3Assets, C3Address, userCash, isLoading }: IDeposit) => {
   return (
     <S.Container>
       <S.Title>
-        {C3Address ? 'Account Assets' : 'C3 Total Deposits'}
-        {C3Address && totalAccountValue && (
+        {C3Address ? 'Account Assets' : "C3's Total Deposits"}
+        {C3Address && (
           <S.AccountValue>
             ${formatNumber(totalAccountValue)}
             <TooltipInfo message="The net balance of assets in your C3 account, including liabilities. Account Assets = Assets in your account + Earn holdings - Borrow Position" />
@@ -46,7 +46,7 @@ const Deposit = ({ c3Assets, C3Address, userCash, isLoading }: IDeposit) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item xs={4} className="3">
+                <Grid item xs={4}>
                   {formatNumber(Number(asset.amount.toDecimal()))} {asset.instrument.id}
                 </Grid>
                 <Grid item xs={4}>
@@ -60,7 +60,7 @@ const Deposit = ({ c3Assets, C3Address, userCash, isLoading }: IDeposit) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item xs={4} className="3">
+                <Grid item xs={4}>
                   {formatNumber(asset.amount)} {asset.instrument.id}
                 </Grid>
                 <Grid item xs={4}>
@@ -71,11 +71,11 @@ const Deposit = ({ c3Assets, C3Address, userCash, isLoading }: IDeposit) => {
       </S.ScrollableContent>
       {!C3Address && (
         <S.Footer>
-          <Grid item xs={4}></Grid>
-          <Grid item xs={8} display="flex" alignItems="center">
+          <Grid item xs={8}></Grid>
+          <S.TVLContainer item xs={4}>
             Total Value Locked (TVL) ${formatNumber(totalValueLocked)}
             <TooltipInfo message="The total value of all available assets inside the C3 exchange platform." />
-          </Grid>
+          </S.TVLContainer>
         </S.Footer>
       )}
     </S.Container>

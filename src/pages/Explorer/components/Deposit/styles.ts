@@ -55,6 +55,9 @@ export const Footer = styled(Grid)(() => ({
 export const ScrollableContent = styled('div')(() => ({
   overflowY: 'auto',
   height: 'calc(100% - 120px)',
+  '&::-webkit-scrollbar': {
+    width: '4px',
+  },
 }));
 export const AssetIconContainer = styled(Grid)(() => ({
   display: 'flex',
@@ -73,4 +76,9 @@ export const AccountValue = styled('span')(({ theme }) => ({
   marginLeft: '8px',
   display: 'flex',
   alignItems: 'center',
+}));
+export const TVLContainer = styled(Grid)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  margin: '0px 0px 0px -300px',
 }));

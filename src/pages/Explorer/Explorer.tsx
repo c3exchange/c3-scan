@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Hero from './components/Hero/Hero';
 import Deposit from './components/Deposit/Deposit';
@@ -6,10 +6,12 @@ import Banner from '../../components/Banner/Banner';
 import MarginPool from './components/MarginPool/MarginPool';
 import Borrow from './components/Borrow/Borrow';
 import Earn from './components/Earn/Earn';
+import Path, { IPath } from '../../components/Path/Path';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
 import { getC3Address } from '../../utils';
 import { useGetAddressState } from '../../hooks/useGetAddressState';
+import { AppRoutes } from '../../routes/routes';
 import * as S from './styles';
 
 const Explorer = () => {
@@ -17,11 +19,23 @@ const Explorer = () => {
   const [C3Address, setC3Address] = useState<string>('');
   const onClear = () => {
     setAddress('');
+  };
+  const onClearAll = () => {
+    setAddress('');
     setC3Address('');
   };
   const { holdingAssets, isLoading } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
+
+  const path = useMemo(() => {
+    const values: IPath[] = [
+      { text: 'Explorer', route: AppRoutes.EXPLORER, onClick: () => onClearAll() },
+      { text: 'C3 Overview', route: AppRoutes.EXPLORER, onClick: () => onClearAll() },
+    ];
+    if (C3Address) values.push({ text: 'Search result' });
+    return values;
+  }, [C3Address, onClearAll]);
 
   const onSearch = () => {
     try {
@@ -35,6 +49,7 @@ const Explorer = () => {
   return (
     <S.Container container>
       <Grid item xs={12}>
+        <Path values={path} />
         <Hero
           address={address}
           onSearch={onSearch}
@@ -43,14 +58,16 @@ const Explorer = () => {
           hasC3Address={!!C3Address}
         />
       </Grid>
-      {C3Address && (
-        <S.ShowAddressContainer item xs={12} display="flex">
-          <S.AddressLabel>Address: </S.AddressLabel>
+      {C3Address ? (
+        <S.ShowAddressContainer item xs={12}>
+          <S.AddressLabel>Address:</S.AddressLabel>
           {address}
         </S.ShowAddressContainer>
+      ) : (
+        <S.Subtitle>C3 Overview</S.Subtitle>
       )}
       <Grid item xs={12}>
-        <Grid container spacing={2}>
+        <Grid container columnSpacing={2}>
           <Grid item xs={8}>
             <Deposit
               c3Assets={holdingAssets}
@@ -78,6 +95,7 @@ const Explorer = () => {
           </Grid>
         )}
       </S.MarginPoolContainer>
+      <S.Background />
     </S.Container>
   );
 };

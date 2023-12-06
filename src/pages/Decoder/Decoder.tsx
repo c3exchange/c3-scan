@@ -23,7 +23,7 @@ const Decoder = () => {
     <S.Container>
       <S.Title>C3 Base64 Decoder</S.Title>
       <Grid item xs={12}>
-        <Grid container spacing={4}>
+        <Grid container columnSpacing={4}>
           <Grid item xs={6}>
             <DecoderBox message={message} onChange={setMessage} onDecode={onDecode} />
           </Grid>
@@ -37,7 +37,7 @@ const Decoder = () => {
         </Grid>
       </Grid>
       <S.BannerContainer item xs={12}>
-        <Banner />
+        <Banner separator={false} />
       </S.BannerContainer>
     </S.Container>
   );
