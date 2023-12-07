@@ -6,8 +6,11 @@ export const Container = styled(Grid)(() => ({
   maxWidth: '1400px',
 }));
 
-export const MarginPoolContainer = styled(Grid)(() => ({
+export const MarginPoolContainer = styled(Grid)(({ theme }) => ({
   marginTop: '16px',
+  [theme.breakpoints.down('mediumDesktop')]: {
+    marginBottom: '16px',
+  },
 }));
 
 export const AddressLabel = styled('div')(({ theme }) => ({
@@ -26,9 +29,13 @@ export const Subtitle = styled('div')(({ theme }) => ({
   fontSize: '30px',
   fontWeight: 500,
   marginBottom: 10,
+  [theme.breakpoints.down('desktop')]: {
+    fontSize: '24px',
+    marginBottom: 0,
+  },
 }));
 
-export const Background = styled(Grid)(() => ({
+export const Background = styled(Grid)(({ theme }) => ({
   position: 'absolute',
   top: '80px',
   left: '70px',
@@ -39,4 +46,12 @@ export const Background = styled(Grid)(() => ({
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
   zIndex: -1,
+  [theme.breakpoints.down('mediumDesktop')]: {
+    left: '40px',
+    right: '40px',
+    width: 'calc(100% - 80px)',
+  },
+  [theme.breakpoints.down('laptop')]: {
+    display: 'none',
+  },
 }));

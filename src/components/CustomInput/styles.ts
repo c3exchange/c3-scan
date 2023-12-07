@@ -34,3 +34,11 @@ export const EndAdornment = styled('div')(() => ({
   justifyContent: 'center',
   cursor: 'pointer',
 }));
+
+export const StartAdornment = styled('div')(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  paddingRight: '8px',
+}));

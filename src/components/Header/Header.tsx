@@ -6,6 +6,7 @@ import Icon from '../Icon/Icon';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useLocation } from 'react-router-dom';
 import { useGlobalContext } from '../../contexts/GlobalContext';
+
 import * as S from './styles';
 
 const Header = () => {
@@ -13,7 +14,7 @@ const Header = () => {
   const location = useLocation();
   const { isMainnet } = useGlobalContext();
   return (
-    <S.Container container justifyContent="space-between">
+    <S.Container container>
       <Grid item display="flex">
         <S.C3ScanLogoContainer onClick={() => window.open('https://c3.io/')}>
           <Logo />
@@ -53,7 +54,7 @@ const Header = () => {
           />
         </S.HamburgerContainer>
         <SwipeableDrawer
-          anchor={'right'}
+          anchor="right"
           open={sideBarOpen}
           onClose={() => setSideBarOpen(false)}
           onOpen={() => setSideBarOpen(true)}

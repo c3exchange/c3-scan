@@ -45,3 +45,16 @@ export enum OnChainRequestOp {
   AccountMove = 5,
   Settle = 6,
 }
+
+// mui overrides
+declare module '@mui/material/styles' {
+  // breakpoints
+  interface BreakpointOverrides {
+    mobile: true;
+    tablet: true;
+    laptop: true;
+    desktop: true;
+    mediumDesktop: true;
+    largeDesktop: true;
+  }
+}

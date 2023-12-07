@@ -1,6 +1,5 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
-import { theme } from '../../../../theme';
 
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
@@ -13,7 +12,7 @@ export const Container = styled(Grid)(({ theme }) => ({
   flexDirection: 'column',
   fontSize: '12px',
 }));
-export const Title = styled(Grid)(() => ({
+export const Title = styled(Grid)(({ theme }) => ({
   fontFamily: 'Bricolage Grotesque',
   height: '38px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
@@ -23,7 +22,7 @@ export const Title = styled(Grid)(() => ({
   fontSize: '14px',
 }));
 
-export const AssetInfo = styled(Grid)(() => ({
+export const AssetInfo = styled(Grid)(({ theme }) => ({
   height: '44px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   color: theme.palette.text.primary,
@@ -77,8 +76,17 @@ export const AccountValue = styled('span')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
 }));
-export const TVLContainer = styled(Grid)(() => ({
+export const TVLContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   margin: '0px 0px 0px -300px',
+  [theme.breakpoints.down('largeDesktop')]: {
+    margin: '0px 0px 0px -55px',
+  },
+}));
+export const TVLLabel = styled('span')(({ theme }) => ({
+  display: 'inline-block',
+  [theme.breakpoints.down('largeDesktop')]: {
+    display: 'none',
+  },
 }));

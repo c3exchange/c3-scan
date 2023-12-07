@@ -16,7 +16,7 @@ const Banner = (props: IBanner) => {
       _separator={separator}
       {...(!separator && { columnSpacing: 2 })}
     >
-      <Grid item xs={12} lg="auto">
+      <Grid item mobile={12} desktop="auto">
         <Grid container spacing={2} alignItems="center">
           <Grid item>
             <C3ScanLogo height={102} width={102} />
@@ -33,7 +33,7 @@ const Banner = (props: IBanner) => {
         </Grid>
       </Grid>
       {separator && <S.Separator />}
-      <S.ButtonContainer item xs={12} lg>
+      <S.ButtonContainer item mobile={12} desktop>
         <CustomButton
           {...(!separator && { width: 'auto' })}
           height="54px"

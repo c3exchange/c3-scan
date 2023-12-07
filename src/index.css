@@ -53,3 +53,17 @@ body::-webkit-scrollbar {
 ::-webkit-scrollbar-thumb:hover {
   background: #6b6b6b;
 }
+
+@media (max-width: 1024px) {
+  .content {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}

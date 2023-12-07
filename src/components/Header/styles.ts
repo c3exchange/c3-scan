@@ -10,9 +10,14 @@ interface ILink {
 export const C3ScanLogoContainer = styled('div')(() => ({
   cursor: 'pointer',
 }));
-export const Container = styled(Grid)(() => ({
+export const Container = styled(Grid)(({ theme }) => ({
+  justifyContent: 'space-between',
+  alignItems: 'center',
   padding: '16px 74px 32px 74px',
   fontFamily: 'Manrope',
+  [theme.breakpoints.down('mediumDesktop')]: {
+    padding: '15px 15px 25px 15px',
+  },
 }));
 export const LinksContainer = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
