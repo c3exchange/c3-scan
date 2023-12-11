@@ -100,10 +100,10 @@ const Explorer = () => {
           <MarginPool onChainAppState={onChainC3State} />
         ) : (
           <Grid container spacing={2}>
-            <Grid item mobile={6}>
+            <Grid item mobile={12} mediumDesktop={6}>
               <Borrow userPool={userPool} />
             </Grid>
-            <Grid item mobile={6}>
+            <Grid item mobile={12} mediumDesktop={6}>
               <Earn userPool={userPool} />
             </Grid>
           </Grid>

@@ -9,8 +9,8 @@ export interface IItem {
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
   width: '100%',
-  maxHeight: '740px',
-  minHeight: '700px',
+  maxHeight: '860px',
+  minHeight: '800px',
   color: theme.palette.primary.contrastText,
   display: 'flex',
   flexDirection: 'column',
@@ -23,17 +23,6 @@ export const Title = styled(Grid)(() => ({
   display: 'flex',
   alignItems: 'center',
   fontSize: '14px',
-}));
-
-export const AccountValue = styled('span')(({ theme }) => ({
-  color: theme.palette.text.primary,
-  fontSize: '14px',
-  fontWeight: 500,
-  lineHeight: '100%',
-  letterSpacing: '-0.7px',
-  marginLeft: '8px',
-  display: 'flex',
-  alignItems: 'center',
 }));
 
 export const ScrollableContent = styled('div')(() => ({
@@ -70,16 +59,4 @@ export const Item = styled(Grid, {
 
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
-}));
-
-export const Footer = styled(Grid)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '38px',
-  fontSize: '12px',
-  fontWeight: 700,
-  lineHeight: '20px',
-  borderRadius: '8px',
-  background: theme.palette.background.default,
 }));

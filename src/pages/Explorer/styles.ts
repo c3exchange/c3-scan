@@ -18,10 +18,14 @@ export const AddressLabel = styled('div')(({ theme }) => ({
   marginRight: '2px',
 }));
 
-export const ShowAddressContainer = styled(Grid)(() => ({
+export const ShowAddressContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   marginBottom: '32px',
   fontFamily: 'Manrope',
+  [theme.breakpoints.down('desktop')]: {
+    fontSize: '14px',
+    marginBottom: '16px',
+  },
 }));
 
 export const Subtitle = styled('div')(({ theme }) => ({

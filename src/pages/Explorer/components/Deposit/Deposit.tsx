@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 
 import DesktopTable from './desktop/DesktopTable';
+import MobileTable from './mobile/MobileTable';
+
 import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { breakpoints } from '../../../../theme';
 import { IDeposit } from './interfaces';
-import MobileTable from './mobile/MobileTable';
 
 const Deposit = (props: IDeposit) => {
   const { c3Assets, C3Address, userCash, isLoading } = props;

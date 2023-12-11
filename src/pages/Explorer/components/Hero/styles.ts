@@ -25,6 +25,7 @@ export const Container = styled(Grid, {
   marginBottom: _hasC3Address ? '16px' : '32px',
   [theme.breakpoints.down('desktop')]: {
     paddingRight: _hasC3Address ? '0px' : '40px',
+    height: 'auto',
   },
   [theme.breakpoints.down('laptop')]: {
     paddingLeft: _hasC3Address ? '0px' : '12px',
@@ -36,11 +37,14 @@ export const Container = styled(Grid, {
 
 export const Title = styled('div', {
   shouldForwardProp: createShouldForwardProp(['_hasC3Address']),
-})<IContainer>(({ _hasC3Address }) => ({
+})<IContainer>(({ theme, _hasC3Address }) => ({
   fontFamily: 'Bricolage Grotesque',
   fontSize: _hasC3Address ? '40px' : '18px',
   fontWeight: 500,
   marginBottom: 10,
+  [theme.breakpoints.down('desktop')]: {
+    fontSize: _hasC3Address ? '28px' : '16px',
+  },
 }));
 
 export const SearchBtn = styled('div')(({ theme }) => ({

@@ -2,15 +2,22 @@ import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
 import { createShouldForwardProp } from '../../../../../utils';
 
+interface IProps {
+  _empty: boolean;
+}
+
 export interface IItem {
   _isTitle?: boolean;
 }
 
-export const Container = styled(Grid)(({ theme }) => ({
+export const Container = styled(Grid, {
+  shouldForwardProp: createShouldForwardProp(['_empty']),
+})<IProps>(({ theme, _empty }) => ({
   fontFamily: 'Manrope',
   width: '100%',
-  maxHeight: '740px',
-  minHeight: '700px',
+  maxHeight: '860px',
+  minHeight: '200px',
+  ...(_empty && { height: '200px' }),
   color: theme.palette.primary.contrastText,
   display: 'flex',
   flexDirection: 'column',
@@ -36,9 +43,17 @@ export const AccountValue = styled('span')(({ theme }) => ({
   alignItems: 'center',
 }));
 
-export const ScrollableContent = styled('div')(() => ({
+export const ScrollableContent = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_empty']),
+})<IProps>(({ theme, _empty }) => ({
   overflowY: 'auto',
   height: 'calc(100% - 120px)',
+  ...(_empty && {
+    height: '100%',
+    background: theme.palette.background.default,
+    borderRadius: '8px',
+    width: '100%',
+  }),
   '&::-webkit-scrollbar': {
     width: '4px',
   },
@@ -70,16 +85,4 @@ export const Item = styled(Grid, {
 
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
-}));
-
-export const Footer = styled(Grid)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '38px',
-  fontSize: '12px',
-  fontWeight: 700,
-  lineHeight: '20px',
-  borderRadius: '8px',
-  background: theme.palette.background.default,
 }));

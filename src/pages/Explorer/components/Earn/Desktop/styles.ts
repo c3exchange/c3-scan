@@ -1,12 +1,20 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
+import { createShouldForwardProp } from '../../../../../utils';
 
-export const Container = styled(Grid)(({ theme }) => ({
+interface IProps {
+  _empty: boolean;
+}
+
+export const Container = styled(Grid, {
+  shouldForwardProp: createShouldForwardProp(['_empty']),
+})<IProps>(({ theme, _empty }) => ({
   fontFamily: 'Manrope',
   width: '100%',
   borderRadius: theme.spacing(1),
   maxHeight: '350px',
   minHeight: '350px',
+  ...(_empty && { height: '350px' }),
   background: theme.palette.background.default,
   color: theme.palette.primary.contrastText,
   display: 'flex',
@@ -22,6 +30,17 @@ export const Title = styled(Grid)(({ theme }) => ({
   alignItems: 'center',
   paddingLeft: '32px',
   fontSize: '14px',
+}));
+
+export const AccountValue = styled('span')(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontSize: '14px',
+  fontWeight: 500,
+  lineHeight: '100%',
+  letterSpacing: '-0.7px',
+  marginLeft: '8px',
+  display: 'flex',
+  alignItems: 'center',
 }));
 
 export const AssetInfo = styled(Grid)(({ theme }) => ({
@@ -41,25 +60,17 @@ export const Row = styled(Grid)(({ theme }) => ({
   paddingLeft: '32px',
 }));
 
-export const Footer = styled(Grid)(() => ({
-  marginTop: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '38px',
-  fontSize: '12px',
-  fontWeight: 700,
-  lineHeight: '20px',
-  paddingLeft: '32px',
-}));
-
-export const ScrollableContent = styled('div')(() => ({
+export const ScrollableContent = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_empty']),
+})<IProps>(({ _empty }) => ({
   overflowY: 'auto',
   height: 'calc(100% - 120px)',
+  ...(_empty && { height: '100%' }),
   '&::-webkit-scrollbar': {
     width: '4px',
   },
 }));
+
 export const AssetIconContainer = styled(Grid)(() => ({
   display: 'flex',
   alignItems: 'center',
@@ -67,28 +78,4 @@ export const AssetIconContainer = styled(Grid)(() => ({
 
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
-}));
-export const AccountValue = styled('span')(({ theme }) => ({
-  color: theme.palette.text.primary,
-  fontSize: '14px',
-  fontWeight: 500,
-  lineHeight: '100%',
-  letterSpacing: '-0.7px',
-  marginLeft: '8px',
-  display: 'flex',
-  alignItems: 'center',
-}));
-export const TVLContainer = styled(Grid)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  margin: '0px 0px 0px -300px',
-  [theme.breakpoints.down('largeDesktop')]: {
-    margin: '0px 0px 0px -55px',
-  },
-}));
-export const TVLLabel = styled('span')(({ theme }) => ({
-  display: 'inline-block',
-  [theme.breakpoints.down('largeDesktop')]: {
-    display: 'none',
-  },
 }));

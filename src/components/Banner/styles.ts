@@ -14,7 +14,7 @@ export const Container = styled(Grid, {
   background: theme.palette.background.default,
   width: 'auto',
   borderRadius: 8,
-  height: _separator ? '304px' : 'auto',
+  height: _separator ? '350px' : 'auto',
   paddingLeft: 16,
   paddingRight: 16,
   paddingBottom: 24,
