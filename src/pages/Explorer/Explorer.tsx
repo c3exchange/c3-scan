@@ -23,6 +23,10 @@ const Explorer = () => {
     () => windowSize.width < breakpoints.mediumDesktop,
     [windowSize.width]
   );
+  const isMobile = useMemo(
+    () => windowSize.width < breakpoints.laptop,
+    [windowSize.width]
+  );
 
   const [address, setAddress] = useState<string>('');
   const [C3Address, setC3Address] = useState<string>('');
@@ -111,7 +115,7 @@ const Explorer = () => {
       </S.MarginPoolContainer>
       {isMediumDesktop && (
         <Grid item mobile={12}>
-          <Banner separator={false} />
+          <Banner separator={isMobile} {...(isMobile && { size: 80 })} />
         </Grid>
       )}
       <S.Background />

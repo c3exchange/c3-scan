@@ -10,6 +10,7 @@ import {
   Instrument,
   InstrumentAmount,
   ServerInstrument,
+  convertUint64toInt64,
 } from '@c3exchange/common';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
@@ -182,42 +183,53 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
 }
 function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   const poolResult = decodeABIValue(operation, poolMoveFormat);
-  const operationType = getEnumKeyByEnumValue(
-    OnChainRequestOp,
-    OnChainRequestOp.PoolMove
+  const instrumentSlotId = Number(poolResult[1]);
+  const encodedAmount = convertUint64toInt64(poolResult[2]);
+  const instrumentAmount = InstrumentAmount.fromContract(
+    getInstrumentfromSlotId(instrumentSlotId, appState),
+    encodedAmount
   );
-  const instrumentSlotId = Number(poolResult[1][0][0]);
-  const encodedAmount = poolResult[1][0][1];
   const amount = Number(
-    InstrumentAmount.fromContract(
-      getInstrumentfromSlotId(instrumentSlotId, appState),
-      BigInt(encodedAmount)
+    (instrumentAmount.isZeroOrLess()
+      ? instrumentAmount.neg()
+      : instrumentAmount
     ).toDecimal()
   );
+  const operationType = encodedAmount > 0 ? 'Subscribe' : 'Redeem';
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
   return { operationType, instrumentName, amount };
 }
-function decodeSettle(operation: Uint8Array) {
+function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
   const nonce = Number(settleResult[2]);
   const expiresOn = new Date(parseInt(settleResult[3])).toISOString();
   const sellSlotId = settleResult[4];
-  const sellAmount = Number(settleResult[5]);
-  const maxBorrow = Number(settleResult[6]);
+  const sellAsset = getInstrumentfromSlotId(sellSlotId, appState);
+  const sellAmount = Number(
+    InstrumentAmount.fromContract(sellAsset, settleResult[5]).toDecimal()
+  );
+  const maxBorrow = Number(
+    InstrumentAmount.fromContract(sellAsset, settleResult[6]).toDecimal()
+  );
   const buySlotId = settleResult[7];
-  const buyAmount = Number(settleResult[8]);
-  const maxRepay = Number(settleResult[9]);
+  const buyAsset = getInstrumentfromSlotId(buySlotId, appState);
+  const buyAmount = Number(
+    InstrumentAmount.fromContract(buyAsset, settleResult[8]).toDecimal()
+  );
+  const maxRepay = Number(
+    InstrumentAmount.fromContract(buyAsset, settleResult[9]).toDecimal()
+  );
 
   return {
     operationType,
     nonce,
     expiresOn,
-    sellSlotId,
+    sellAssetId: sellAsset.id,
+    buyAssetId: buyAsset.id,
     sellAmount,
-    maxBorrow,
-    buySlotId,
     buyAmount,
+    maxBorrow,
     maxRepay,
   };
 }
@@ -226,49 +238,53 @@ export const decodeMessage = (
   encodeMessage: string,
   serverInstruments: ServerInstrument[]
 ): DecodedMessage | undefined => {
-  const welcomeRegex = /^\s*Welcome to C3/;
-  if (welcomeRegex.test(encodeMessage)) return decodeWelcomeMessage(encodeMessage);
-  const byteArray: Uint8Array = new Uint8Array(Buffer.from(encodeMessage, 'utf-8'));
-  const buffer: Buffer = Buffer.from(byteArray);
-  const bytesToDecode: Uint8Array = decodeBase64(buffer.toString('base64'));
-  const decoder = new TextDecoder('utf-8');
-  const base64String = decoder.decode(bytesToDecode);
-  const bytesArray = Array.from(atob(base64String), (char) => char.charCodeAt(0));
-  const fullMessage = new Uint8Array(bytesArray).slice(8);
-  const decodedHeader = unpackPartialData(fullMessage);
-  const operation = fullMessage.slice(decodedHeader.bytesRead);
-  const target: string = getFirstAndLastChars(decodedHeader.result.target, 5, 5);
-  switch (operation[0]) {
-    case OnChainRequestOp.Withdraw:
-      const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
-      return { ...withdrawDecoded, target };
-    case OnChainRequestOp.PoolMove:
-      const poolMoveDecoded = decodePoolMove(operation, serverInstruments);
-      return { ...poolMoveDecoded, target };
-    case OnChainRequestOp.Settle:
-      const settleDecoded = decodeSettle(operation);
-      return { ...settleDecoded, target };
-    default:
-      break;
+  try {
+    const welcomeRegex = /^\s*Welcome to C3/;
+    if (welcomeRegex.test(encodeMessage)) return decodeWelcomeMessage(encodeMessage);
+    const byteArray: Uint8Array = new Uint8Array(Buffer.from(encodeMessage, 'utf-8'));
+    const buffer: Buffer = Buffer.from(byteArray);
+    const bytesToDecode: Uint8Array = decodeBase64(buffer.toString('base64'));
+    const decoder = new TextDecoder('utf-8');
+    const base64String = decoder.decode(bytesToDecode);
+    const bytesArray = Array.from(atob(base64String), (char) => char.charCodeAt(0));
+    const fullMessage = new Uint8Array(bytesArray).slice(8);
+    const decodedHeader = unpackPartialData(fullMessage);
+    const operation = fullMessage.slice(decodedHeader.bytesRead);
+    const target: string = getFirstAndLastChars(decodedHeader.result.target, 8, 8);
+    switch (operation[0]) {
+      case OnChainRequestOp.Withdraw:
+        const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
+        return { ...withdrawDecoded, target };
+      case OnChainRequestOp.PoolMove:
+        const poolMoveDecoded = decodePoolMove(operation, serverInstruments);
+        return { ...poolMoveDecoded, target };
+      case OnChainRequestOp.Settle:
+        const settleDecoded = decodeSettle(operation, serverInstruments);
+        return { ...settleDecoded, target };
+      default:
+        break;
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   amount: 'Amount',
-  target: 'Target',
-  instrumentName: 'Instrument Name',
+  target: 'Destination',
+  instrumentName: 'Asset',
   operationType: 'Type',
   userID: 'User ID',
   creationTime: 'Creation Time',
   account: 'Account',
   expiresOn: 'Expires on',
   buyAmount: 'Buy Amount',
-  buySlotId: 'Buy Slot ID',
+  buyAssetId: 'Buy Asset',
   maxBorrow: 'Max Borrow',
   maxRepay: 'Max Repay',
   nonce: 'Nonce',
   sellAmount: 'Sell Amount',
-  sellSlotId: 'Sell Slot ID',
+  sellAssetId: 'Sell Asset',
 };
 
 export const getFirstAndLastChars = (

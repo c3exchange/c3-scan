@@ -37,6 +37,15 @@ export const Container = styled(Grid, {
   '&:after': {
     right: '-1px',
   },
+  [theme.breakpoints.down('laptop')]: {
+    paddingLeft: '12px',
+    paddingRight: '12px',
+    paddingBottom: '12px',
+    paddingTop: '24px',
+    gap: '16px',
+    height: 'auto',
+    fontSize: '14px',
+  },
 }));
 
 export const Separator = styled('div')(() => ({
@@ -71,11 +80,17 @@ export const TextContainer = styled('div', {
   shouldForwardProp: createShouldForwardProp(['_separator']),
 })<IBanner>(({ theme, _separator }) => ({
   marginTop: '8px',
-  width: _separator ? '204px' : '100%',
+  width: _separator ? 'auto' : '100%',
   color: theme.palette.text.primary,
   fontWeight: 500,
   lineHeight: '130%',
   letterSpacing: '0.32px',
+  [theme.breakpoints.down('laptop')]: {
+    width: '320px',
+  },
+  [theme.breakpoints.down('tablet')]: {
+    width: '200px',
+  },
 }));
 
 export const ButtonContainer = styled(Grid)(() => ({

@@ -6,22 +6,23 @@ import * as S from './styles';
 
 interface IBanner {
   separator?: boolean;
+  size?: number;
 }
 
 const Banner = (props: IBanner) => {
-  const { separator = true } = props;
+  const { separator = true, size = 102 } = props;
   return (
     <S.Container
       container
       _separator={separator}
       {...(!separator && { columnSpacing: 2 })}
     >
-      <Grid item mobile={12} desktop="auto">
+      <Grid item mobile={12} laptop desktop>
         <Grid container spacing={2} alignItems="center">
-          <Grid item>
-            <C3ScanLogo height={102} width={102} />
+          <Grid item laptop="auto">
+            <C3ScanLogo height={size} width={size} />
           </Grid>
-          <Grid item>
+          <Grid item laptop>
             <S.TitleContainer>
               <Icon name="github" width={32} height={32} />
               <S.Title>C3 SCAN</S.Title>
@@ -33,7 +34,7 @@ const Banner = (props: IBanner) => {
         </Grid>
       </Grid>
       {separator && <S.Separator />}
-      <S.ButtonContainer item mobile={12} desktop>
+      <S.ButtonContainer item mobile={12} laptop="auto" desktop>
         <CustomButton
           {...(!separator && { width: 'auto' })}
           height="54px"

@@ -27,10 +27,10 @@ export interface DecodedMessage {
   expiresOn?: string;
   account?: string;
   nonce?: number;
-  sellSlotId?: string;
+  sellAssetId?: string;
   sellAmount?: number;
   maxBorrow?: number;
-  buySlotId?: string;
+  buyAssetId?: string;
   buyAmount?: number;
   maxRepay?: number;
 }
