@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
 import { Link } from 'react-router-dom';
 import { createShouldForwardProp } from '../../utils';
+import { hexToRgba } from '../../utils/styles';
 
 interface ILink {
   _active: boolean;
@@ -20,12 +21,7 @@ export const Container = styled(Grid)(({ theme }) => ({
   },
 }));
 export const LinksContainer = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    display: 'none',
-  },
-}));
-export const HamburgerContainer = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.down('desktop')]: {
     display: 'none',
   },
 }));
@@ -47,6 +43,7 @@ export const TestnetBtn = styled('div')(({ theme }) => ({
   height: '37px',
   width: '98px',
   color: theme.palette.primary.contrastText,
+  backgroundColor: hexToRgba('#00C076', 10),
   marginLeft: '12px',
   display: 'flex',
   alignItems: 'center',

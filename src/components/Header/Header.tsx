@@ -1,23 +1,29 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import Grid from '@mui/material/Grid';
 import { ReactComponent as Logo } from '../../assets/images/logo.svg';
 import { AppRoutes } from '../../routes/routes';
-import Icon from '../Icon/Icon';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useLocation } from 'react-router-dom';
 import { useGlobalContext } from '../../contexts/GlobalContext';
+import { useWindowSize } from '../../hooks/useWindowSize';
+import Sidebar from '../Sidebar/Sidebar';
+import { breakpoints } from '../../theme';
 
 import * as S from './styles';
 
 const Header = () => {
-  const [sideBarOpen, setSideBarOpen] = useState(false);
   const location = useLocation();
   const { isMainnet } = useGlobalContext();
+  const windowSize = useWindowSize();
+  const mobileCondition = useMemo(
+    () => windowSize.width < breakpoints.desktop,
+    [windowSize.width]
+  );
+
   return (
     <S.Container container>
-      <Grid item display="flex">
+      <Grid item display="flex" alignItems="center">
         <S.C3ScanLogoContainer onClick={() => window.open('https://c3.io/')}>
-          <Logo />
+          <Logo width={mobileCondition ? 166 : 214} height={mobileCondition ? 28 : 36} />
         </S.C3ScanLogoContainer>
         {!isMainnet && (
           <S.TestnetBtn>
@@ -45,20 +51,7 @@ const Header = () => {
             </S.LinkRouter>
           </Grid>
         </S.LinksContainer>
-        <S.HamburgerContainer>
-          <Icon
-            name="hamburger"
-            height={22}
-            width={42}
-            onClick={() => setSideBarOpen(true)}
-          />
-        </S.HamburgerContainer>
-        <SwipeableDrawer
-          anchor="right"
-          open={sideBarOpen}
-          onClose={() => setSideBarOpen(false)}
-          onOpen={() => setSideBarOpen(true)}
-        ></SwipeableDrawer>
+        <Sidebar />
       </Grid>
     </S.Container>
   );
