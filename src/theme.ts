@@ -1,5 +1,26 @@
 import { createTheme } from '@mui/material/styles';
 
+export enum Breakpoints {
+  mobile = 'mobile',
+  tablet = 'tablet',
+  laptop = 'laptop',
+  desktop = 'desktop',
+  mediumDesktop = 'mediumDesktop',
+  largeDesktop = 'largeDesktop',
+}
+
+// define const of breakpoints devices
+export const breakpoints = {
+  [Breakpoints.mobile]: 0,
+  [Breakpoints.tablet]: 480,
+  [Breakpoints.laptop]: 768,
+  [Breakpoints.desktop]: 1024,
+  [Breakpoints.mediumDesktop]: 1200,
+  [Breakpoints.largeDesktop]: 1440,
+};
+
+const defaultTheme = createTheme();
+
 export const theme = createTheme({
   palette: {
     primary: {
@@ -37,6 +58,12 @@ export const theme = createTheme({
       active: '#05061B',
       hover: '#3C2800',
       selected: '#3C0E00',
+    },
+  },
+  breakpoints: {
+    values: {
+      ...defaultTheme.breakpoints.values,
+      ...breakpoints,
     },
   },
 });

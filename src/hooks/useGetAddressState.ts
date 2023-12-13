@@ -17,9 +17,10 @@ import {
 const retrieveNonZeroPositions = (
   userPositions: CoreUserState,
   serverInstruments: ServerInstrument[],
-  assetPrices: Price[]
+  assetPrices: Price[],
+  assetHoldings: AssetHolding[]
 ): { cash: AssetHolding[]; pool: AssetHolding[] } => {
-  const cashAccounts = [];
+  const cashAccounts: AssetHolding[] = [...assetHoldings];
   const principalAccounts = [];
   for (const [slotId, positionDetail] of userPositions.entries()) {
     const matchingInstrument = serverInstruments.find(
@@ -37,11 +38,14 @@ const retrieveNonZeroPositions = (
           matchingInstrument.instrument,
           cashAmount
         );
-        cashAccounts.push({
+        const index = cashAccounts.findIndex(
+          (instrument) => instrument.instrument.id === matchingInstrument.instrument.id
+        );
+        cashAccounts[index] = {
           instrument: matchingInstrument.instrument,
           amount,
           value: Number(amount.toDecimal()) * instrumentPrice,
-        });
+        };
       }
 
       if (principalAmount !== 0n) {
@@ -68,12 +72,13 @@ export const useGetAddressState = (
   address: string,
   onChainC3State: ServerInstrument[]
 ) => {
-  const [userCash, setUserCash] = useState<AssetHolding[]>([]);
-  const [userPool, setUserPool] = useState<AssetHolding[]>([]);
   const { coreAppId, algoClient } = useGlobalContext();
-  const { assetPrices } = useGlobalContext();
+  const { assetPrices, assetHoldings } = useGlobalContext();
 
-  const getAddressOnCainState = async (address: string, coreAppId: number) => {
+  const [userCash, setUserCash] = useState<AssetHolding[]>(assetHoldings);
+  const [userPool, setUserPool] = useState<AssetHolding[]>([]);
+
+  const getAddressOnChainState = async (address: string, coreAppId: number) => {
     try {
       const decodedAddress = decodeAccountId(address);
       const rawCoreAccountState = await algoClient
@@ -83,18 +88,21 @@ export const useGetAddressState = (
       const { cash, pool } = await retrieveNonZeroPositions(
         parsedUserData,
         onChainC3State,
-        assetPrices
+        assetPrices,
+        assetHoldings
       );
       setUserCash(cash);
       setUserPool(pool);
     } catch (error) {
+      setUserCash(assetHoldings);
+      setUserPool([]);
       console.error(error);
     }
   };
 
   useEffect(() => {
     if (!coreAppId || !address) return;
-    getAddressOnCainState(address, coreAppId);
+    getAddressOnChainState(address, coreAppId);
   }, [address, coreAppId]);
 
   return { userCash, userPool };

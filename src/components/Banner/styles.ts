@@ -1,31 +1,50 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
+import { createShouldForwardProp } from '../../utils';
 
-export const Container = styled(Grid)(({ theme }) => ({
+interface IBanner {
+  _separator: boolean;
+}
+
+export const Container = styled(Grid, {
+  shouldForwardProp: createShouldForwardProp(['_separator']),
+})<IBanner>(({ theme, _separator }) => ({
   fontFamily: 'Manrope',
+  alignItems: 'center',
   background: theme.palette.background.default,
-  width: '100%',
+  width: 'auto',
   borderRadius: 8,
-  height: '304px',
+  height: _separator ? '350px' : 'auto',
   paddingLeft: 16,
   paddingRight: 16,
   paddingBottom: 24,
   paddingTop: 40,
   borderTop: `1px solid ${theme.palette.secondary.main}`,
   position: 'relative',
+  marginLeft: '0px',
+  ...(!_separator && { maxWidth: '1275px' }),
   '&:before, &:after': {
     content: '""',
     position: 'absolute',
-    top: 2,
-    bottom: 0,
     width: '1px',
-    background: `linear-gradient(to bottom, ${theme.palette.secondary.main}, rgba(0,0,0,0))`,
+    top: '4px',
+    bottom: '0px',
+    background: `linear-gradient(180deg, rgba(240, 162, 0, 0) 0%, ${theme.palette.secondary.main} 2%, rgba(240, 162, 0, 0)) 0 100%`,
   },
   '&:before': {
-    left: 0,
+    left: '-1px',
   },
   '&:after': {
-    right: 0,
+    right: '-1px',
+  },
+  [theme.breakpoints.down('laptop')]: {
+    paddingLeft: '12px',
+    paddingRight: '12px',
+    paddingBottom: '12px',
+    paddingTop: '24px',
+    gap: '16px',
+    height: 'auto',
+    fontSize: '14px',
   },
 }));
 
@@ -57,11 +76,24 @@ export const ViewTxt = styled('span')(() => ({
   marginRight: '8px',
 }));
 
-export const TextContainer = styled('div')(({ theme }) => ({
+export const TextContainer = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_separator']),
+})<IBanner>(({ theme, _separator }) => ({
   marginTop: '8px',
-  width: '204px',
+  width: _separator ? 'auto' : '100%',
   color: theme.palette.text.primary,
   fontWeight: 500,
   lineHeight: '130%',
   letterSpacing: '0.32px',
+  [theme.breakpoints.down('laptop')]: {
+    width: '320px',
+  },
+  [theme.breakpoints.down('tablet')]: {
+    width: '200px',
+  },
+}));
+
+export const ButtonContainer = styled(Grid)(() => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
 }));

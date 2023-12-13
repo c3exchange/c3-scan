@@ -5,7 +5,7 @@ export const Container = styled(Grid)(({ theme }) => ({
   background: theme.palette.background.default,
   width: '100%',
   borderRadius: theme.spacing(1),
-  height: '304px',
+  height: '312px',
   fontSize: '12px',
 }));
 
@@ -35,6 +35,9 @@ export const AssetInfo = styled(Grid)(({ theme }) => ({
 export const ScrollableContent = styled(Grid)(() => ({
   overflowY: 'auto',
   maxHeight: 'calc(100% - 82px)',
+  '&::-webkit-scrollbar': {
+    width: '4px',
+  },
 }));
 export const Row = styled(Grid)(({ theme }) => ({
   height: '46px',

@@ -1,52 +1,34 @@
-import Grid from '@mui/material/Grid';
-import TooltipInfo from '../../../../components/TooltipInfo/TooltipInfo';
+import { useMemo } from 'react';
+import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { AssetHolding } from '../../../../interfaces/interfaces';
-import { formatNumber, getAssetIcon } from '../../../../utils';
-import * as S from './styles';
+import { IBorrow } from './interfaces';
+import { breakpoints } from '../../../../theme';
+import MobileTable from './Mobile/MobileTable';
+import DesktopTable from './Desktop/DesktopTable';
 
-interface IBorrow {
-  userPool: AssetHolding[];
-}
-const Borrow = ({ userPool }: IBorrow) => {
-  const borrows = userPool.filter((pool) => !pool.amount.isGreaterThanZero());
-  const totalBorrowed = borrows.reduce((acc, { value }) => acc + value, 0);
+const Borrow = (props: IBorrow) => {
+  const { userPool } = props;
+
+  const borrows: AssetHolding[] = userPool.filter(
+    (pool) => !pool.amount.isGreaterThanZero()
+  );
+  const isEmpty: boolean = borrows.length <= 0;
+  const totalBorrowed: number = borrows.reduce((acc, { value }) => acc + value, 0);
+
+  const windowSize = useWindowSize();
+  const isMobile = useMemo(
+    () => windowSize.width < breakpoints.desktop,
+    [windowSize.width]
+  );
+
   return (
-    <S.Container>
-      <S.Title>
-        Borrow Positions
-        <S.AccountValue>
-          ${formatNumber(totalBorrowed)}
-          <TooltipInfo message="The total sum of your C3  outstanding debts, including borrowed funds and accrued interest." />
-        </S.AccountValue>
-      </S.Title>
-      <S.AssetInfo container>
-        <Grid item xs={4}>
-          Asset
-        </Grid>
-        <Grid item xs={4}>
-          Utilization
-        </Grid>
-        <Grid item xs={4}>
-          Total supplied
-        </Grid>
-      </S.AssetInfo>
-      <S.ScrollableContent>
-        {borrows.map((asset) => (
-          <S.Row container key={asset.instrument.id}>
-            <S.AssetIconContainer item xs={4}>
-              <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
-              {asset.instrument.id}
-            </S.AssetIconContainer>
-            <Grid item xs={4} className="3">
-              {formatNumber(Number(asset.amount.toDecimal()))} {asset.instrument.id}
-            </Grid>
-            <Grid item xs={4}>
-              $ {formatNumber(asset.value)}
-            </Grid>
-          </S.Row>
-        ))}
-      </S.ScrollableContent>
-    </S.Container>
+    <>
+      {isMobile ? (
+        <MobileTable borrows={borrows} isEmpty={isEmpty} totalBorrowed={totalBorrowed} />
+      ) : (
+        <DesktopTable borrows={borrows} isEmpty={isEmpty} totalBorrowed={totalBorrowed} />
+      )}
+    </>
   );
 };
 

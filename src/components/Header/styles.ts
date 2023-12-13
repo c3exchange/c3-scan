@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
 import { Link } from 'react-router-dom';
 import { createShouldForwardProp } from '../../utils';
+import { hexToRgba } from '../../utils/styles';
 
 interface ILink {
   _active: boolean;
@@ -10,17 +11,17 @@ interface ILink {
 export const C3ScanLogoContainer = styled('div')(() => ({
   cursor: 'pointer',
 }));
-export const Container = styled(Grid)(() => ({
+export const Container = styled(Grid)(({ theme }) => ({
+  justifyContent: 'space-between',
+  alignItems: 'center',
   padding: '16px 74px 32px 74px',
   fontFamily: 'Manrope',
-}));
-export const LinksContainer = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    display: 'none',
+  [theme.breakpoints.down('mediumDesktop')]: {
+    padding: '15px 15px 25px 15px',
   },
 }));
-export const HamburgerContainer = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.up('sm')]: {
+export const LinksContainer = styled(Grid)(({ theme }) => ({
+  [theme.breakpoints.down('desktop')]: {
     display: 'none',
   },
 }));
@@ -42,6 +43,7 @@ export const TestnetBtn = styled('div')(({ theme }) => ({
   height: '37px',
   width: '98px',
   color: theme.palette.primary.contrastText,
+  backgroundColor: hexToRgba('#00C076', 10),
   marginLeft: '12px',
   display: 'flex',
   alignItems: 'center',

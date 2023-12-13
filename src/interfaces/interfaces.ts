@@ -27,10 +27,10 @@ export interface DecodedMessage {
   expiresOn?: string;
   account?: string;
   nonce?: number;
-  sellSlotId?: string;
+  sellAssetId?: string;
   sellAmount?: number;
   maxBorrow?: number;
-  buySlotId?: string;
+  buyAssetId?: string;
   buyAmount?: number;
   maxRepay?: number;
 }
@@ -44,4 +44,17 @@ export enum OnChainRequestOp {
   Liquidate = 4,
   AccountMove = 5,
   Settle = 6,
+}
+
+// mui overrides
+declare module '@mui/material/styles' {
+  // breakpoints
+  interface BreakpointOverrides {
+    mobile: true;
+    tablet: true;
+    laptop: true;
+    desktop: true;
+    mediumDesktop: true;
+    largeDesktop: true;
+  }
 }

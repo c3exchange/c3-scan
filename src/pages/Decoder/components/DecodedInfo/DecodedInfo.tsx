@@ -16,7 +16,7 @@ const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
           const label = keyToLabelMapping[key as keyof DecodedMessage] || key;
           return (
             <S.Row justifyContent="space-between">
-              <Grid item>{label}: </Grid>
+              <Grid item>{label}:</Grid>
               <Grid item>{value}</Grid>
             </S.Row>
           );

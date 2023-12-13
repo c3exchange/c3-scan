@@ -3,8 +3,8 @@ import MUIButton from '@mui/material/Button';
 import { CustomButtonProps } from './CustomButton';
 
 export const Button = styled(MUIButton)<CustomButtonProps>(
-  ({ theme, height, disabled }) => ({
-    width: '100%',
+  ({ theme, width, height, disabled }) => ({
+    width: width || '100%',
     height: height || '46px',
     borderRadius: theme.spacing(1),
     textTransform: 'none',

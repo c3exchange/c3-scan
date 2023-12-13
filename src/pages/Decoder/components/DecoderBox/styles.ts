@@ -7,11 +7,14 @@ export const Container = styled(Grid)(({ theme }) => ({
   background: theme.palette.background.default,
   width: '100%',
   borderRadius: 8,
-  height: '452px',
+  minHeight: '452px',
   padding: '32px',
+  [theme.breakpoints.down('desktop')]: {
+    padding: '32px 15px',
+  },
 }));
 
-export const Title = styled(Grid)(() => ({
+export const Title = styled(Grid)(({ theme }) => ({
   fontFamily: 'Bricolage Grotesque',
   fontSize: '24px',
   fontWeight: 500,

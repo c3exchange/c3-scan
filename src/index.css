@@ -7,6 +7,10 @@ body {
   color: #fff;
 }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
 @font-face {
   font-family: 'Manrope';
   src:
@@ -26,7 +30,40 @@ body {
 }
 
 .content {
+  display: flex;
+  justify-content: center;
   padding-bottom: 92px;
   padding-left: 110px;
   padding-right: 110px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6b6b6b;
+  border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b6b6b;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }

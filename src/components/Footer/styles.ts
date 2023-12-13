@@ -13,6 +13,9 @@ export const Container = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  [theme.breakpoints.down('laptop')]: {
+    padding: '0px 15px',
+  },
 }));
 
 export const Documentation = styled(Grid)(() => ({
