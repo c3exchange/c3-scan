@@ -39,7 +39,7 @@ const Decoder = () => {
     <S.Container>
       <S.Title>C3 Base64 Decoder</S.Title>
       <Grid item mobile={12}>
-        <Grid container columnSpacing={4}>
+        <Grid container spacing={4}>
           <Grid item mobile={12} mediumDesktop={7} largeDesktop={6}>
             <DecoderBox message={message} onChange={setMessage} onDecode={onDecode} />
           </Grid>
