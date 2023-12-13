@@ -37,10 +37,6 @@ const Explorer = () => {
 
   const onClear = () => {
     setAddress('');
-  };
-
-  const onClearAll = () => {
-    setAddress('');
     setC3Address('');
   };
 
@@ -55,12 +51,12 @@ const Explorer = () => {
 
   const path = useMemo(() => {
     const values: IPath[] = [
-      { text: 'Explorer', route: AppRoutes.EXPLORER, onClick: () => onClearAll() },
-      { text: 'C3 Overview', route: AppRoutes.EXPLORER, onClick: () => onClearAll() },
+      { text: 'Explorer', route: AppRoutes.EXPLORER, onClick: () => onClear() },
+      { text: 'C3 Overview', route: AppRoutes.EXPLORER, onClick: () => onClear() },
     ];
     if (C3Address) values.push({ text: 'Search result' });
     return values;
-  }, [C3Address, onClearAll]);
+  }, [C3Address, onClear]);
 
   return (
     <S.Container container>

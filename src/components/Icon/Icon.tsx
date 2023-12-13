@@ -16,6 +16,7 @@ import { ReactComponent as Info } from '../../assets/icons/info-tooltip.svg';
 import { ReactComponent as InfoFilled } from '../../assets/icons/info-tooltip-filled.svg';
 import { ReactComponent as EmptyTable } from '../../assets/icons/empty-table.svg';
 import { ReactComponent as EmptyEarnTable } from '../../assets/icons/empty-earn-table.svg';
+import { ReactComponent as EmptyInfoAddress } from '../../assets/icons/empty-info-address.svg';
 import { ReactComponent as CloseHamburger } from '../../assets/icons/close-hamburger.svg';
 
 export type IconName =
@@ -37,7 +38,8 @@ export type IconName =
   | 'infoFilled'
   | 'emptyTable'
   | 'emptyEarnTable'
-  | 'closeHamburger';
+  | 'closeHamburger'
+  | 'emptyInfoAddress';
 
 interface IIcon {
   name: IconName;
@@ -69,6 +71,7 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     emptyTable: <EmptyTable {...childProps} />,
     emptyEarnTable: <EmptyEarnTable {...childProps} />,
     closeHamburger: <CloseHamburger {...childProps} />,
+    emptyInfoAddress: <EmptyInfoAddress {...childProps} />,
   }[name];
 };
 

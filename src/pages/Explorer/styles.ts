@@ -59,3 +59,11 @@ export const Background = styled(Grid)(({ theme }) => ({
     display: 'none',
   },
 }));
+
+export const EmptyContainer = styled(Grid)(({ theme }) => ({
+  fontFamily: 'Manrope',
+  maxHeight: '350px',
+  minHeight: '350px',
+  borderRadius: theme.spacing(1),
+  background: theme.palette.background.default,
+}));
