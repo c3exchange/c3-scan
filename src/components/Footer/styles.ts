@@ -28,8 +28,16 @@ export const Documentation = styled(Grid)(() => ({
 }));
 
 export const GithubContainer = styled('span')(() => ({
-  marginRight: 10,
+  // marginRight: 10,
 }));
 export const Separator = styled('span')(() => ({
   fontSize: 32,
+}));
+export const Title = styled('span')(({ theme }) => ({
+  color: theme.palette.secondary.main,
+  marginLeft: 8,
+}));
+export const SubTitle = styled('span')(() => ({
+  fontWeight: 'bold',
+  marginLeft: 8,
 }));
