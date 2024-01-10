@@ -31,7 +31,7 @@ const Explorer = () => {
   const [address, setAddress] = useState<string>('');
   const [C3Address, setC3Address] = useState<string>('');
 
-  const { holdingAssets, isLoading } = useGetC3HoldingAssets();
+  const { data: holdingAssets, isLoading } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
 

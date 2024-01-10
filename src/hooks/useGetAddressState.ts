@@ -8,6 +8,7 @@ import {
   decodeAccountId,
   parseCoreUserState,
 } from '@c3exchange/common';
+import { usePrices } from './usePrices';
 /**
  * Retrieves both cash and principal positions for a user's account.
  * @param {CoreUserState} userPositions - User positions mapping slot IDs to position details.
@@ -16,20 +17,20 @@ import {
  */
 const retrieveNonZeroPositions = (
   userPositions: CoreUserState,
-  serverInstruments: ServerInstrument[],
-  assetPrices: Price[],
-  assetHoldings: AssetHolding[]
+  assetHoldings: AssetHolding[],
+  assetPrices?: Price[],
+  serverInstruments?: ServerInstrument[]
 ): { cash: AssetHolding[]; pool: AssetHolding[] } => {
   const cashAccounts: AssetHolding[] = [...assetHoldings];
   const principalAccounts = [];
   for (const [slotId, positionDetail] of userPositions.entries()) {
-    const matchingInstrument = serverInstruments.find(
+    const matchingInstrument = serverInstruments?.find(
       (instrument) => instrument.slotId === slotId
     );
 
     if (matchingInstrument) {
       const instrumentPrice =
-        assetPrices.find((price) => price.id === matchingInstrument?.instrument.id)
+        assetPrices?.find((price) => price.id === matchingInstrument?.instrument.id)
           ?.price || 0;
       const cashAmount = positionDetail.cash;
       const principalAmount = positionDetail.principal;
@@ -70,11 +71,11 @@ const retrieveNonZeroPositions = (
 
 export const useGetAddressState = (
   address: string,
-  onChainC3State: ServerInstrument[]
+  onChainC3State?: ServerInstrument[]
 ) => {
   const { coreAppId, algoClient } = useGlobalContext();
-  const { assetPrices, assetHoldings } = useGlobalContext();
-
+  const { assetHoldings } = useGlobalContext();
+  const { data: assetPrices } = usePrices();
   const [userCash, setUserCash] = useState<AssetHolding[]>(assetHoldings);
   const [userPool, setUserPool] = useState<AssetHolding[]>([]);
 
@@ -87,9 +88,9 @@ export const useGetAddressState = (
       const parsedUserData = await parseCoreUserState(rawCoreAccountState.value);
       const { cash, pool } = await retrieveNonZeroPositions(
         parsedUserData,
-        onChainC3State,
+        assetHoldings,
         assetPrices,
-        assetHoldings
+        onChainC3State
       );
       setUserCash(cash);
       setUserPool(pool);

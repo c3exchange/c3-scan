@@ -9,12 +9,13 @@ import {
   parseCoreInstruments,
 } from '@c3exchange/common';
 
-export const useGetOnChainC3State = (assets: Holding[]) => {
+export const useGetOnChainC3State = (assets?: Holding[]) => {
   const [onChainC3State, setOnChainC3State] = useState<ServerInstrument[]>([]);
   const { coreAppId, algoClient, algoIndexer } = useGlobalContext();
   const instrumentBox = useMemo(() => new Uint8Array(Buffer.from('i')), []);
 
   const searchOnChainC3State = async (appId: number) => {
+    if (!assets) return;
     try {
       const res = await algoClient.getApplicationBoxByName(appId, instrumentBox).do();
       const parsedInstruments = await parseCoreInstruments(
@@ -37,7 +38,7 @@ export const useGetOnChainC3State = (assets: Holding[]) => {
   };
 
   useEffect(() => {
-    if (!coreAppId || !assets.length) return;
+    if (!coreAppId || !assets?.length) return;
     searchOnChainC3State(coreAppId);
   }, [coreAppId, assets]);
 
