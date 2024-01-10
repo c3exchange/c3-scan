@@ -27,10 +27,11 @@ const Decoder = () => {
 
   const [message, setMessage] = useState('');
   const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
-  const { holdingAssets } = useGetC3HoldingAssets();
+  const { data: holdingAssets } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
 
   const onDecode = () => {
+    if (!onChainC3State) return;
     const messageDecoded = decodeMessage(message, onChainC3State);
     if (messageDecoded) setDecodedMessage(messageDecoded);
   };

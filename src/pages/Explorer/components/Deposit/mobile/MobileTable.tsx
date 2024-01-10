@@ -55,7 +55,7 @@ const MobileTable = (props: IDepositTable) => {
                 </S.Row>
               </S.Card>
             ))
-          : c3Assets.map((asset) => (
+          : c3Assets?.map((asset) => (
               <S.Card container key={asset.instrument.id}>
                 <S.Row container justifyContent="space-between">
                   <S.Item item _isTitle>
@@ -83,7 +83,7 @@ const MobileTable = (props: IDepositTable) => {
               </S.Card>
             ))}
       </S.ScrollableContent>
-      {!C3Address && (
+      {!C3Address && totalValueLocked && (
         <S.Footer>
           <S.Row container justifyContent="space-between">
             <S.Item item _isTitle>

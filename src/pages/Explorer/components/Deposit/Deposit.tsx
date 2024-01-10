@@ -16,7 +16,7 @@ const Deposit = (props: IDeposit) => {
     [windowSize.width]
   );
 
-  const totalValueLocked = c3Assets.reduce((acc, { value }) => acc + value, 0);
+  const totalValueLocked = c3Assets?.reduce((acc, { value }) => acc + value, 0);
   const totalAccountValue = userCash.reduce((acc, { value }) => acc + value, 0);
 
   return (

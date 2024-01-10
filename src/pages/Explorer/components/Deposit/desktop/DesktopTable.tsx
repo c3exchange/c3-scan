@@ -54,7 +54,7 @@ const DesktopTable = (props: IDepositTable) => {
                 </Grid>
               </S.Row>
             ))
-          : c3Assets.map((asset) => (
+          : c3Assets?.map((asset) => (
               <S.Row container key={asset.instrument.id}>
                 <S.AssetIconContainer item desktop={3}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
@@ -69,7 +69,7 @@ const DesktopTable = (props: IDepositTable) => {
               </S.Row>
             ))}
       </S.ScrollableContent>
-      {!C3Address && (
+      {!C3Address && totalValueLocked && (
         <S.Footer>
           <Grid item desktop={8}></Grid>
           <S.TVLContainer item desktop={4}>
