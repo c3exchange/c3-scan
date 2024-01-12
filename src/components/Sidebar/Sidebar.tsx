@@ -86,7 +86,7 @@ const Sidebar = () => {
                   name="discord"
                   height={20}
                   width={20}
-                  onClick={() => window.open('https://discord.com/invite/CDUc9yW4bF')}
+                  onClick={() => window.open('https://discord.gg/BXDqaQyVQK')}
                 />
               </Grid>
             </S.SocialLinks>

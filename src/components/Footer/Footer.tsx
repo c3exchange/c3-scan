@@ -28,7 +28,7 @@ const Footer = () => {
           name="discord"
           height={24}
           width={24}
-          onClick={() => window.open('https://discord.com/invite/CDUc9yW4bF')}
+          onClick={() => window.open('https://discord.gg/BXDqaQyVQK')}
         />
       </Grid>
     </S.Container>
