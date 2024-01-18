@@ -16,6 +16,16 @@ export const MarginPoolContainer = styled(Grid)(({ theme }) => ({
 export const AddressLabel = styled('div')(({ theme }) => ({
   color: theme.palette.secondary.main,
   marginRight: '2px',
+  display: 'flex',
+  alignItems: 'center',
+}));
+
+export const Copy = styled('div')(({ theme }) => ({
+  cursor: 'pointer',
+  color: theme.palette.secondary.main,
+  display: 'flex',
+  alignItems: 'center',
+  marginLeft: '8px',
 }));
 
 export const ShowAddressContainer = styled(Grid)(({ theme }) => ({

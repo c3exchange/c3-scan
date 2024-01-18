@@ -37,7 +37,7 @@ const Hero = ({ address, hasC3Address, onSearch, onClear, onChangeAddress }: IHe
                 value={address}
                 onChange={(ev) => onChangeAddress(ev.target.value)}
                 onClear={onClear}
-                placeholder="Search by address"
+                placeholder="Search by address or account id"
                 {...(isMobile && {
                   startAdornment: (
                     <S.SearchStartAdornment

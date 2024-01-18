@@ -19,6 +19,7 @@ import { ReactComponent as EmptyTable } from '../../assets/icons/empty-table.svg
 import { ReactComponent as EmptyEarnTable } from '../../assets/icons/empty-earn-table.svg';
 import { ReactComponent as EmptyInfoAddress } from '../../assets/icons/empty-info-address.svg';
 import { ReactComponent as CloseHamburger } from '../../assets/icons/close-hamburger.svg';
+import { ReactComponent as Copy } from '../../assets/icons/copy.svg';
 
 export type IconName =
   | 'hamburger'
@@ -41,6 +42,7 @@ export type IconName =
   | 'emptyTable'
   | 'emptyEarnTable'
   | 'closeHamburger'
+  | 'copy'
   | 'emptyInfoAddress';
 
 interface IIcon {
@@ -75,6 +77,7 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     emptyEarnTable: <EmptyEarnTable {...childProps} />,
     closeHamburger: <CloseHamburger {...childProps} />,
     emptyInfoAddress: <EmptyInfoAddress {...childProps} />,
+    copy: <Copy {...childProps} />,
   }[name];
 };
 

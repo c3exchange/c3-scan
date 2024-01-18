@@ -9,13 +9,15 @@ import Earn from './components/Earn/Earn';
 import Path, { IPath } from '../../components/Path/Path';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
-import { getC3Address } from '../../utils';
+import { getC3Address, truncateText } from '../../utils';
 import { useGetAddressState } from '../../hooks/useGetAddressState';
 import { AppRoutes } from '../../routes/routes';
 import { breakpoints } from '../../theme';
 import { useWindowSize } from '../../hooks/useWindowSize';
+import TooltipInfo from '../../components/TooltipInfo/TooltipInfo';
 
 import * as S from './styles';
+import Icon from '../../components/Icon/Icon';
 
 const Explorer = () => {
   const windowSize = useWindowSize();
@@ -38,6 +40,10 @@ const Explorer = () => {
   const onClear = () => {
     setAddress('');
     setC3Address('');
+  };
+
+  const copy = async (address: string) => {
+    await navigator.clipboard.writeText(address || '');
   };
 
   const onSearch = () => {
@@ -72,8 +78,14 @@ const Explorer = () => {
       </Grid>
       {C3Address ? (
         <S.ShowAddressContainer item mobile={12}>
-          <S.AddressLabel>Address:</S.AddressLabel>
-          {address}
+          <S.AddressLabel>
+            Your Primary C3 Account ID:
+            <TooltipInfo message="The Account Id of your Primary Account, it is used in the api path parameters when trading on behalf of the primary account" />
+          </S.AddressLabel>
+          {truncateText(C3Address, [9, 4])}
+          <S.Copy onClick={() => copy(C3Address)}>
+            <Icon name="copy" width={16} height={16} />
+          </S.Copy>
         </S.ShowAddressContainer>
       ) : (
         <S.Subtitle>C3 Overview</S.Subtitle>

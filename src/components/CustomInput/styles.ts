@@ -33,6 +33,7 @@ export const EndAdornment = styled('div')(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'pointer',
+  marginLeft: '5px',
 }));
 
 export const StartAdornment = styled('div')(() => ({

@@ -33,3 +33,9 @@ export const formatNumber = new Intl.NumberFormat('en-US', {
 
 export const createShouldForwardProp = (propsToOmit: string[]) => (prop: PropertyKey) =>
   defaultShouldForwardProp(prop) && !propsToOmit.includes(String(prop));
+
+export const truncateText = (text = '', [start, end]: number[] = [6, 6]) => {
+  const head = text.slice(0, start);
+  const tail = text.slice(-1 * end, text.length);
+  return text.length > start + end ? [head, tail].join('...') : text;
+};
