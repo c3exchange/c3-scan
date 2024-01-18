@@ -6,6 +6,7 @@ enum Asset {
   ETH = 'ETH',
   ALGO = 'ALGO',
   AVAX = 'AVAX',
+  ARB = 'ARB',
 }
 interface Patterns {
   [key: string]: RegExp;
@@ -18,6 +19,7 @@ export const getAssetIcon = (unitName?: string, size = 24) => {
     [Asset.ETH]: new RegExp(Asset.ETH, 'i'),
     [Asset.ALGO]: new RegExp(Asset.ALGO, 'i'),
     [Asset.AVAX]: new RegExp(Asset.AVAX, 'i'),
+    [Asset.ARB]: new RegExp(Asset.ARB, 'i'),
   };
   for (const asset in patterns) {
     regex = patterns[asset];
@@ -34,6 +36,8 @@ export const getAssetIcon = (unitName?: string, size = 24) => {
           return <Icon name="algo" height={size} width={size} />;
         case 'AVAX':
           return <Icon name="avax" height={size} width={size} />;
+        case 'ARB':
+          return <Icon name="arbitrum" height={size} width={size} />;
       }
     }
   }
