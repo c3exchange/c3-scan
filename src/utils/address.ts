@@ -5,7 +5,6 @@ import {
   encodeAccountId,
   decodeAccountId,
   C3_ACCOUNT_ID_LENGTH,
-  isValidAccountId,
   isValidAddress,
 } from '@c3exchange/common';
 
