@@ -80,7 +80,7 @@ const Explorer = () => {
         <S.ShowAddressContainer item mobile={12}>
           <S.AddressLabel>
             Your Primary C3 Account ID:
-            <TooltipInfo message="The Account Id of your Primary Account, it is used in the api path parameters when trading on behalf of the primary account" />
+            <TooltipInfo message="This is the AccountId used in the API interface." />
           </S.AddressLabel>
           {truncateText(C3Address, [9, 4])}
           <S.Copy onClick={() => copy(C3Address)}>
