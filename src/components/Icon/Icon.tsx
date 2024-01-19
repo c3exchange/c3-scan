@@ -20,6 +20,8 @@ import { ReactComponent as EmptyEarnTable } from '../../assets/icons/empty-earn-
 import { ReactComponent as EmptyInfoAddress } from '../../assets/icons/empty-info-address.svg';
 import { ReactComponent as CloseHamburger } from '../../assets/icons/close-hamburger.svg';
 import { ReactComponent as Copy } from '../../assets/icons/copy.svg';
+import { ReactComponent as ToastSuccess } from '../../assets/icons/toastSuccess.svg';
+import { ReactComponent as ToastError } from '../../assets/icons/toastError.svg';
 
 export type IconName =
   | 'hamburger'
@@ -43,6 +45,8 @@ export type IconName =
   | 'emptyEarnTable'
   | 'closeHamburger'
   | 'copy'
+  | 'toastSuccess'
+  | 'toastError'
   | 'emptyInfoAddress';
 
 interface IIcon {
@@ -78,6 +82,8 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     closeHamburger: <CloseHamburger {...childProps} />,
     emptyInfoAddress: <EmptyInfoAddress {...childProps} />,
     copy: <Copy {...childProps} />,
+    toastSuccess: <ToastSuccess {...childProps} />,
+    toastError: <ToastError {...childProps} />,
   }[name];
 };
 

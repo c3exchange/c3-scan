@@ -4,6 +4,7 @@ import { GlobalContextProvider } from './contexts/GlobalContext';
 import { useEffect, useState } from 'react';
 import PersistQueryParam from './routes/PersistQueryParam';
 import ReactGA from 'react-ga4';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [shouldPersistEnv, setShouldPersistEnv] = useState(false);
@@ -24,6 +25,7 @@ function App() {
           </Routes>
         </Layout>
       </GlobalContextProvider>
+      <ToastContainer />
     </Router>
   );
 }
