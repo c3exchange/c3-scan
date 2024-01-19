@@ -3,6 +3,10 @@ import {
   SUPPORTED_CHAIN_IDS,
   UserAddress,
   encodeAccountId,
+  decodeAccountId,
+  C3_ACCOUNT_ID_LENGTH,
+  isValidAccountId,
+  isValidAddress,
 } from '@c3exchange/common';
 
 const getChainUtilityByAddress = (address: UserAddress) => {
@@ -22,6 +26,13 @@ export const getPublicKeyByAddress = (address: UserAddress): Uint8Array => {
 };
 
 export const getC3Address = (address: UserAddress): string => {
-  const publicKey = getPublicKeyByAddress(address);
-  return encodeAccountId(publicKey);
+  if (address.length === C3_ACCOUNT_ID_LENGTH) {
+    const publicKey = decodeAccountId(address);
+    return encodeAccountId(publicKey);
+  }
+  if (isValidAddress(address)) {
+    const publicKey = getPublicKeyByAddress(address);
+    return encodeAccountId(publicKey);
+  }
+  throw new Error(`Invalid address: ${address}`);
 };

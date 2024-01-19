@@ -3,6 +3,7 @@ import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
 import { getAssetIcon, formatNumber } from '../../../../../utils';
 import Loader from '../../../../../components/Loader/Loader';
 import { IDepositTable } from '../interfaces';
+import Formatter from '../../../../../utils/formatter';
 
 import * as S from './styles';
 
@@ -47,7 +48,7 @@ const DesktopTable = (props: IDepositTable) => {
                   {asset.instrument.id}
                 </S.AssetIconContainer>
                 <Grid item desktop={5}>
-                  {formatNumber(Number(asset.amount.toDecimal()))} {asset.instrument.id}
+                  {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}
                 </Grid>
                 <Grid item desktop={4}>
                   $ {formatNumber(asset.value)}
