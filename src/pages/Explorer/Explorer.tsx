@@ -21,6 +21,9 @@ import useCopy from '../../hooks/useCopy';
 import * as S from './styles';
 
 const Explorer = () => {
+  const [address, setAddress] = useState<string>('');
+  const [C3Address, setC3Address] = useState<string>('');
+  const [wrongAddress, setWrongAddress] = useState<boolean>(false);
   const { copy } = useCopy();
   const windowSize = useWindowSize();
   const isMediumDesktop = useMemo(
@@ -31,10 +34,6 @@ const Explorer = () => {
     () => windowSize.width < breakpoints.laptop,
     [windowSize.width]
   );
-
-  const [address, setAddress] = useState<string>('');
-  const [C3Address, setC3Address] = useState<string>('');
-
   const { data: holdingAssets, isLoading } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
@@ -42,6 +41,7 @@ const Explorer = () => {
   const onClear = () => {
     setAddress('');
     setC3Address('');
+    setWrongAddress(false);
   };
 
   const onCopy = async (address: string) => {
@@ -52,7 +52,9 @@ const Explorer = () => {
     try {
       const c3Address = getC3Address(address);
       setC3Address(c3Address);
+      setWrongAddress(false);
     } catch (error) {
+      setWrongAddress(true);
       console.error('Invalid address: ', address, error);
     }
   };
@@ -71,6 +73,7 @@ const Explorer = () => {
       <Grid item mobile={12}>
         <Path values={path} />
         <Hero
+          wrongAddress={wrongAddress}
           address={address}
           onSearch={onSearch}
           onClear={onClear}

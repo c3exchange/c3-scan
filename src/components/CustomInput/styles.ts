@@ -3,22 +3,26 @@ import TextField from '@mui/material/TextField';
 import { createShouldForwardProp } from '../../utils';
 interface ICustomInput {
   onClear?: () => void;
+  error?: boolean;
 }
 export const Input = styled(TextField, {
   shouldForwardProp: createShouldForwardProp(['onClear']),
-})<ICustomInput>(({ theme }) => ({
+})<ICustomInput>(({ theme, error }) => ({
   width: '100%',
   borderRadius: theme.spacing(1),
-  border: `2px solid ${theme.palette.text.disabled}`,
+  border: `2px solid ${error ? theme.palette.error.main : theme.palette.text.disabled}`,
   backgroundColor: theme.palette.primary.dark,
   '&:hover': {
-    border: `2px solid ${theme.palette.text.disabled}`,
+    border: `2px solid ${error ? theme.palette.error.main : theme.palette.text.disabled}`,
   },
   '& .MuiOutlinedInput-root': {
     '&:hover fieldset': {
       border: 'none',
     },
     '&.Mui-focused fieldset': {
+      border: 'none',
+    },
+    '&.Mui-error fieldset': {
       border: 'none',
     },
   },

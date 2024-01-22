@@ -11,11 +11,19 @@ import * as S from './styles';
 interface IHero {
   address: string;
   hasC3Address: boolean;
+  wrongAddress: boolean;
   onSearch: () => void;
   onChangeAddress: (address: string) => void;
   onClear: () => void;
 }
-const Hero = ({ address, hasC3Address, onSearch, onClear, onChangeAddress }: IHero) => {
+const Hero = ({
+  address,
+  hasC3Address,
+  onSearch,
+  onClear,
+  onChangeAddress,
+  wrongAddress,
+}: IHero) => {
   const windowSize = useWindowSize();
   const isMobile = useMemo(
     () => windowSize.width < breakpoints.desktop,
@@ -38,6 +46,7 @@ const Hero = ({ address, hasC3Address, onSearch, onClear, onChangeAddress }: IHe
                 onChange={(ev) => onChangeAddress(ev.target.value)}
                 onClear={onClear}
                 placeholder="Search by address or account id"
+                error={wrongAddress}
                 {...(isMobile && {
                   startAdornment: (
                     <S.SearchStartAdornment
@@ -49,12 +58,17 @@ const Hero = ({ address, hasC3Address, onSearch, onClear, onChangeAddress }: IHe
                   ),
                 })}
               />
+              {wrongAddress && <S.Error>Invalid Address</S.Error>}
             </S.InputContainer>
           </Grid>
           {!isMobile && (
             <Grid item desktop>
               <S.SearchContainer>
-                <CustomButton height="56px" onClick={onSearch} disabled={!address.length}>
+                <CustomButton
+                  height="56px"
+                  onClick={onSearch}
+                  disabled={!address.length || wrongAddress}
+                >
                   <S.SearchBtn>
                     <Icon name="search" width={16} height={16} />
                     <S.SearchTxt>Search</S.SearchTxt>
