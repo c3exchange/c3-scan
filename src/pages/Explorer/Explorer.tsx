@@ -15,11 +15,13 @@ import { AppRoutes } from '../../routes/routes';
 import { breakpoints } from '../../theme';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import TooltipInfo from '../../components/TooltipInfo/TooltipInfo';
+import Icon from '../../components/Icon/Icon';
+import useCopy from '../../hooks/useCopy';
 
 import * as S from './styles';
-import Icon from '../../components/Icon/Icon';
 
 const Explorer = () => {
+  const { copy } = useCopy();
   const windowSize = useWindowSize();
   const isMediumDesktop = useMemo(
     () => windowSize.width < breakpoints.mediumDesktop,
@@ -42,8 +44,8 @@ const Explorer = () => {
     setC3Address('');
   };
 
-  const copy = async (address: string) => {
-    await navigator.clipboard.writeText(address || '');
+  const onCopy = async (address: string) => {
+    copy(address);
   };
 
   const onSearch = () => {
@@ -83,7 +85,7 @@ const Explorer = () => {
             <TooltipInfo message="This is the AccountId used in the API interface." />
           </S.AddressLabel>
           {truncateText(C3Address, [9, 4])}
-          <S.Copy onClick={() => copy(C3Address)}>
+          <S.Copy onClick={() => onCopy(C3Address)}>
             <Icon name="copy" width={16} height={16} />
           </S.Copy>
         </S.ShowAddressContainer>

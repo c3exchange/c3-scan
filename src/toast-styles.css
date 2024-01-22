@@ -1,0 +1,46 @@
+.Toastify__toast-container {
+  top: 70px;
+}
+
+.Toastify__toast {
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.Toastify__toast-body {
+  font-size: 0.75rem;
+  color: #bababa;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--success {
+  background: #151519;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--error {
+  background: #151519;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--warning {
+  background: #151519;
+}
+
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--success {
+  background: #1acd77;
+}
+
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--error {
+  background: #fc3044;
+}
+
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--warning {
+  background: #f0a200;
+}
+
+.Toastify__toast-icon {
+  align-self: flex-start;
+  width: 24px;
+}
+
+.Toastify__close-button {
+  opacity: 1;
+}
