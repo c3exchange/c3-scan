@@ -10,6 +10,7 @@ interface ICustomInputProps {
 const CustomInput: React.FC<ICustomInputProps & MUITextFieldProps> = (props) => {
   return (
     <S.Input
+      error={props.error}
       InputProps={{
         endAdornment: props.onClear && !!props.value && (
           <S.EndAdornment onClick={() => props.onClear!()}>
