@@ -1,4 +1,5 @@
 import { ReactComponent as Arbitrum } from '../../assets/icons/arbitrum.svg';
+import { ReactComponent as BNB } from '../../assets/icons/bnb.svg';
 import { ReactComponent as Avax } from '../../assets/icons/avax.svg';
 import { ReactComponent as Usdc } from '../../assets/icons/usdc.svg';
 import { ReactComponent as Bitcoin } from '../../assets/icons/wbtc.svg';
@@ -27,6 +28,7 @@ export type IconName =
   | 'hamburger'
   | 'arbitrum'
   | 'avax'
+  | 'bnb'
   | 'usdc'
   | 'algo'
   | 'reddit'
@@ -63,6 +65,7 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     hamburger: <Hamburger {...childProps} />,
     arbitrum: <Arbitrum {...childProps} />,
     avax: <Avax {...childProps} />,
+    bnb: <BNB {...childProps} />,
     usdc: <Usdc {...childProps} />,
     reddit: <Reddit {...childProps} />,
     x: <X {...childProps} />,
