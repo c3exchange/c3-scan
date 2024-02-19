@@ -4,6 +4,8 @@ interface IMarginPool {
   onChainAppState?: ServerInstrument[];
 }
 
-interface IMarginPoolTable extends IMarginPool {}
+interface IMarginPoolTable extends IMarginPool {
+  getValue: (instrument: string, amount: number) => number;
+}
 
 export type { IMarginPool, IMarginPoolTable };

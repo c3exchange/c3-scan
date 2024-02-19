@@ -8,7 +8,7 @@ import { IMarginPoolTable } from '../interfaces';
 import * as S from './styles';
 
 const DesktopTable = (props: IMarginPoolTable) => {
-  const { onChainAppState } = props;
+  const { onChainAppState, getValue } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -21,12 +21,36 @@ const DesktopTable = (props: IMarginPoolTable) => {
           <TooltipInfo message="The percentage of the total supplied asset that's already been lent out" />
         </Grid>
         <Grid item desktop={3} display="flex">
-          Total Supplied
-          <TooltipInfo message="Total amount of the supplied asset currently on the C3 lending market" />
+          <S.ValorizedCompoundColumn container>
+            <Grid item display="flex">
+              Total Supplied
+              <TooltipInfo message="Total amount of the supplied asset currently on the C3 lending market" />
+            </Grid>
+            <S.ValorizedTitle container>
+              <Grid item desktop={6} display="flex">
+                Amount
+              </Grid>
+              <Grid item desktop={6} display="flex">
+                Value
+              </Grid>
+            </S.ValorizedTitle>
+          </S.ValorizedCompoundColumn>
         </Grid>
         <Grid item desktop={3} display="flex">
-          Total Borrowed
-          <TooltipInfo message="The total amount of the asset that's already being borrowed on the C3 lending market." />
+          <S.ValorizedCompoundColumn container>
+            <Grid item display="flex">
+              Total Borrowed
+              <TooltipInfo message="The total amount of the asset that's already being borrowed on the C3 lending market." />
+            </Grid>
+            <S.ValorizedTitle container>
+              <Grid item desktop={6} display="flex">
+                Amount
+              </Grid>
+              <Grid item desktop={6} display="flex">
+                Value
+              </Grid>
+            </S.ValorizedTitle>
+          </S.ValorizedCompoundColumn>
         </Grid>
       </S.AssetInfo>
       <S.ScrollableContent>
@@ -56,10 +80,24 @@ const DesktopTable = (props: IMarginPoolTable) => {
                 {formatNumber(utilizationRate)} %
               </Grid>
               <Grid item desktop={3}>
-                {formatNumber(liquidity)}
+                <S.ValorizedInfoContainer container>
+                  <Grid item desktop={6} display="flex">
+                    {formatNumber(liquidity)}
+                  </Grid>
+                  <Grid item desktop={6} display="flex">
+                    $ {formatNumber(getValue(serverInstrument.instrument.id, liquidity))}
+                  </Grid>
+                </S.ValorizedInfoContainer>
               </Grid>
               <Grid item desktop={3}>
-                {formatNumber(borrowed)}
+                <S.ValorizedInfoContainer container>
+                  <Grid item desktop={6} display="flex">
+                    {formatNumber(borrowed)}
+                  </Grid>
+                  <Grid item desktop={6} display="flex">
+                    $ {formatNumber(getValue(serverInstrument.instrument.id, borrowed))}
+                  </Grid>
+                </S.ValorizedInfoContainer>
               </Grid>
             </S.Row>
           );

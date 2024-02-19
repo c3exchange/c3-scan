@@ -7,7 +7,7 @@ import { IMarginPoolTable } from '../interfaces';
 import * as S from './styles';
 
 const MobileTable = (props: IMarginPoolTable) => {
-  const { onChainAppState } = props;
+  const { onChainAppState, getValue } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -57,10 +57,26 @@ const MobileTable = (props: IMarginPoolTable) => {
               </S.Row>
               <S.Row container justifyContent="space-between">
                 <S.Item item gap="4px" _isTitle>
+                  Total Supplied Value
+                </S.Item>
+                <S.Item item>
+                  $ {formatNumber(getValue(serverInstrument.instrument.id, liquidity))}
+                </S.Item>
+              </S.Row>
+              <S.Row container justifyContent="space-between">
+                <S.Item item gap="4px" _isTitle>
                   Total Borrowed
                   <TooltipInfo message="The total amount of the asset that's already being borrowed on the C3 lending market." />
                 </S.Item>
                 <S.Item item>{formatNumber(borrowed)}</S.Item>
+              </S.Row>
+              <S.Row container justifyContent="space-between">
+                <S.Item item gap="4px" _isTitle>
+                  Total Borrowed Value
+                </S.Item>
+                <S.Item item>
+                  $ {formatNumber(getValue(serverInstrument.instrument.id, borrowed))}
+                </S.Item>
               </S.Row>
             </S.Card>
           );

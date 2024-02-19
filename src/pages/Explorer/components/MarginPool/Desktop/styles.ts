@@ -57,3 +57,18 @@ export const AssetIconContainer = styled(Grid)(() => ({
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
 }));
+
+export const ValorizedTitle = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+}));
+
+export const ValorizedInfoContainer = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+}));
+
+export const ValorizedCompoundColumn = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+}));

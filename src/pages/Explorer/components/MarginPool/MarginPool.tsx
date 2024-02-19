@@ -6,9 +6,11 @@ import MobileTable from './Mobile/MobileTable';
 import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { breakpoints } from '../../../../theme';
 import { IMarginPool } from './interfaces';
+import { usePrices } from '../../../../hooks/usePrices';
 
 const MarginPool = (props: IMarginPool) => {
   const { onChainAppState } = props;
+  const { data: assetPrices } = usePrices();
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -16,12 +18,16 @@ const MarginPool = (props: IMarginPool) => {
     [windowSize.width]
   );
 
+  const getValue = (instrument: string, amount: number) => {
+    return (assetPrices?.find((price) => price.id === instrument)?.price || 0) * amount;
+  };
+
   return (
     <>
       {isMobile ? (
-        <MobileTable onChainAppState={onChainAppState} />
+        <MobileTable onChainAppState={onChainAppState} getValue={getValue} />
       ) : (
-        <DesktopTable onChainAppState={onChainAppState} />
+        <DesktopTable onChainAppState={onChainAppState} getValue={getValue} />
       )}
     </>
   );
