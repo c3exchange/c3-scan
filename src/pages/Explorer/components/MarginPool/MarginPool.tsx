@@ -10,7 +10,7 @@ import { usePrices } from '../../../../hooks/usePrices';
 
 const MarginPool = (props: IMarginPool) => {
   const { onChainAppState } = props;
-  const { data: assetPrices } = usePrices();
+  const { getUSDValue } = usePrices();
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -18,16 +18,12 @@ const MarginPool = (props: IMarginPool) => {
     [windowSize.width]
   );
 
-  const getValue = (instrument: string, amount: number) => {
-    return (assetPrices?.find((price) => price.id === instrument)?.price || 0) * amount;
-  };
-
   return (
     <>
       {isMobile ? (
-        <MobileTable onChainAppState={onChainAppState} getValue={getValue} />
+        <MobileTable onChainAppState={onChainAppState} getUSDValue={getUSDValue} />
       ) : (
-        <DesktopTable onChainAppState={onChainAppState} getValue={getValue} />
+        <DesktopTable onChainAppState={onChainAppState} getUSDValue={getUSDValue} />
       )}
     </>
   );

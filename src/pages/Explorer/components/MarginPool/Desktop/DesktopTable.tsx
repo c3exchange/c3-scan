@@ -8,7 +8,7 @@ import { IMarginPoolTable } from '../interfaces';
 import * as S from './styles';
 
 const DesktopTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getValue } = props;
+  const { onChainAppState, getUSDValue } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -24,7 +24,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
           <S.ValorizedCompoundColumn container>
             <Grid item display="flex">
               Total Supplied
-              <TooltipInfo message="Total amount of the supplied asset currently on the C3 lending market" />
+              <TooltipInfo message="Total amount and USD value of the supplied asset currently on the C3 lending market" />
             </Grid>
             <S.ValorizedTitle container>
               <Grid item desktop={6} display="flex">
@@ -40,7 +40,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
           <S.ValorizedCompoundColumn container>
             <Grid item display="flex">
               Total Borrowed
-              <TooltipInfo message="The total amount of the asset that's already being borrowed on the C3 lending market." />
+              <TooltipInfo message="The total amount and USD value of the asset that's already being borrowed on the C3 lending market." />
             </Grid>
             <S.ValorizedTitle container>
               <Grid item desktop={6} display="flex">
@@ -85,7 +85,8 @@ const DesktopTable = (props: IMarginPoolTable) => {
                     {formatNumber(liquidity)}
                   </Grid>
                   <Grid item desktop={6} display="flex">
-                    $ {formatNumber(getValue(serverInstrument.instrument.id, liquidity))}
+                    ${' '}
+                    {formatNumber(getUSDValue(serverInstrument.instrument.id, liquidity))}
                   </Grid>
                 </S.ValorizedInfoContainer>
               </Grid>
@@ -95,7 +96,8 @@ const DesktopTable = (props: IMarginPoolTable) => {
                     {formatNumber(borrowed)}
                   </Grid>
                   <Grid item desktop={6} display="flex">
-                    $ {formatNumber(getValue(serverInstrument.instrument.id, borrowed))}
+                    ${' '}
+                    {formatNumber(getUSDValue(serverInstrument.instrument.id, borrowed))}
                   </Grid>
                 </S.ValorizedInfoContainer>
               </Grid>

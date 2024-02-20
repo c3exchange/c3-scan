@@ -7,7 +7,7 @@ import { IMarginPoolTable } from '../interfaces';
 import * as S from './styles';
 
 const MobileTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getValue } = props;
+  const { onChainAppState, getUSDValue } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -51,7 +51,7 @@ const MobileTable = (props: IMarginPoolTable) => {
               <S.Row container justifyContent="space-between">
                 <S.Item item gap="4px" _isTitle>
                   Total Supplied
-                  <TooltipInfo message="Total amount of the supplied asset currently on the C3 lending market" />
+                  <TooltipInfo message="Total amount and USD value of the supplied asset currently on the C3 lending market" />
                 </S.Item>
                 <S.Item item>{formatNumber(liquidity)}</S.Item>
               </S.Row>
@@ -60,13 +60,13 @@ const MobileTable = (props: IMarginPoolTable) => {
                   Total Supplied Value
                 </S.Item>
                 <S.Item item>
-                  $ {formatNumber(getValue(serverInstrument.instrument.id, liquidity))}
+                  $ {formatNumber(getUSDValue(serverInstrument.instrument.id, liquidity))}
                 </S.Item>
               </S.Row>
               <S.Row container justifyContent="space-between">
                 <S.Item item gap="4px" _isTitle>
                   Total Borrowed
-                  <TooltipInfo message="The total amount of the asset that's already being borrowed on the C3 lending market." />
+                  <TooltipInfo message="The total amount and USD value of the asset that's already being borrowed on the C3 lending market." />
                 </S.Item>
                 <S.Item item>{formatNumber(borrowed)}</S.Item>
               </S.Row>
@@ -75,7 +75,7 @@ const MobileTable = (props: IMarginPoolTable) => {
                   Total Borrowed Value
                 </S.Item>
                 <S.Item item>
-                  $ {formatNumber(getValue(serverInstrument.instrument.id, borrowed))}
+                  $ {formatNumber(getUSDValue(serverInstrument.instrument.id, borrowed))}
                 </S.Item>
               </S.Row>
             </S.Card>

@@ -18,7 +18,7 @@ import { usePrices } from './usePrices';
 const retrieveNonZeroPositions = (
   userPositions: CoreUserState,
   assetHoldings: AssetHolding[],
-  assetPrices?: Price[],
+  getUSDPrice: (instrumentId: string) => number,
   serverInstruments?: ServerInstrument[]
 ): { cash: AssetHolding[]; pool: AssetHolding[] } => {
   const cashAccounts: AssetHolding[] = [...assetHoldings];
@@ -29,9 +29,7 @@ const retrieveNonZeroPositions = (
     );
 
     if (matchingInstrument) {
-      const instrumentPrice =
-        assetPrices?.find((price) => price.id === matchingInstrument?.instrument.id)
-          ?.price || 0;
+      const instrumentPrice = getUSDPrice(matchingInstrument?.instrument.id);
       const cashAmount = positionDetail.cash;
       const principalAmount = positionDetail.principal;
       if (cashAmount !== 0n) {
@@ -75,7 +73,7 @@ export const useGetAddressState = (
 ) => {
   const { coreAppId, algoClient } = useGlobalContext();
   const { assetHoldings } = useGlobalContext();
-  const { data: assetPrices } = usePrices();
+  const { getUSDPrice } = usePrices();
   const [userCash, setUserCash] = useState<AssetHolding[]>(assetHoldings);
   const [userPool, setUserPool] = useState<AssetHolding[]>([]);
 
@@ -89,7 +87,7 @@ export const useGetAddressState = (
       const { cash, pool } = await retrieveNonZeroPositions(
         parsedUserData,
         assetHoldings,
-        assetPrices,
+        getUSDPrice,
         onChainC3State
       );
       setUserCash(cash);

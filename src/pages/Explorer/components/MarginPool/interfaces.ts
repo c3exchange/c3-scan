@@ -5,7 +5,7 @@ interface IMarginPool {
 }
 
 interface IMarginPoolTable extends IMarginPool {
-  getValue: (instrument: string, amount: number) => number;
+  getUSDValue: (instrumentId: string, amount: number) => number;
 }
 
 export type { IMarginPool, IMarginPoolTable };
