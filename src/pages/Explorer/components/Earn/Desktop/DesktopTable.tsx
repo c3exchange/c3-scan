@@ -27,10 +27,10 @@ const DesktopTable = (props: IEarnTable) => {
         <Grid item desktop={3}>
           Asset
         </Grid>
-        <Grid item desktop={4}>
+        <Grid item desktop={4} display="flex" justifyContent="flex-end">
           Subscribed Amount
         </Grid>
-        <Grid item desktop={5}>
+        <Grid item desktop={5} display="flex" justifyContent="flex-end">
           Subscribed Value
         </Grid>
       </S.AssetInfo>
@@ -42,10 +42,10 @@ const DesktopTable = (props: IEarnTable) => {
                 <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                 {asset.instrument.id}
               </S.AssetIconContainer>
-              <Grid item desktop={4}>
-                {formatNumber(Number(asset.amount.toDecimal()))} {asset.instrument.id}
+              <Grid item desktop={4} display="flex" justifyContent="flex-end">
+                {formatNumber(Number(asset.amount.toDecimal()))}
               </Grid>
-              <Grid item desktop={5}>
+              <Grid item desktop={5} display="flex" justifyContent="flex-end">
                 $ {formatNumber(asset.value)}
               </Grid>
             </S.Row>

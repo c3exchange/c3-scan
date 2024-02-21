@@ -28,13 +28,13 @@ const DesktopTable = (props: IDepositTable) => {
         )}
       </S.Title>
       <S.AssetInfo container>
-        <Grid item desktop={3}>
+        <Grid item desktop={2}>
           Asset
         </Grid>
-        <Grid item desktop={5}>
+        <Grid item desktop={4} display="flex" justifyContent="flex-end">
           Amount
         </Grid>
-        <Grid item desktop={4}>
+        <Grid item desktop={6} display="flex" justifyContent="flex-end">
           Value
         </Grid>
       </S.AssetInfo>
@@ -43,28 +43,28 @@ const DesktopTable = (props: IDepositTable) => {
         {C3Address
           ? userCash.map((asset) => (
               <S.Row container key={asset.instrument.id}>
-                <S.AssetIconContainer item desktop={3}>
+                <S.AssetIconContainer item desktop={2}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={5}>
+                <Grid item desktop={4} display="flex" justifyContent="flex-end">
                   {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}
                 </Grid>
-                <Grid item desktop={4}>
+                <Grid item desktop={6} display="flex" justifyContent="flex-end">
                   $ {formatNumber(asset.value)}
                 </Grid>
               </S.Row>
             ))
           : c3Assets?.map((asset) => (
               <S.Row container key={asset.instrument.id}>
-                <S.AssetIconContainer item desktop={3}>
+                <S.AssetIconContainer item desktop={2}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={5}>
-                  {formatNumber(asset.amount)} {asset.instrument.id}
+                <Grid item desktop={4} display="flex" justifyContent="flex-end">
+                  {formatNumber(asset.amount)}
                 </Grid>
-                <Grid item desktop={4}>
+                <Grid item desktop={6} display="flex" justifyContent="flex-end">
                   $ {formatNumber(asset.value)}
                 </Grid>
               </S.Row>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGlobalContext } from '../contexts/GlobalContext';
-import { AssetHolding, Price } from '../interfaces/interfaces';
+import { AssetHolding } from '../interfaces/interfaces';
 import {
   CoreUserState,
   InstrumentAmount,

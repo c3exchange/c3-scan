@@ -31,6 +31,7 @@ export const AssetInfo = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
+  paddingRight: '32px',
 }));
 
 export const Row = styled(Grid)(({ theme }) => ({
@@ -39,6 +40,7 @@ export const Row = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
+  paddingRight: '32px',
 }));
 
 export const Footer = styled(Grid)(() => ({
@@ -81,7 +83,10 @@ export const AccountValue = styled('span')(({ theme }) => ({
 export const TVLContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  margin: '0px 0px 0px -300px',
+
+  justifyContent: 'flex-end',
+  marginRight: '12px',
+  // margin: '0px 0px 0px -300px',
   [theme.breakpoints.down('largeDesktop')]: {
     margin: '0px 0px 0px -55px',
   },

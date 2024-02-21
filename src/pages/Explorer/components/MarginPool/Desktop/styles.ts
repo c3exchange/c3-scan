@@ -31,6 +31,7 @@ export const AssetInfo = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
+  paddingRight: '36px',
 }));
 
 export const Row = styled(Grid)(({ theme }) => ({
@@ -39,6 +40,7 @@ export const Row = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
+  paddingRight: '32px',
 }));
 
 export const ScrollableContent = styled('div')(() => ({
@@ -58,7 +60,19 @@ export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
 }));
 
-export const ValorizedTitle = styled(Grid)(({ theme }) => ({
+export const ValorizedCompoundColumn = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+}));
+
+export const CompoundTitle = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  paddingRight: '15%',
+}));
+
+export const CompoundSubtitle = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
 }));
@@ -66,9 +80,4 @@ export const ValorizedTitle = styled(Grid)(({ theme }) => ({
 export const ValorizedInfoContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-}));
-
-export const ValorizedCompoundColumn = styled(Grid)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
 }));
