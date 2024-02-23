@@ -40,12 +40,21 @@ const Explorer = () => {
 
   const onClear = () => {
     setAddress('');
-    setC3Address('');
     setWrongAddress(false);
+  };
+
+  const onReturnHomePage = () => {
+    onClear();
+    setC3Address('');
   };
 
   const onCopy = async (address: string) => {
     copy(address);
+  };
+
+  const onChangeAddress = (adrInput: string) => {
+    setAddress(adrInput);
+    setWrongAddress(false);
   };
 
   const onSearch = () => {
@@ -61,8 +70,12 @@ const Explorer = () => {
 
   const path = useMemo(() => {
     const values: IPath[] = [
-      { text: 'Explorer', route: AppRoutes.EXPLORER, onClick: () => onClear() },
-      { text: 'C3 Overview', route: AppRoutes.EXPLORER, onClick: () => onClear() },
+      { text: 'Explorer', route: AppRoutes.EXPLORER, onClick: () => onReturnHomePage() },
+      {
+        text: 'C3 Overview',
+        route: AppRoutes.EXPLORER,
+        onClick: () => onReturnHomePage(),
+      },
     ];
     if (C3Address) values.push({ text: 'Search result' });
     return values;
@@ -77,7 +90,7 @@ const Explorer = () => {
           address={address}
           onSearch={onSearch}
           onClear={onClear}
-          onChangeAddress={setAddress}
+          onChangeAddress={onChangeAddress}
           hasC3Address={!!C3Address}
         />
       </Grid>
