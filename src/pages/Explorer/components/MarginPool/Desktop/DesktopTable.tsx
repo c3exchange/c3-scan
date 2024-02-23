@@ -11,7 +11,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
   const { onChainAppState, getUSDValue } = props;
   return (
     <S.Container>
-      <S.Title>C4's Margin Pool</S.Title>
+      <S.Title>C3's Margin Pool</S.Title>
       <S.AssetInfo container>
         <Grid item desktop={2}>
           Asset
@@ -24,7 +24,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
           <S.ValorizedCompoundColumn container>
             <S.CompoundTitle item>
               Total Supplied
-              <TooltipInfo message="Total amount and USD value of the supplied asset currently on the C4 lending market" />
+              <TooltipInfo message="Total amount and USD value of the supplied asset currently on the C3 lending market" />
             </S.CompoundTitle>
             <S.CompoundSubtitle container>
               <Grid item desktop={6} display="flex" justifyContent="flex-end">
@@ -40,7 +40,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
           <S.ValorizedCompoundColumn container>
             <S.CompoundTitle item>
               Total Borrowed
-              <TooltipInfo message="The total amount and USD value of the asset that's already being borrowed on the C4 lending market." />
+              <TooltipInfo message="The total amount and USD value of the asset that's already being borrowed on the C3 lending market." />
             </S.CompoundTitle>
             <S.CompoundSubtitle container>
               <Grid item desktop={6} display="flex" justifyContent="flex-end">
