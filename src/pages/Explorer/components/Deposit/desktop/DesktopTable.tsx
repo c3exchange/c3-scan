@@ -31,12 +31,12 @@ const DesktopTable = (props: IDepositTable) => {
         <Grid item desktop={3}>
           Asset
         </Grid>
-        <Grid item desktop={5}>
+        <S.RightAlignedGrid item desktop={3}>
           Amount
-        </Grid>
-        <Grid item desktop={4}>
+        </S.RightAlignedGrid>
+        <S.RightAlignedGrid item desktop={4}>
           Value
-        </Grid>
+        </S.RightAlignedGrid>
       </S.AssetInfo>
       <S.ScrollableContent>
         {isLoading && <Loader />}
@@ -47,12 +47,13 @@ const DesktopTable = (props: IDepositTable) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={5}>
-                  {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}
-                </Grid>
-                <Grid item desktop={4}>
+                <S.RightAlignedGrid item desktop={3}>
+                  {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}{' '}
+                  {asset.instrument.id}
+                </S.RightAlignedGrid>
+                <S.RightAlignedGrid item desktop={4}>
                   $ {formatNumber(asset.value)}
-                </Grid>
+                </S.RightAlignedGrid>
               </S.Row>
             ))
           : c3Assets?.map((asset) => (
@@ -61,21 +62,20 @@ const DesktopTable = (props: IDepositTable) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={5}>
+                <S.RightAlignedGrid item desktop={3}>
                   {formatNumber(asset.amount)} {asset.instrument.id}
-                </Grid>
-                <Grid item desktop={4}>
+                </S.RightAlignedGrid>
+                <S.RightAlignedGrid item desktop={4}>
                   $ {formatNumber(asset.value)}
-                </Grid>
+                </S.RightAlignedGrid>
               </S.Row>
             ))}
       </S.ScrollableContent>
       {!C3Address && totalValueLocked && (
         <S.Footer>
-          <Grid item desktop={8}></Grid>
-          <S.TVLContainer item desktop={4}>
-            <S.TVLLabel>Total Value Locked (</S.TVLLabel> TVL<S.TVLLabel>)</S.TVLLabel> $
-            {formatNumber(totalValueLocked)}
+          <S.TVLContainer item desktop={10}>
+            <S.TVLLabel>Total Value Locked (</S.TVLLabel>TVL
+            <S.TVLLabel>): ${formatNumber(totalValueLocked)}</S.TVLLabel>
             <TooltipInfo message="The total value of all available assets inside the C3 exchange platform." />
           </S.TVLContainer>
         </S.Footer>

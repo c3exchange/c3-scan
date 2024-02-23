@@ -50,6 +50,7 @@ export const AssetInfo = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
+  paddingRight: '32px',
 }));
 
 export const Row = styled(Grid)(({ theme }) => ({
@@ -58,6 +59,7 @@ export const Row = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
+  paddingRight: '32px',
 }));
 
 export const ScrollableContent = styled('div', {
@@ -78,4 +80,9 @@ export const AssetIconContainer = styled(Grid)(() => ({
 
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
+}));
+
+export const RightAlignedGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
 }));
