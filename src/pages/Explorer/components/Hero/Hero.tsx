@@ -30,8 +30,19 @@ const Hero = ({
     [windowSize.width]
   );
 
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      onSearch();
+    }
+  };
+
   return (
-    <S.Container container direction="column" _hasC3Address={hasC3Address}>
+    <S.Container
+      container
+      direction="column"
+      _hasC3Address={hasC3Address}
+      onKeyUp={handleKeyPress}
+    >
       <Grid container>
         <S.Title _hasC3Address={hasC3Address}>
           Search C3 data directly from the Blockchain
