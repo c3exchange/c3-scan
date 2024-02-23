@@ -8,14 +8,13 @@ import { useQuery } from 'react-query';
 
 export const useGetC3HoldingAssets = () => {
   const { algoIndexer, coreAppId } = useGlobalContext();
-  const { data: assetPrices } = usePrices();
+  const { assetPrices, getUSDPrice } = usePrices();
 
   const fetchHoldingPrices = async (coreAppId?: number) => {
     if (!coreAppId) return [];
     const appAddress = await getApplicationAddress(coreAppId);
     const accountInfo = await algoIndexer.lookupAccountByID(appAddress).do();
-    const algoPrice: number =
-      assetPrices?.find((price) => price.id === ALGO_INSTRUMENT.id)?.price || 0;
+    const algoPrice: number = getUSDPrice(ALGO_INSTRUMENT.id);
     const algoAmount = Number(
       InstrumentAmount.fromContract(
         ALGO_INSTRUMENT,
@@ -32,8 +31,7 @@ export const useGetC3HoldingAssets = () => {
     const assetPromises = accountInfo.account.assets.map(async (asset: any) => {
       const instrument = await getInstrumentInfo(asset['asset-id'], algoIndexer);
       const cleanInstrumentId = cleanC3Prefix(instrument?.id || '');
-      const assetPrice =
-        assetPrices?.find((price) => price.id === cleanInstrumentId)?.price || 0;
+      const assetPrice = getUSDPrice(cleanInstrumentId);
       const instrumentAmount = instrument
         ? Number(
             InstrumentAmount.fromContract(instrument!, BigInt(asset.amount)).toDecimal()

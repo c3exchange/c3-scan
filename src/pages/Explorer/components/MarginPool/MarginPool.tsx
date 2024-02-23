@@ -6,9 +6,11 @@ import MobileTable from './Mobile/MobileTable';
 import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { breakpoints } from '../../../../theme';
 import { IMarginPool } from './interfaces';
+import { usePrices } from '../../../../hooks/usePrices';
 
 const MarginPool = (props: IMarginPool) => {
   const { onChainAppState } = props;
+  const { getUSDValue } = usePrices();
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -19,9 +21,9 @@ const MarginPool = (props: IMarginPool) => {
   return (
     <>
       {isMobile ? (
-        <MobileTable onChainAppState={onChainAppState} />
+        <MobileTable onChainAppState={onChainAppState} getUSDValue={getUSDValue} />
       ) : (
-        <DesktopTable onChainAppState={onChainAppState} />
+        <DesktopTable onChainAppState={onChainAppState} getUSDValue={getUSDValue} />
       )}
     </>
   );

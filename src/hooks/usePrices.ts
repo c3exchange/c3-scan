@@ -10,11 +10,22 @@ const fetchPrices = async (url: string) => {
 
 export const usePrices = () => {
   const config = useConfig();
-  return useQuery<Price[]>(
+
+  const qPrices = useQuery<Price[]>(
     'prices',
     () => fetchPrices(`${config.c3ApiUrl}/instruments/prices`),
     {
       refetchInterval: 30000,
     }
   );
+
+  const getUSDPrice = (instrumentId: string) => {
+    return qPrices?.data?.find((price) => price.id === instrumentId)?.price || 0;
+  };
+
+  const getUSDValue = (instrumentId: string, amount: number) => {
+    return getUSDPrice(instrumentId) * amount;
+  };
+
+  return { assetPrices: qPrices?.data, getUSDPrice, getUSDValue };
 };
