@@ -85,7 +85,6 @@ export const AccountValue = styled('span')(({ theme }) => ({
 export const TVLContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-
   justifyContent: 'flex-end',
   margin: '0px 0px 0px 22px',
 }));
