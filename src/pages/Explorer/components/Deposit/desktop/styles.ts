@@ -47,12 +47,13 @@ export const Footer = styled(Grid)(() => ({
   marginTop: 'auto',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  // justifyContent: 'center',
   height: '38px',
   fontSize: '12px',
-  fontWeight: 700,
+  // fontWeight: 700,
   lineHeight: '20px',
   paddingLeft: '32px',
+  paddingRight: '32px',
 }));
 
 export const ScrollableContent = styled('div')(() => ({
@@ -85,14 +86,14 @@ export const TVLContainer = styled(Grid)(({ theme }) => ({
   alignItems: 'center',
 
   justifyContent: 'flex-end',
-  marginRight: '12px',
-  // margin: '0px 0px 0px -300px',
+  margin: '0px 0px 0px 22px',
   [theme.breakpoints.down('largeDesktop')]: {
     margin: '0px 0px 0px -55px',
   },
 }));
 export const TVLLabel = styled('span')(({ theme }) => ({
   display: 'inline-block',
+  fontWeight: 600,
   [theme.breakpoints.down('largeDesktop')]: {
     display: 'none',
   },

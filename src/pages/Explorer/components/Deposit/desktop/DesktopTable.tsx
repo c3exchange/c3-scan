@@ -28,13 +28,13 @@ const DesktopTable = (props: IDepositTable) => {
         )}
       </S.Title>
       <S.AssetInfo container>
-        <Grid item desktop={2}>
+        <Grid item desktop={3}>
           Asset
         </Grid>
-        <Grid item desktop={4} display="flex" justifyContent="flex-end">
+        <Grid item desktop={3} display="flex" justifyContent="flex-end">
           Amount
         </Grid>
-        <Grid item desktop={6} display="flex" justifyContent="flex-end">
+        <Grid item desktop={4} display="flex" justifyContent="flex-end">
           Value
         </Grid>
       </S.AssetInfo>
@@ -43,28 +43,29 @@ const DesktopTable = (props: IDepositTable) => {
         {C3Address
           ? userCash.map((asset) => (
               <S.Row container key={asset.instrument.id}>
-                <S.AssetIconContainer item desktop={2}>
+                <S.AssetIconContainer item desktop={3}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={4} display="flex" justifyContent="flex-end">
-                  {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}
+                <Grid item desktop={3} display="flex" justifyContent="flex-end">
+                  {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}{' '}
+                  {asset.instrument.id}
                 </Grid>
-                <Grid item desktop={6} display="flex" justifyContent="flex-end">
+                <Grid item desktop={4} display="flex" justifyContent="flex-end">
                   $ {formatNumber(asset.value)}
                 </Grid>
               </S.Row>
             ))
           : c3Assets?.map((asset) => (
               <S.Row container key={asset.instrument.id}>
-                <S.AssetIconContainer item desktop={2}>
+                <S.AssetIconContainer item desktop={3}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={4} display="flex" justifyContent="flex-end">
-                  {formatNumber(asset.amount)}
+                <Grid item desktop={3} display="flex" justifyContent="flex-end">
+                  {formatNumber(asset.amount)} {asset.instrument.id}
                 </Grid>
-                <Grid item desktop={6} display="flex" justifyContent="flex-end">
+                <Grid item desktop={4} display="flex" justifyContent="flex-end">
                   $ {formatNumber(asset.value)}
                 </Grid>
               </S.Row>
@@ -72,10 +73,11 @@ const DesktopTable = (props: IDepositTable) => {
       </S.ScrollableContent>
       {!C3Address && totalValueLocked && (
         <S.Footer>
-          <Grid item desktop={8}></Grid>
-          <S.TVLContainer item desktop={4}>
-            <S.TVLLabel>Total Value Locked (</S.TVLLabel> TVL<S.TVLLabel>)</S.TVLLabel> $
-            {formatNumber(totalValueLocked)}
+          {/* <Grid item desktop={8}></Grid> */}
+          <S.TVLContainer item desktop={10}>
+            <S.TVLLabel>Total Value Locked</S.TVLLabel>
+            {' (TVL) '}
+            <S.TVLLabel>${formatNumber(totalValueLocked)}</S.TVLLabel>
             <TooltipInfo message="The total value of all available assets inside the C3 exchange platform." />
           </S.TVLContainer>
         </S.Footer>
