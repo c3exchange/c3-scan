@@ -81,3 +81,8 @@ export const AssetIconContainer = styled(Grid)(() => ({
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
 }));
+
+export const RightAlignedGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
+}));

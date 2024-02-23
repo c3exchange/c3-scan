@@ -47,10 +47,8 @@ export const Footer = styled(Grid)(() => ({
   marginTop: 'auto',
   display: 'flex',
   alignItems: 'center',
-  // justifyContent: 'center',
   height: '38px',
   fontSize: '12px',
-  // fontWeight: 700,
   lineHeight: '20px',
   paddingLeft: '32px',
   paddingRight: '32px',
@@ -63,6 +61,7 @@ export const ScrollableContent = styled('div')(() => ({
     width: '4px',
   },
 }));
+
 export const AssetIconContainer = styled(Grid)(() => ({
   display: 'flex',
   alignItems: 'center',
@@ -71,6 +70,7 @@ export const AssetIconContainer = styled(Grid)(() => ({
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
 }));
+
 export const AccountValue = styled('span')(({ theme }) => ({
   color: theme.palette.text.primary,
   fontSize: '14px',
@@ -81,20 +81,24 @@ export const AccountValue = styled('span')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
 }));
+
 export const TVLContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
 
   justifyContent: 'flex-end',
   margin: '0px 0px 0px 22px',
-  [theme.breakpoints.down('largeDesktop')]: {
-    margin: '0px 0px 0px -55px',
-  },
 }));
+
 export const TVLLabel = styled('span')(({ theme }) => ({
   display: 'inline-block',
   fontWeight: 600,
   [theme.breakpoints.down('largeDesktop')]: {
     display: 'none',
   },
+}));
+
+export const RightAlignedGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
 }));

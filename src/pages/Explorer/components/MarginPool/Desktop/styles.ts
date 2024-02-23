@@ -81,3 +81,8 @@ export const ValorizedInfoContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
 }));
+
+export const RightAlignedGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
+}));

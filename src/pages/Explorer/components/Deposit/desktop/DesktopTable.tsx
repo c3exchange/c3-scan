@@ -31,12 +31,12 @@ const DesktopTable = (props: IDepositTable) => {
         <Grid item desktop={3}>
           Asset
         </Grid>
-        <Grid item desktop={3} display="flex" justifyContent="flex-end">
+        <S.RightAlignedGrid item desktop={3}>
           Amount
-        </Grid>
-        <Grid item desktop={4} display="flex" justifyContent="flex-end">
+        </S.RightAlignedGrid>
+        <S.RightAlignedGrid item desktop={4}>
           Value
-        </Grid>
+        </S.RightAlignedGrid>
       </S.AssetInfo>
       <S.ScrollableContent>
         {isLoading && <Loader />}
@@ -47,13 +47,13 @@ const DesktopTable = (props: IDepositTable) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={3} display="flex" justifyContent="flex-end">
+                <S.RightAlignedGrid item desktop={3}>
                   {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}{' '}
                   {asset.instrument.id}
-                </Grid>
-                <Grid item desktop={4} display="flex" justifyContent="flex-end">
+                </S.RightAlignedGrid>
+                <S.RightAlignedGrid item desktop={4}>
                   $ {formatNumber(asset.value)}
-                </Grid>
+                </S.RightAlignedGrid>
               </S.Row>
             ))
           : c3Assets?.map((asset) => (
@@ -62,18 +62,17 @@ const DesktopTable = (props: IDepositTable) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={3} display="flex" justifyContent="flex-end">
+                <S.RightAlignedGrid item desktop={3}>
                   {formatNumber(asset.amount)} {asset.instrument.id}
-                </Grid>
-                <Grid item desktop={4} display="flex" justifyContent="flex-end">
+                </S.RightAlignedGrid>
+                <S.RightAlignedGrid item desktop={4}>
                   $ {formatNumber(asset.value)}
-                </Grid>
+                </S.RightAlignedGrid>
               </S.Row>
             ))}
       </S.ScrollableContent>
       {!C3Address && totalValueLocked && (
         <S.Footer>
-          {/* <Grid item desktop={8}></Grid> */}
           <S.TVLContainer item desktop={10}>
             <S.TVLLabel>Total Value Locked</S.TVLLabel>
             {' (TVL) '}

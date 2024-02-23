@@ -27,12 +27,12 @@ const DesktopTable = (props: IMarginPoolTable) => {
               <TooltipInfo message="Total amount and USD value of the supplied asset currently on the C3 lending market" />
             </S.CompoundTitle>
             <S.CompoundSubtitle container>
-              <Grid item desktop={6} display="flex" justifyContent="flex-end">
+              <S.RightAlignedGrid item desktop={6}>
                 Amount
-              </Grid>
-              <Grid item desktop={6} display="flex" justifyContent="flex-end">
+              </S.RightAlignedGrid>
+              <S.RightAlignedGrid item desktop={6}>
                 Value
-              </Grid>
+              </S.RightAlignedGrid>
             </S.CompoundSubtitle>
           </S.ValorizedCompoundColumn>
         </Grid>
@@ -43,12 +43,12 @@ const DesktopTable = (props: IMarginPoolTable) => {
               <TooltipInfo message="The total amount and USD value of the asset that's already being borrowed on the C3 lending market." />
             </S.CompoundTitle>
             <S.CompoundSubtitle container>
-              <Grid item desktop={6} display="flex" justifyContent="flex-end">
+              <S.RightAlignedGrid item desktop={6}>
                 Amount
-              </Grid>
-              <Grid item desktop={6} display="flex" justifyContent="flex-end">
+              </S.RightAlignedGrid>
+              <S.RightAlignedGrid item desktop={6}>
                 Value
-              </Grid>
+              </S.RightAlignedGrid>
             </S.CompoundSubtitle>
           </S.ValorizedCompoundColumn>
         </Grid>
@@ -81,24 +81,24 @@ const DesktopTable = (props: IMarginPoolTable) => {
               </Grid>
               <Grid item desktop={4}>
                 <S.ValorizedInfoContainer container>
-                  <Grid item desktop={6} display="flex" justifyContent="flex-end">
+                  <S.RightAlignedGrid item desktop={6}>
                     {formatNumber(liquidity)} {serverInstrument.instrument.id}
-                  </Grid>
-                  <Grid item desktop={6} display="flex" justifyContent="flex-end">
+                  </S.RightAlignedGrid>
+                  <S.RightAlignedGrid item desktop={6}>
                     ${' '}
                     {formatNumber(getUSDValue(serverInstrument.instrument.id, liquidity))}
-                  </Grid>
+                  </S.RightAlignedGrid>
                 </S.ValorizedInfoContainer>
               </Grid>
               <Grid item desktop={4}>
                 <S.ValorizedInfoContainer container>
-                  <Grid item desktop={6} display="flex" justifyContent="flex-end">
+                  <S.RightAlignedGrid item desktop={6}>
                     {formatNumber(borrowed)} {serverInstrument.instrument.id}
-                  </Grid>
-                  <Grid item desktop={6} display="flex" justifyContent="flex-end">
+                  </S.RightAlignedGrid>
+                  <S.RightAlignedGrid item desktop={6}>
                     ${' '}
                     {formatNumber(getUSDValue(serverInstrument.instrument.id, borrowed))}
-                  </Grid>
+                  </S.RightAlignedGrid>
                 </S.ValorizedInfoContainer>
               </Grid>
             </S.Row>

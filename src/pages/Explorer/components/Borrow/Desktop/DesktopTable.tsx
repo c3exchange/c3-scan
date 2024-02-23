@@ -27,12 +27,12 @@ const DesktopTable = (props: IBorrowTable) => {
         <Grid item desktop={2}>
           Asset
         </Grid>
-        <Grid item desktop={4} display="flex" justifyContent="flex-end">
+        <S.RightAlignedGrid item desktop={4}>
           Utilization
-        </Grid>
-        <Grid item desktop={4} display="flex" justifyContent="flex-end">
+        </S.RightAlignedGrid>
+        <S.RightAlignedGrid item desktop={4}>
           Total supplied
-        </Grid>
+        </S.RightAlignedGrid>
       </S.AssetInfo>
       <S.ScrollableContent _empty={isEmpty}>
         {!isEmpty ? (
@@ -42,12 +42,12 @@ const DesktopTable = (props: IBorrowTable) => {
                 <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                 {asset.instrument.id}
               </S.AssetIconContainer>
-              <Grid item desktop={4} display="flex" justifyContent="flex-end">
+              <S.RightAlignedGrid item desktop={4}>
                 {formatNumber(Number(asset.amount.toDecimal()))} {asset.instrument.id}
-              </Grid>
-              <Grid item desktop={4} display="flex" justifyContent="flex-end">
+              </S.RightAlignedGrid>
+              <S.RightAlignedGrid item desktop={4}>
                 $ {formatNumber(asset.value)}
-              </Grid>
+              </S.RightAlignedGrid>
             </S.Row>
           ))
         ) : (
