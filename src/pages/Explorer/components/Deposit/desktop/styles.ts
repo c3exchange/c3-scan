@@ -89,12 +89,17 @@ export const TVLContainer = styled(Grid)(({ theme }) => ({
   margin: '0px 0px 0px 22px',
 }));
 
-export const TVLLabel = styled('span')(({ theme }) => ({
+export const TVLLabelFullForm = styled('span')(({ theme }) => ({
   display: 'inline-block',
   fontWeight: 600,
   [theme.breakpoints.down('largeDesktop')]: {
     display: 'none',
   },
+}));
+
+export const TVLLabel = styled('span')(({ theme }) => ({
+  display: 'inline-block',
+  fontWeight: 700,
 }));
 
 export const RightAlignedGrid = styled(Grid)(({ theme }) => ({

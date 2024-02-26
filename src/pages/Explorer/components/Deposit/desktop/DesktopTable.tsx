@@ -74,8 +74,9 @@ const DesktopTable = (props: IDepositTable) => {
       {!C3Address && totalValueLocked && (
         <S.Footer>
           <S.TVLContainer item desktop={10}>
-            <S.TVLLabel>Total Value Locked (</S.TVLLabel>TVL
-            <S.TVLLabel>): ${formatNumber(totalValueLocked)}</S.TVLLabel>
+            <S.TVLLabelFullForm>Total Value Locked (</S.TVLLabelFullForm>TVL
+            <S.TVLLabelFullForm>)</S.TVLLabelFullForm>
+            <S.TVLLabel>: ${formatNumber(totalValueLocked)}</S.TVLLabel>
             <TooltipInfo message="The total value of all available assets inside the C3 exchange platform." />
           </S.TVLContainer>
         </S.Footer>
