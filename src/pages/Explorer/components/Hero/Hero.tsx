@@ -31,7 +31,7 @@ const Hero = ({
   );
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
+    if (!wrongAddress && event.key === 'Enter') {
       onSearch();
     }
   };
