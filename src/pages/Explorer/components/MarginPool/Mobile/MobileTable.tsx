@@ -5,6 +5,7 @@ import { getAssetIcon, formatNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
 
 import * as S from './styles';
+import { theme } from '../../../../../theme';
 
 const MobileTable = (props: IMarginPoolTable) => {
   const { onChainAppState, getUSDValue } = props;
@@ -48,36 +49,37 @@ const MobileTable = (props: IMarginPoolTable) => {
                   {formatNumber(utilizationRate)} %
                 </S.Item>
               </S.Row>
-              <S.Row container justifyContent="space-between">
+
+              <S.CompoundRow container justifyContent="space-between">
                 <S.Item item gap="4px" _isTitle>
                   Total Supplied
                   <TooltipInfo message="Total amount and USD value of the supplied asset currently on the C3 lending market" />
                 </S.Item>
-                <S.Item item>{formatNumber(liquidity)}</S.Item>
-              </S.Row>
-              <S.Row container justifyContent="space-between">
-                <S.Item item gap="4px" _isTitle>
-                  Total Supplied Value
-                </S.Item>
-                <S.Item item>
-                  $ {formatNumber(getUSDValue(serverInstrument.instrument.id, liquidity))}
-                </S.Item>
-              </S.Row>
-              <S.Row container justifyContent="space-between">
+                <S.CompoundItem item gap="1px">
+                  <S.CompoundItemValue>
+                    {formatNumber(liquidity)} {serverInstrument.instrument.id}
+                  </S.CompoundItemValue>
+                  <S.CompoundItemValue _isUSDValue>
+                    ${' '}
+                    {formatNumber(getUSDValue(serverInstrument.instrument.id, liquidity))}
+                  </S.CompoundItemValue>
+                </S.CompoundItem>
+              </S.CompoundRow>
+              <S.CompoundRow container justifyContent="space-between">
                 <S.Item item gap="4px" _isTitle>
                   Total Borrowed
                   <TooltipInfo message="The total amount and USD value of the asset that's already being borrowed on the C3 lending market." />
                 </S.Item>
-                <S.Item item>{formatNumber(borrowed)}</S.Item>
-              </S.Row>
-              <S.Row container justifyContent="space-between">
-                <S.Item item gap="4px" _isTitle>
-                  Total Borrowed Value
-                </S.Item>
-                <S.Item item>
-                  $ {formatNumber(getUSDValue(serverInstrument.instrument.id, borrowed))}
-                </S.Item>
-              </S.Row>
+                <S.CompoundItem item gap="1px">
+                  <S.CompoundItemValue>
+                    {formatNumber(borrowed)} {serverInstrument.instrument.id}
+                  </S.CompoundItemValue>
+                  <S.CompoundItemValue _isUSDValue>
+                    ${' '}
+                    {formatNumber(getUSDValue(serverInstrument.instrument.id, borrowed))}
+                  </S.CompoundItemValue>
+                </S.CompoundItem>
+              </S.CompoundRow>
             </S.Card>
           );
         })}

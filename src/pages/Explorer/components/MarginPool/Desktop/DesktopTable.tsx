@@ -16,11 +16,11 @@ const DesktopTable = (props: IMarginPoolTable) => {
         <Grid item desktop={2}>
           Asset
         </Grid>
-        <Grid item desktop={1} display="flex">
+        <Grid item desktop={2} display="flex">
           Utilization
           <TooltipInfo message="The percentage of the total supplied asset that's already been lent out" />
         </Grid>
-        <Grid item desktop={4} display="flex">
+        <Grid item desktop={3} display="flex">
           <S.ValorizedCompoundColumn container>
             <S.CompoundTitle item>
               Total Supplied
@@ -36,7 +36,8 @@ const DesktopTable = (props: IMarginPoolTable) => {
             </S.CompoundSubtitle>
           </S.ValorizedCompoundColumn>
         </Grid>
-        <Grid item desktop={4} display="flex">
+        <Grid desktop={1}></Grid>
+        <Grid item desktop={3} display="flex">
           <S.ValorizedCompoundColumn container>
             <S.CompoundTitle item>
               Total Borrowed
@@ -76,13 +77,13 @@ const DesktopTable = (props: IMarginPoolTable) => {
                 </S.IconContainer>
                 {serverInstrument.instrument.id}
               </S.AssetIconContainer>
-              <Grid item desktop={1} display="flex">
+              <Grid item desktop={2} display="flex">
                 {formatNumber(utilizationRate)} %
               </Grid>
-              <Grid item desktop={4}>
+              <Grid item desktop={3}>
                 <S.ValorizedInfoContainer container>
                   <S.RightAlignedGrid item desktop={6}>
-                    {formatNumber(liquidity)} {serverInstrument.instrument.id}
+                    {formatNumber(liquidity)}
                   </S.RightAlignedGrid>
                   <S.RightAlignedGrid item desktop={6}>
                     ${' '}
@@ -90,10 +91,11 @@ const DesktopTable = (props: IMarginPoolTable) => {
                   </S.RightAlignedGrid>
                 </S.ValorizedInfoContainer>
               </Grid>
-              <Grid item desktop={4}>
+              <Grid desktop={1}></Grid>
+              <Grid item desktop={3}>
                 <S.ValorizedInfoContainer container>
                   <S.RightAlignedGrid item desktop={6}>
-                    {formatNumber(borrowed)} {serverInstrument.instrument.id}
+                    {formatNumber(borrowed)}
                   </S.RightAlignedGrid>
                   <S.RightAlignedGrid item desktop={6}>
                     ${' '}

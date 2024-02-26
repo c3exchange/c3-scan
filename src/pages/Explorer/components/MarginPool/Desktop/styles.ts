@@ -25,22 +25,21 @@ export const Title = styled(Grid)(({ theme }) => ({
 }));
 
 export const AssetInfo = styled(Grid)(({ theme }) => ({
-  height: '44px',
+  height: '52px',
+  padding: '4px 32px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   color: theme.palette.text.primary,
+  fontWeight: '500',
   display: 'flex',
   alignItems: 'center',
-  paddingLeft: '32px',
-  paddingRight: '36px',
 }));
 
 export const Row = styled(Grid)(({ theme }) => ({
   height: '46px',
+  padding: '8px 32px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   display: 'flex',
   alignItems: 'center',
-  paddingLeft: '32px',
-  paddingRight: '32px',
 }));
 
 export const ScrollableContent = styled('div')(() => ({
@@ -63,18 +62,23 @@ export const IconContainer = styled('span')(() => ({
 export const ValorizedCompoundColumn = styled(Grid)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'space-between',
+  height: '100%',
 }));
 
 export const CompoundTitle = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-end',
-  paddingRight: '15%',
+  justifyContent: 'center',
+  borderRadius: '2px',
+  background: '#000',
+  fontSize: '10px',
 }));
 
 export const CompoundSubtitle = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  lineHeight: '20px',
 }));
 
 export const ValorizedInfoContainer = styled(Grid)(({ theme }) => ({
