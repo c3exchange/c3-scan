@@ -9,9 +9,9 @@ const Footer = () => {
         item
         onClick={() => window.open('https://github.com/c3exchange/c3-scan/')}
       >
-        <S.GithubContainer>
+        <Grid>
           <Icon name="github" width={24} height={24} />
-        </S.GithubContainer>
+        </Grid>
         <S.Title>C3 SCAN</S.Title>
         <S.SubTitle>documentation</S.SubTitle>
       </S.Documentation>

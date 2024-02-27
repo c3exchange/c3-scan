@@ -1,11 +1,9 @@
 import { InstrumentAmount } from '@c3exchange/common';
-
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
 import { getAssetIcon, formatNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
 
 import * as S from './styles';
-import { theme } from '../../../../../theme';
 
 const MobileTable = (props: IMarginPoolTable) => {
   const { onChainAppState, getUSDValue } = props;
