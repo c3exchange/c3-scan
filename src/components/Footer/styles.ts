@@ -27,9 +27,6 @@ export const Documentation = styled(Grid)(() => ({
   cursor: 'pointer',
 }));
 
-export const GithubContainer = styled('span')(() => ({
-  // marginRight: 10,
-}));
 export const Separator = styled('span')(() => ({
   fontSize: 32,
 }));
