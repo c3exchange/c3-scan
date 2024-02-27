@@ -7,6 +7,7 @@ import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { breakpoints } from '../../../../theme';
 
 import * as S from './styles';
+import usePaste from '../../../../hooks/usePaste';
 
 interface IHero {
   address: string;
@@ -29,11 +30,18 @@ const Hero = ({
     () => windowSize.width < breakpoints.desktop,
     [windowSize.width]
   );
+  const { paste } = usePaste();
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (!wrongAddress && event.key === 'Enter') {
       onSearch();
     }
+  };
+
+  const onPaste = () => {
+    paste((text) => {
+      onChangeAddress(text);
+    });
   };
 
   return (
@@ -58,14 +66,18 @@ const Hero = ({
                 onClear={onClear}
                 placeholder="Search by address or account id"
                 error={wrongAddress}
+                endAdornment={
+                  !!address
+                    ? onClear && (
+                        <Icon name="close" height={20} width={20} onClick={onClear} />
+                      )
+                    : isMobile && (
+                        <Icon name="paste" height={20} width={20} onClick={onPaste} />
+                      )
+                }
                 {...(isMobile && {
                   startAdornment: (
-                    <S.SearchStartAdornment
-                      _disabled={!address.length}
-                      onClick={onSearch}
-                    >
-                      <Icon name="search" width={16} height={16} />
-                    </S.SearchStartAdornment>
+                    <Icon name="search" width={16} height={16} onClick={onSearch} />
                   ),
                 })}
               />
