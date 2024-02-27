@@ -100,11 +100,9 @@ export const TVLLabel = styled('span', {
 })<ITVLLabel>(({ theme, _isFullForm, _isUSDValue }) => ({
   display: 'inline-block',
   fontWeight: _isUSDValue ? 700 : _isFullForm ? 600 : 400,
-  ...(_isFullForm && {
-    [theme.breakpoints.down('largeDesktop')]: {
-      display: 'none',
-    },
-  }),
+  [theme.breakpoints.down('largeDesktop')]: {
+    display: _isFullForm ? 'none' : 'visible',
+  },
 }));
 
 export const RightAlignedGrid = styled(Grid)(({ theme }) => ({
