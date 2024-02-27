@@ -1,5 +1,11 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
+import { createShouldForwardProp } from '../../../../../utils';
+
+export interface ITVLLabel {
+  _isFullForm?: boolean;
+  _isUSDValue?: boolean;
+}
 
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
@@ -89,11 +95,13 @@ export const TVLContainer = styled(Grid)(({ theme }) => ({
   margin: '0px 0px 0px 22px',
 }));
 
-export const TVLLabel = styled('span')(({ theme }) => ({
+export const TVLLabel = styled('span', {
+  shouldForwardProp: createShouldForwardProp(['_isFullForm', '_isUSDValue']),
+})<ITVLLabel>(({ theme, _isFullForm, _isUSDValue }) => ({
   display: 'inline-block',
-  fontWeight: 600,
+  fontWeight: _isUSDValue ? 700 : _isFullForm ? 600 : 400,
   [theme.breakpoints.down('largeDesktop')]: {
-    display: 'none',
+    display: _isFullForm ? 'none' : 'visible',
   },
 }));
 
