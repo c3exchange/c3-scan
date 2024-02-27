@@ -45,5 +45,5 @@ export const StartAdornment = styled('div')(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'pointer',
-  paddingRight: '8px',
+  marginRight: '8px',
 }));
