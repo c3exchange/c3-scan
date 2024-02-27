@@ -6,6 +6,10 @@ export interface IItem {
   _isTitle?: boolean;
 }
 
+export interface ICompoundItem {
+  _isUSDValue?: boolean;
+}
+
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
   width: '100%',
@@ -44,8 +48,8 @@ export const Row = styled(Grid)(({ theme }) => ({
   height: 40,
   display: 'flex',
   alignItems: 'center',
-  paddingLeft: 10,
-  paddingRight: 10,
+  fontWeight: 500,
+  padding: '5px 10px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
 }));
 
@@ -59,4 +63,26 @@ export const Item = styled(Grid, {
 
 export const IconContainer = styled('span')(() => ({
   marginRight: '4px',
+}));
+
+export const CompoundRow = styled(Grid)(({ theme }) => ({
+  height: 46,
+  display: 'flex',
+  alignItems: 'center',
+  fontWeight: 500,
+  padding: '5px 10px',
+  borderBottom: `1px solid ${theme.palette.primary.dark}`,
+}));
+
+export const CompoundItem = styled(Grid)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyItems: 'space-between',
+  alignItems: 'flex-end',
+}));
+
+export const CompoundItemValue = styled('span', {
+  shouldForwardProp: createShouldForwardProp(['_isUSDValue']),
+})<ICompoundItem>(({ theme, _isUSDValue }) => ({
+  color: _isUSDValue ? theme.palette.text.primary : theme.palette.primary.contrastText,
 }));
