@@ -11,6 +11,8 @@ const useCopy = () => {
       } catch (error) {
         toast.error({ title: 'Error on copy', message: 'Error copying text' });
       }
+    } else {
+      toast.error({ title: 'Error on copy', message: 'Clipboard not available' });
     }
   }, []);
   return { copy };

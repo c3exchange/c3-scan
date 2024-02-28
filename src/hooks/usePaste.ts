@@ -13,6 +13,8 @@ const usePaste = () => {
       } catch (error) {
         toast.error({ title: 'Error on paste', message: 'Error pasting text' });
       }
+    } else {
+      toast.error({ title: 'Error on paste', message: 'Clipboard not available' });
     }
   }, []);
   return { paste };

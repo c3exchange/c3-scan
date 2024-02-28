@@ -6,6 +6,11 @@ interface IContainer {
   _hasC3Address: boolean;
 }
 
+interface IInputContainer {
+  _isMobile: boolean;
+  _isInputFocused: boolean;
+}
+
 export const Container = styled(Grid, {
   shouldForwardProp: createShouldForwardProp(['_hasC3Address']),
 })<IContainer>(({ theme, _hasC3Address }) => ({
@@ -54,12 +59,26 @@ export const SearchTxt = styled('span')(() => ({
   marginLeft: 8,
 }));
 
-export const InputContainer = styled('div')(({ theme }) => ({
+export const InputContainer = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_isMobile', '_isInputFocused']),
+})<IInputContainer>(({ theme, _isMobile, _isInputFocused }) => ({
   width: '538px',
   height: '56px',
   [theme.breakpoints.down('desktop')]: {
     width: '100%',
   },
+  ...(_isMobile &&
+    _isInputFocused && {
+      marginTop: '68px',
+      padding: '0 15px',
+      width: 'calc(100% - 30px) !important',
+      height: 'calc(100% - 60px - 68px)',
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      background: theme.palette.primary.dark,
+      zIndex: 999,
+    }),
 }));
 
 export const Error = styled('div')(({ theme }) => ({
