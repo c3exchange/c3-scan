@@ -31,3 +31,9 @@ export const Row = styled(Grid)(({ theme }) => ({
   paddingLeft: '10px',
   paddingRight: '10px',
 }));
+
+export const SecondaryValue = styled('span')(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontWeight: 300,
+  fontSize: '14px',
+}));

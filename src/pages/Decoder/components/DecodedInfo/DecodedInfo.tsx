@@ -8,6 +8,21 @@ interface IDecodedInfo {
 }
 
 const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
+  const processValue = (value: any) => {
+    let primaryValue = '';
+    let secondaryValue = '';
+    if (value?.chainId) {
+      primaryValue = value?.chainId;
+      secondaryValue = ' - ' + value?.chainName;
+    }
+    return (
+      <>
+        {primaryValue}
+        <S.SecondaryValue>{secondaryValue}</S.SecondaryValue>
+      </>
+    );
+  };
+
   return (
     <S.Container container direction="column">
       <S.Title item>Translation (aka Parsed Text)</S.Title>
@@ -17,7 +32,7 @@ const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
           return (
             <S.Row justifyContent="space-between">
               <Grid item>{label}:</Grid>
-              <Grid item>{value}</Grid>
+              <Grid item>{typeof value === 'object' ? processValue(value) : value}</Grid>
             </S.Row>
           );
         })}

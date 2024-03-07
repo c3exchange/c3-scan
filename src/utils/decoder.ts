@@ -11,6 +11,8 @@ import {
   InstrumentAmount,
   ServerInstrument,
   convertUint64toInt64,
+  getChainNameByChainId,
+  ChainId,
 } from '@c3exchange/common';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
@@ -172,6 +174,9 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
   );
   const instrumentSlotId = Number(withdrawResult[1]);
   const encodedAmount = withdrawResult[2];
+  const chainId = Number(withdrawResult[3][0]);
+  const chainName = getChainNameByChainId(chainId as ChainId);
+  const chain = { chainId, chainName };
   const amount = Number(
     InstrumentAmount.fromContract(
       getInstrumentfromSlotId(instrumentSlotId, appState),
@@ -179,8 +184,9 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
     ).toDecimal()
   );
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
-  return { operationType, instrumentName, amount };
+  return { operationType, instrumentName, amount, chain };
 }
+
 function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   const poolResult = decodeABIValue(operation, poolMoveFormat);
   const instrumentSlotId = Number(poolResult[1]);
@@ -199,6 +205,7 @@ function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
   return { operationType, instrumentName, amount };
 }
+
 function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
@@ -285,6 +292,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   nonce: 'Nonce',
   sellAmount: 'Sell Amount',
   sellAssetId: 'Sell Asset',
+  chain: 'Chain',
 };
 
 export const getFirstAndLastChars = (
