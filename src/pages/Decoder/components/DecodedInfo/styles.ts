@@ -31,3 +31,14 @@ export const Row = styled(Grid)(({ theme }) => ({
   paddingLeft: '10px',
   paddingRight: '10px',
 }));
+
+export const Label = styled(Grid)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontSize: '14px',
+}));
+
+export const Value = styled(Grid)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  fontWeight: 500,
+  fontSize: '14px',
+}));

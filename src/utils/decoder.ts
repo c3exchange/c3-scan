@@ -12,6 +12,7 @@ import {
   ServerInstrument,
   convertUint64toInt64,
 } from '@c3exchange/common';
+import { dateToCustomStrFormat } from './utils';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
@@ -90,7 +91,7 @@ const decodeWelcomeMessage = (encodedMessage: string) => {
   if (parts.length < 2) return;
   const userID = parts[0];
   const extractedCreationTime = parts[1];
-  const creationTime = new Date(parseInt(extractedCreationTime)).toISOString();
+  const creationTime = dateToCustomStrFormat(new Date(parseInt(extractedCreationTime)));
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Login);
   return { operationType, userID, creationTime };
 };
@@ -181,6 +182,7 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
   return { operationType, instrumentName, amount };
 }
+
 function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   const poolResult = decodeABIValue(operation, poolMoveFormat);
   const instrumentSlotId = Number(poolResult[1]);
@@ -199,11 +201,12 @@ function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
   return { operationType, instrumentName, amount };
 }
+
 function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
   const nonce = Number(settleResult[2]);
-  const expiresOn = new Date(parseInt(settleResult[3])).toISOString();
+  const expiresOn = dateToCustomStrFormat(new Date(parseInt(settleResult[3]) * 1000));
   const sellSlotId = settleResult[4];
   const sellAsset = getInstrumentfromSlotId(sellSlotId, appState);
   const sellAmount = Number(
@@ -277,7 +280,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   userID: 'User ID',
   creationTime: 'Creation Time',
   account: 'Account',
-  expiresOn: 'Expires on',
+  expiresOn: 'Expiration Time',
   buyAmount: 'Buy Amount',
   buyAssetId: 'Buy Asset',
   maxBorrow: 'Max Borrow',

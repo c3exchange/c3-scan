@@ -39,3 +39,35 @@ export const truncateText = (text = '', [start, end]: number[] = [6, 6]) => {
   const tail = text.slice(-1 * end, text.length);
   return text.length > start + end ? [head, tail].join('...') : text;
 };
+
+const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
+export const dateToCustomStrFormat = (date: Date): string => {
+  return (
+    String(date.getUTCDate()).padStart(2, '0') +
+    ' ' +
+    months[date.getUTCMonth()] +
+    ' ' +
+    date.getUTCFullYear() +
+    ' ' +
+    String(date.getUTCHours()).padStart(2, '0') +
+    ':' +
+    String(date.getUTCMinutes()).padStart(2, '0') +
+    ':' +
+    String(date.getUTCSeconds()).padStart(2, '0') +
+    ' UTC'
+  );
+};

@@ -1,4 +1,3 @@
-import Grid from '@mui/material/Grid';
 import { DecodedMessage } from '../../../../interfaces/interfaces';
 import { keyToLabelMapping } from '../../../../utils';
 import * as S from './styles';
@@ -16,8 +15,8 @@ const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
           const label = keyToLabelMapping[key as keyof DecodedMessage] || key;
           return (
             <S.Row justifyContent="space-between">
-              <Grid item>{label}:</Grid>
-              <Grid item>{value}</Grid>
+              <S.Label item>{label}:</S.Label>
+              <S.Value item>{value}</S.Value>
             </S.Row>
           );
         })}
