@@ -78,7 +78,10 @@ const DesktopTable = (props: IDepositTable) => {
             <S.TVLLabel>TVL</S.TVLLabel>
             <S.TVLLabel _isFullForm>)</S.TVLLabel>
             <S.TVLLabel _isUSDValue>: ${formatNumber(totalValueLocked)}</S.TVLLabel>
-            <TooltipInfo message="The total value of all available assets inside the C3 exchange platform." />
+            <TooltipInfo
+              message="The total value of all available assets inside the C3 exchange platform."
+              placement="bottom-end"
+            />
           </S.TVLContainer>
         </S.Footer>
       )}
