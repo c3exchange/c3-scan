@@ -12,7 +12,6 @@ import {
   ServerInstrument,
   convertUint64toInt64,
 } from '@c3exchange/common';
-import { dateToCustomStrFormat } from './utils';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
@@ -91,7 +90,7 @@ const decodeWelcomeMessage = (encodedMessage: string) => {
   if (parts.length < 2) return;
   const userID = parts[0];
   const extractedCreationTime = parts[1];
-  const creationTime = dateToCustomStrFormat(new Date(parseInt(extractedCreationTime)));
+  const creationTime = new Date(parseInt(extractedCreationTime)).toLocaleString();
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Login);
   return { operationType, userID, creationTime };
 };
@@ -206,7 +205,7 @@ function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
   const nonce = Number(settleResult[2]);
-  const expiresOn = dateToCustomStrFormat(new Date(parseInt(settleResult[3]) * 1000));
+  const expiresOn = new Date(parseInt(settleResult[3]) * 1000).toLocaleString();
   const sellSlotId = settleResult[4];
   const sellAsset = getInstrumentfromSlotId(sellSlotId, appState);
   const sellAmount = Number(
