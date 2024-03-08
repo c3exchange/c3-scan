@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import { DecodedMessage } from '../../../../interfaces/interfaces';
-import { keyToLabelMapping } from '../../../../utils';
+import { keyToLabelMapping, processValue } from '../../../../utils';
 import * as S from './styles';
 
 interface IDecodedInfo {
@@ -8,17 +8,12 @@ interface IDecodedInfo {
 }
 
 const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
-  const processValue = (value: any) => {
-    let primaryValue = '';
-    let secondaryValue = '';
-    if (value?.chainId) {
-      primaryValue = value?.chainId;
-      secondaryValue = ' - ' + value?.chainName;
-    }
+  const formatValue = (value: any) => {
+    const { primaryValue, secondaryValue } = processValue(value);
     return (
       <>
         {primaryValue}
-        <S.SecondaryValue>{secondaryValue}</S.SecondaryValue>
+        {secondaryValue && <S.SecondaryValue>{secondaryValue}</S.SecondaryValue>}
       </>
     );
   };
@@ -32,7 +27,7 @@ const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
           return (
             <S.Row justifyContent="space-between">
               <Grid item>{label}:</Grid>
-              <Grid item>{typeof value === 'object' ? processValue(value) : value}</Grid>
+              <Grid item>{formatValue(value)}</Grid>
             </S.Row>
           );
         })}

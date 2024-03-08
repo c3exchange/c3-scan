@@ -311,3 +311,17 @@ export const getEnumKeyByEnumValue = (
   let keys = Object.keys(enumObj).filter((x) => enumObj[x] === enumValue);
   return keys.length > 0 ? keys[0] : undefined;
 };
+
+export const processValue = (value: any) => {
+  let primaryValue: string = '';
+  let secondaryValue: string = '';
+  if (value?.chainId) {
+    primaryValue = value?.chainId;
+    secondaryValue = ' - ' + value?.chainName;
+  } else if (typeof value === 'object') {
+    primaryValue = JSON.stringify(value);
+  } else {
+    primaryValue = value;
+  }
+  return { primaryValue, secondaryValue };
+};
