@@ -42,3 +42,9 @@ export const Value = styled(Grid)(({ theme }) => ({
   fontWeight: 500,
   fontSize: '14px',
 }));
+
+export const SecondaryValue = styled('span')(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontWeight: 300,
+  fontSize: '14px',
+}));

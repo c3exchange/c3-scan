@@ -33,6 +33,10 @@ export interface DecodedMessage {
   buyAssetId?: string;
   buyAmount?: number;
   maxRepay?: number;
+  chain?: {
+    chainId: number;
+    chainName: string;
+  };
 }
 
 export enum OnChainRequestOp {

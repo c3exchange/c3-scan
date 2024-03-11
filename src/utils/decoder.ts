@@ -11,6 +11,8 @@ import {
   InstrumentAmount,
   ServerInstrument,
   convertUint64toInt64,
+  getChainNameByChainId,
+  ChainId,
 } from '@c3exchange/common';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
@@ -172,6 +174,9 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
   );
   const instrumentSlotId = Number(withdrawResult[1]);
   const encodedAmount = withdrawResult[2];
+  const chainId = Number(withdrawResult[3][0]);
+  const chainName = getChainNameByChainId(chainId as ChainId);
+  const chain = { chainId, chainName };
   const amount = Number(
     InstrumentAmount.fromContract(
       getInstrumentfromSlotId(instrumentSlotId, appState),
@@ -179,7 +184,7 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
     ).toDecimal()
   );
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
-  return { operationType, instrumentName, amount };
+  return { operationType, instrumentName, amount, chain };
 }
 
 function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
@@ -287,6 +292,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   nonce: 'Nonce',
   sellAmount: 'Sell Amount',
   sellAssetId: 'Sell Asset',
+  chain: 'Chain',
 };
 
 export const getFirstAndLastChars = (
@@ -304,4 +310,18 @@ export const getEnumKeyByEnumValue = (
 ): string | undefined => {
   let keys = Object.keys(enumObj).filter((x) => enumObj[x] === enumValue);
   return keys.length > 0 ? keys[0] : undefined;
+};
+
+export const processValue = (value: any) => {
+  let primaryValue: string = '';
+  let secondaryValue: string = '';
+  if (value?.chainId) {
+    primaryValue = value?.chainId;
+    secondaryValue = ' - ' + value?.chainName;
+  } else if (typeof value === 'object') {
+    primaryValue = JSON.stringify(value);
+  } else {
+    primaryValue = value;
+  }
+  return { primaryValue, secondaryValue };
 };
