@@ -23,6 +23,8 @@ import { ReactComponent as CloseHamburger } from '../../assets/icons/close-hambu
 import { ReactComponent as Copy } from '../../assets/icons/copy.svg';
 import { ReactComponent as ToastSuccess } from '../../assets/icons/toastSuccess.svg';
 import { ReactComponent as ToastError } from '../../assets/icons/toastError.svg';
+import { ReactComponent as BackArrow } from '../../assets/icons/back-arrow.svg';
+import { ReactComponent as Paste } from '../../assets/icons/paste.svg';
 
 export type IconName =
   | 'hamburger'
@@ -49,7 +51,9 @@ export type IconName =
   | 'copy'
   | 'toastSuccess'
   | 'toastError'
-  | 'emptyInfoAddress';
+  | 'emptyInfoAddress'
+  | 'backArrow'
+  | 'paste';
 
 interface IIcon {
   name: IconName;
@@ -76,6 +80,7 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     magnet: <Magnet {...childProps} />,
     eth: <Ethereum {...childProps} />,
     search: <Search {...childProps} />,
+    backArrow: <BackArrow {...childProps} />,
     rightArrow: <RightArrow {...childProps} />,
     info: <Info {...childProps} />,
     infoFilled: <InfoFilled {...childProps} />,
@@ -85,6 +90,7 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     closeHamburger: <CloseHamburger {...childProps} />,
     emptyInfoAddress: <EmptyInfoAddress {...childProps} />,
     copy: <Copy {...childProps} />,
+    paste: <Paste {...childProps} />,
     toastSuccess: <ToastSuccess {...childProps} />,
     toastError: <ToastError {...childProps} />,
   }[name];

@@ -6,8 +6,9 @@ interface IContainer {
   _hasC3Address: boolean;
 }
 
-interface ISearchStartAdornment {
-  _disabled: boolean;
+interface IInputContainer {
+  _isMobile: boolean;
+  _isInputFocused: boolean;
 }
 
 export const Container = styled(Grid, {
@@ -25,13 +26,13 @@ export const Container = styled(Grid, {
   marginBottom: _hasC3Address ? '16px' : '32px',
   [theme.breakpoints.down('desktop')]: {
     paddingRight: _hasC3Address ? '0px' : '40px',
+    paddingBottom: _hasC3Address && '12px',
     height: 'auto',
   },
   [theme.breakpoints.down('laptop')]: {
-    paddingLeft: _hasC3Address ? '0px' : '12px',
-    paddingRight: _hasC3Address ? '0px' : '12px',
-    paddingBottom: _hasC3Address ? '0px' : '20px',
-    marginBottom: _hasC3Address ? '16px' : '16px',
+    paddingLeft: _hasC3Address ? '0px' : '15px',
+    paddingRight: _hasC3Address ? '0px' : '15px',
+    paddingBottom: _hasC3Address ? '12px' : '24px',
   },
 }));
 
@@ -58,12 +59,26 @@ export const SearchTxt = styled('span')(() => ({
   marginLeft: 8,
 }));
 
-export const InputContainer = styled('div')(({ theme }) => ({
+export const InputContainer = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_isMobile', '_isInputFocused']),
+})<IInputContainer>(({ theme, _isMobile, _isInputFocused }) => ({
   width: '538px',
   height: '56px',
   [theme.breakpoints.down('desktop')]: {
     width: '100%',
   },
+  ...(_isMobile &&
+    _isInputFocused && {
+      marginTop: '68px',
+      padding: '0 15px',
+      width: 'calc(100% - 30px) !important',
+      height: 'calc(100% - 60px - 68px)',
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      background: theme.palette.primary.dark,
+      zIndex: 999,
+    }),
 }));
 
 export const Error = styled('div')(({ theme }) => ({
@@ -75,15 +90,4 @@ export const Error = styled('div')(({ theme }) => ({
 export const SearchContainer = styled('div')(() => ({
   width: '144px',
   marginLeft: '16px',
-}));
-
-export const SearchStartAdornment = styled('div', {
-  shouldForwardProp: createShouldForwardProp(['_disabled']),
-})<ISearchStartAdornment>(({ theme, _disabled }) => ({
-  pointerEvents: _disabled ? 'none' : 'auto',
-  svg: {
-    color: _disabled
-      ? theme.palette.background.paper
-      : theme.palette.primary.contrastText,
-  },
 }));

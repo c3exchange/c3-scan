@@ -24,7 +24,7 @@ const Explorer = () => {
   const [address, setAddress] = useState<string>('');
   const [C3Address, setC3Address] = useState<string>('');
   const [wrongAddress, setWrongAddress] = useState<boolean>(false);
-  const { copy } = useCopy();
+
   const windowSize = useWindowSize();
   const isMediumDesktop = useMemo(
     () => windowSize.width < breakpoints.mediumDesktop,
@@ -34,6 +34,7 @@ const Explorer = () => {
     () => windowSize.width < breakpoints.laptop,
     [windowSize.width]
   );
+
   const { data: holdingAssets, isLoading } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
@@ -48,6 +49,7 @@ const Explorer = () => {
     setC3Address('');
   };
 
+  const { copy } = useCopy();
   const onCopy = async (address: string) => {
     copy(address);
   };
@@ -92,6 +94,7 @@ const Explorer = () => {
           onClear={onClear}
           onChangeAddress={onChangeAddress}
           hasC3Address={!!C3Address}
+          C3Address={C3Address}
         />
       </Grid>
       {C3Address ? (

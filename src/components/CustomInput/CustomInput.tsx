@@ -1,27 +1,26 @@
 import { ReactNode } from 'react';
-import Icon from '../Icon/Icon';
 import * as S from './styles';
 import { TextFieldProps as MUITextFieldProps } from '@mui/material/TextField';
 
 interface ICustomInputProps {
   startAdornment?: ReactNode;
-  onClear?: () => void;
+  endAdornment?: ReactNode;
 }
-const CustomInput: React.FC<ICustomInputProps & MUITextFieldProps> = (props) => {
+
+const CustomInput: React.FC<ICustomInputProps & MUITextFieldProps> = ({
+  startAdornment,
+  endAdornment,
+  ...props
+}) => {
   return (
     <S.Input
-      error={props.error}
+      {...props}
       InputProps={{
-        endAdornment: props.onClear && !!props.value && (
-          <S.EndAdornment onClick={() => props.onClear!()}>
-            <Icon name="close" height={16} width={16} />
-          </S.EndAdornment>
-        ),
-        startAdornment: !!props.startAdornment && (
-          <S.StartAdornment>{props.startAdornment}</S.StartAdornment>
+        endAdornment: !!endAdornment && <S.EndAdornment>{endAdornment}</S.EndAdornment>,
+        startAdornment: !!startAdornment && (
+          <S.StartAdornment>{startAdornment}</S.StartAdornment>
         ),
       }}
-      {...props}
     />
   );
 };

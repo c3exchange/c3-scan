@@ -91,7 +91,10 @@ const MobileTable = (props: IDepositTable) => {
             </S.Item>
             <S.Item item>
               ${formatNumber(totalValueLocked)}
-              <TooltipInfo message="The total value of all available assets inside the C3 exchange platform." />
+              <TooltipInfo
+                message="The total value of all available assets inside the C3 exchange platform."
+                placement="bottom-end"
+              />
             </S.Item>
           </S.Row>
         </S.Footer>
