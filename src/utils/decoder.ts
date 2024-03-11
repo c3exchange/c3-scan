@@ -92,7 +92,7 @@ const decodeWelcomeMessage = (encodedMessage: string) => {
   if (parts.length < 2) return;
   const userID = parts[0];
   const extractedCreationTime = parts[1];
-  const creationTime = new Date(parseInt(extractedCreationTime)).toISOString();
+  const creationTime = new Date(parseInt(extractedCreationTime)).toLocaleString();
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Login);
   return { operationType, userID, creationTime };
 };
@@ -210,7 +210,7 @@ function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
   const nonce = Number(settleResult[2]);
-  const expiresOn = new Date(parseInt(settleResult[3])).toISOString();
+  const expiresOn = new Date(parseInt(settleResult[3]) * 1000).toLocaleString();
   const sellSlotId = settleResult[4];
   const sellAsset = getInstrumentfromSlotId(sellSlotId, appState);
   const sellAmount = Number(
@@ -284,7 +284,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   userID: 'User ID',
   creationTime: 'Creation Time',
   account: 'Account',
-  expiresOn: 'Expires on',
+  expiresOn: 'Expiration Time',
   buyAmount: 'Buy Amount',
   buyAssetId: 'Buy Asset',
   maxBorrow: 'Max Borrow',
