@@ -325,3 +325,22 @@ export const processValue = (value: any) => {
   }
   return { primaryValue, secondaryValue };
 };
+
+export const UrlMsgToBase64Msg = (urlParam: string | undefined): string => {
+  if (!urlParam) return '';
+  let message = '';
+
+  const welcomeRegex = /^\s*Welcome to C3/;
+  if (welcomeRegex.test(urlParam)) {
+    const finalWordMatcher = /([A-Za-z0-9+/= ]+)\s*$/;
+    const match = urlParam.match(finalWordMatcher);
+    if (!match) return '';
+    const operation = match[1].trim();
+    message += urlParam.slice(0, urlParam.length - operation.length);
+    message += operation.replace(/ /g, '+');
+  } else {
+    message += urlParam.replace(/ /g, '+');
+  }
+
+  return message;
+};

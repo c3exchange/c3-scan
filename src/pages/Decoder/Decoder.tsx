@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Banner from '../../components/Banner/Banner';
 import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.svg';
 import DecoderBox from './components/DecoderBox/DecoderBox';
 
 import DecodedInfo from './components/DecodedInfo/DecodedInfo';
-import { decodeMessage } from '../../utils';
+import { UrlMsgToBase64Msg, decodeMessage } from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
@@ -13,6 +13,7 @@ import { useWindowSize } from '../../hooks/useWindowSize';
 import { breakpoints } from '../../theme';
 
 import * as S from './styles';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Decoder = () => {
   const windowSize = useWindowSize();
@@ -30,10 +31,37 @@ const Decoder = () => {
   const { data: holdingAssets } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
 
+  //*******************************************************************************/
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const queryMessage = queryParams.has('message')
+    ? queryParams.get('message') || ''
+    : undefined;
+
+  useEffect(() => {
+    console.log('queryMessage', queryMessage);
+    if (queryMessage && queryMessage !== message) {
+      onUrlDecode(UrlMsgToBase64Msg(queryMessage));
+    }
+  }, [queryMessage, onChainC3State]);
+
+  const onUrlDecode = (msg: string) => {
+    if (!onChainC3State || !onChainC3State.length) return;
+    setMessage(msg);
+    const messageDecoded = decodeMessage(msg, onChainC3State);
+    if (messageDecoded) setDecodedMessage(messageDecoded);
+  };
+  //*******************************************************************************/
+
   const onDecode = () => {
     if (!onChainC3State) return;
     const messageDecoded = decodeMessage(message, onChainC3State);
-    if (messageDecoded) setDecodedMessage(messageDecoded);
+    if (messageDecoded) {
+      setDecodedMessage(messageDecoded);
+      queryParams.set('message', message);
+      navigate(`?${queryParams.toString()}`);
+    }
   };
 
   return (
