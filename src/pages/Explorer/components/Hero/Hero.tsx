@@ -100,7 +100,7 @@ const Hero = ({
                 onBlur={() => setFocusedInput(false)}
                 placeholder="Search by address or account id"
                 error={wrongAddress}
-                end_adornment={
+                endAdornment={
                   !!address ? (
                     <div onMouseDown={onClearInput}>
                       <Icon name="close" height={20} width={20} />
@@ -114,7 +114,7 @@ const Hero = ({
                     )
                   )
                 }
-                start_adornment={
+                startAdornment={
                   isMobile &&
                   (!focusedInput ? (
                     <div style={{ cursor: 'default' }}>
