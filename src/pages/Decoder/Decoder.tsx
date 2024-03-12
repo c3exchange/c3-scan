@@ -1,21 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Banner from '../../components/Banner/Banner';
 import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.svg';
 import DecoderBox from './components/DecoderBox/DecoderBox';
-
 import DecodedInfo from './components/DecodedInfo/DecodedInfo';
 import { urlMsgToBase64Msg, decodeMessage } from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
+import { useURLSearchParam } from '../../hooks/useGetURLSearchParam';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { breakpoints } from '../../theme';
+import { ServerInstrument } from '@c3exchange/common';
 
 import * as S from './styles';
-import { useNavigate } from 'react-router-dom';
-import useURLSearchParam from '../../hooks/useGetURLSearchParam';
-import { ServerInstrument } from '@c3exchange/common';
 
 const Decoder = () => {
   const windowSize = useWindowSize();
