@@ -13,7 +13,9 @@ import { useWindowSize } from '../../hooks/useWindowSize';
 import { breakpoints } from '../../theme';
 
 import * as S from './styles';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import useURLSearchParam from '../../hooks/useGetURLSearchParam';
+import { ServerInstrument } from '@c3exchange/common';
 
 const Decoder = () => {
   const windowSize = useWindowSize();
@@ -29,26 +31,32 @@ const Decoder = () => {
   const [message, setMessage] = useState('');
   const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
   const { data: holdingAssets } = useGetC3HoldingAssets();
-  const onChainC3State = useGetOnChainC3State(holdingAssets);
+  const onChainC3State: ServerInstrument[] = useGetOnChainC3State(holdingAssets);
 
-  const location = useLocation();
   const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const queryMessage = queryParams.has('message')
-    ? queryParams.get('message') || ''
-    : undefined;
+  const { getURLSearchParam, queryParameters } = useURLSearchParam();
+  const queryMessage = getURLSearchParam('message');
 
   useEffect(() => {
-    if (queryMessage && !decodedMessage) {
-      const queryMessageBase64 = urlMsgToBase64Msg(queryMessage);
-      setMessage(queryMessageBase64);
-      onUrlDecode(queryMessageBase64);
+    if (queryMessage && (!decodedMessage || message !== queryMessage)) {
+      onUrlDecode(urlMsgToBase64Msg(queryMessage));
     }
-  }, [queryMessage, onChainC3State]);
+  }, [queryMessage]);
 
-  const onUrlDecode = (msg: string) => {
+  const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
+  useEffect(() => {
+    if (!onChainC3State.length || initialURLDecodeDone) return;
+    setInitialURLDecodeDone(true);
+
+    if (queryMessage && (!decodedMessage || message !== queryMessage)) {
+      onUrlDecode(urlMsgToBase64Msg(queryMessage));
+    }
+  }, [onChainC3State]);
+
+  const onUrlDecode = (queryMessageBase64: string) => {
+    setMessage(queryMessageBase64);
     if (!onChainC3State || !onChainC3State.length) return;
-    const messageDecoded = decodeMessage(msg, onChainC3State);
+    const messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
     if (messageDecoded) setDecodedMessage(messageDecoded);
   };
 
@@ -57,8 +65,8 @@ const Decoder = () => {
     const messageDecoded = decodeMessage(message, onChainC3State);
     if (messageDecoded) {
       setDecodedMessage(messageDecoded);
-      queryParams.set('message', message);
-      navigate(`?${queryParams.toString()}`);
+      queryParameters.set('message', message);
+      navigate(`?${queryParameters.toString()}`);
     }
   };
 
