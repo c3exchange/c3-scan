@@ -31,7 +31,6 @@ const Decoder = () => {
   const { data: holdingAssets } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
 
-  //*******************************************************************************/
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -40,22 +39,20 @@ const Decoder = () => {
     : undefined;
 
   useEffect(() => {
-    console.log('queryMessage', queryMessage);
-    if (queryMessage && queryMessage !== message) {
+    if (queryMessage && !decodedMessage) {
+      setMessage(queryMessage);
       onUrlDecode(UrlMsgToBase64Msg(queryMessage));
     }
   }, [queryMessage, onChainC3State]);
 
   const onUrlDecode = (msg: string) => {
     if (!onChainC3State || !onChainC3State.length) return;
-    setMessage(msg);
     const messageDecoded = decodeMessage(msg, onChainC3State);
     if (messageDecoded) setDecodedMessage(messageDecoded);
   };
-  //*******************************************************************************/
 
   const onDecode = () => {
-    if (!onChainC3State) return;
+    if (!onChainC3State || !onChainC3State.length) return;
     const messageDecoded = decodeMessage(message, onChainC3State);
     if (messageDecoded) {
       setDecodedMessage(messageDecoded);
