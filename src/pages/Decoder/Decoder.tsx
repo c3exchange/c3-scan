@@ -40,8 +40,9 @@ const Decoder = () => {
 
   useEffect(() => {
     if (queryMessage && !decodedMessage) {
-      setMessage(queryMessage);
-      onUrlDecode(UrlMsgToBase64Msg(queryMessage));
+      const queryMessageBase64 = UrlMsgToBase64Msg(queryMessage);
+      setMessage(queryMessageBase64);
+      onUrlDecode(queryMessageBase64);
     }
   }, [queryMessage, onChainC3State]);
 
