@@ -5,7 +5,7 @@ import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.s
 import DecoderBox from './components/DecoderBox/DecoderBox';
 
 import DecodedInfo from './components/DecodedInfo/DecodedInfo';
-import { UrlMsgToBase64Msg, decodeMessage } from '../../utils';
+import { urlMsgToBase64Msg, decodeMessage } from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
@@ -40,7 +40,7 @@ const Decoder = () => {
 
   useEffect(() => {
     if (queryMessage && !decodedMessage) {
-      const queryMessageBase64 = UrlMsgToBase64Msg(queryMessage);
+      const queryMessageBase64 = urlMsgToBase64Msg(queryMessage);
       setMessage(queryMessageBase64);
       onUrlDecode(queryMessageBase64);
     }
