@@ -1,16 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Banner from '../../components/Banner/Banner';
 import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.svg';
 import DecoderBox from './components/DecoderBox/DecoderBox';
-
 import DecodedInfo from './components/DecodedInfo/DecodedInfo';
-import { decodeMessage } from '../../utils';
+import { urlMsgToBase64Msg, decodeMessage } from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { breakpoints } from '../../theme';
+import { ServerInstrument } from '@c3exchange/common';
 
 import * as S from './styles';
 
@@ -28,12 +29,45 @@ const Decoder = () => {
   const [message, setMessage] = useState('');
   const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
   const { data: holdingAssets } = useGetC3HoldingAssets();
-  const onChainC3State = useGetOnChainC3State(holdingAssets);
+  const onChainC3State: ServerInstrument[] = useGetOnChainC3State(holdingAssets);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParameters = new URLSearchParams(location.search);
+  const queryMessage = queryParameters.get('message');
+
+  useEffect(() => {
+    if (queryMessage) handleUrlDecode();
+  }, [queryMessage]);
+
+  const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
+  useEffect(() => {
+    if (!onChainC3State.length || initialURLDecodeDone) return;
+    setInitialURLDecodeDone(true);
+    if (queryMessage) handleUrlDecode();
+  }, [onChainC3State]);
+
+  const handleUrlDecode = () => {
+    if (!decodedMessage || message !== queryMessage) {
+      onUrlDecode(urlMsgToBase64Msg(queryMessage));
+    }
+  };
+
+  const onUrlDecode = (queryMessageBase64: string) => {
+    setMessage(queryMessageBase64);
+    if (!onChainC3State || !onChainC3State.length) return;
+    const messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
+    if (messageDecoded) setDecodedMessage(messageDecoded);
+  };
 
   const onDecode = () => {
-    if (!onChainC3State) return;
+    if (!onChainC3State || !onChainC3State.length) return;
     const messageDecoded = decodeMessage(message, onChainC3State);
-    if (messageDecoded) setDecodedMessage(messageDecoded);
+    if (messageDecoded) {
+      setDecodedMessage(messageDecoded);
+      queryParameters.set('message', message);
+      navigate(`?${queryParameters.toString()}`);
+    }
   };
 
   return (
