@@ -326,22 +326,19 @@ export const processValue = (value: any) => {
   return { primaryValue, secondaryValue };
 };
 
-export const urlMsgToBase64Msg = (urlParam: string | undefined): string => {
+export const urlMsgToBase64Msg = (urlParam: string | null): string => {
   if (!urlParam) return '';
 
   const welcomeRegex = /^\s*Welcome to C3/;
-  if (welcomeRegex.test(urlParam)) {
-    const finalWordMatcher = /([A-Za-z0-9+/= ]+)\s*$/;
-    const match = urlParam.match(finalWordMatcher);
-    if (!match) return '';
-    const welcomeString = 'Welcome to C3:\n'
-      .concat('Click to sign and accept the C3 Terms of Service (https://c3.io/terms)\n')
-      .concat(
-        'This request will not trigger a blockchain transaction or cost any gas fees.\n'
-      );
-    const operation = match[1].trim().replace(/ /g, '+');
-    return welcomeString.concat(operation);
-  } else {
-    return urlParam.replace(/ /g, '+');
-  }
+
+  if (!welcomeRegex.test(urlParam)) return urlParam.replace(/ /g, '+');
+  const finalWordMatcher = /([A-Za-z0-9+/= ]+)\s*$/;
+  const match = urlParam.match(finalWordMatcher);
+  if (!match) return '';
+  const welcomeString = `Welcome to C3:
+Click to sign and accept the C3 Terms of Service (https://c3.io/terms)
+This request will not trigger a blockchain transaction or cost any gas fees.
+`;
+  const operation = match[1].trim().replace(/ /g, '+');
+  return `${welcomeString}${operation}`;
 };

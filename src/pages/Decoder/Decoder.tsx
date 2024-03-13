@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Banner from '../../components/Banner/Banner';
 import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.svg';
@@ -9,7 +9,6 @@ import { urlMsgToBase64Msg, decodeMessage } from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
-import { useURLSearchParam } from '../../hooks/useGetURLSearchParam';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { breakpoints } from '../../theme';
 import { ServerInstrument } from '@c3exchange/common';
@@ -33,24 +32,26 @@ const Decoder = () => {
   const onChainC3State: ServerInstrument[] = useGetOnChainC3State(holdingAssets);
 
   const navigate = useNavigate();
-  const { getURLSearchParam, queryParameters } = useURLSearchParam();
-  const queryMessage = getURLSearchParam('message');
+  const location = useLocation();
+  const queryParameters = new URLSearchParams(location.search);
+  const queryMessage = queryParameters.get('message');
 
   useEffect(() => {
-    if (queryMessage && (!decodedMessage || message !== queryMessage)) {
-      onUrlDecode(urlMsgToBase64Msg(queryMessage));
-    }
+    if (queryMessage) handleUrlDecode();
   }, [queryMessage]);
 
   const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
   useEffect(() => {
     if (!onChainC3State.length || initialURLDecodeDone) return;
     setInitialURLDecodeDone(true);
+    if (queryMessage) handleUrlDecode();
+  }, [onChainC3State]);
 
-    if (queryMessage && (!decodedMessage || message !== queryMessage)) {
+  const handleUrlDecode = () => {
+    if (!decodedMessage || message !== queryMessage) {
       onUrlDecode(urlMsgToBase64Msg(queryMessage));
     }
-  }, [onChainC3State]);
+  };
 
   const onUrlDecode = (queryMessageBase64: string) => {
     setMessage(queryMessageBase64);
