@@ -210,7 +210,8 @@ function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
   const nonce = Number(settleResult[2]);
-  const expiresOn = new Date(parseInt(settleResult[3]) * 1000).toLocaleString();
+  const extractedExpirationTime = settleResult[3];
+  const expiresOn = new Date(parseInt(extractedExpirationTime) * 1000).toLocaleString();
   const sellSlotId = settleResult[4];
   const sellAsset = getInstrumentfromSlotId(sellSlotId, appState);
   const sellAmount = Number(
@@ -241,6 +242,27 @@ function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   };
 }
 
+function decodeDelegate(operation: Uint8Array) {
+  const operationType = getEnumKeyByEnumValue(
+    OnChainRequestOp,
+    OnChainRequestOp.Delegate
+  );
+  const delegateResult = decodeABIValue(operation, delegateFormat);
+  const extractedDelegateAddress = delegateResult[1];
+  const delegateAddress = getFirstAndLastChars(extractedDelegateAddress, 8, 8);
+  const nonce = Number(delegateResult[2]);
+  const extractedExpirationTime = delegateResult[3];
+  const expiresOn = new Date(parseInt(extractedExpirationTime) * 1000).toLocaleString();
+
+  const isEphemeralKeyDelegateMsg = nonce === 0;
+  return {
+    operationType: isEphemeralKeyDelegateMsg ? 'Ephemeral Key Delegate' : operationType,
+    delegateAddress,
+    expiresOn,
+    ...(isEphemeralKeyDelegateMsg ? {} : { nonce }),
+  };
+}
+
 export const decodeMessage = (
   encodeMessage: string,
   serverInstruments: ServerInstrument[]
@@ -268,6 +290,9 @@ export const decodeMessage = (
       case OnChainRequestOp.Settle:
         const settleDecoded = decodeSettle(operation, serverInstruments);
         return { ...settleDecoded, target };
+      case OnChainRequestOp.Delegate:
+        const delegateDecoded = decodeDelegate(operation);
+        return { ...delegateDecoded, target };
       default:
         break;
     }
@@ -293,6 +318,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   sellAmount: 'Sell Amount',
   sellAssetId: 'Sell Asset',
   chain: 'Chain',
+  delegateAddress: 'Delegate Address',
 };
 
 export const getFirstAndLastChars = (

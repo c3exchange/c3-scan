@@ -37,6 +37,7 @@ export interface DecodedMessage {
     chainId: number;
     chainName: string;
   };
+  delegateAddress?: string;
 }
 
 export enum OnChainRequestOp {
