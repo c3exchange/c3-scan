@@ -275,10 +275,14 @@ export const decodeMessage = (
     const bytesToDecode: Uint8Array = decodeBase64(buffer.toString('base64'));
     const decoder = new TextDecoder('utf-8');
     const base64String = decoder.decode(bytesToDecode);
+    console.log('base64String', base64String);
     const bytesArray = Array.from(atob(base64String), (char) => char.charCodeAt(0));
+    console.log('bytesArray', bytesArray);
     const fullMessage = new Uint8Array(bytesArray).slice(8);
+    console.log('fullMessage', fullMessage);
     const decodedHeader = unpackPartialData(fullMessage);
     const operation = fullMessage.slice(decodedHeader.bytesRead);
+    console.log('operation', operation);
     const target: string = getFirstAndLastChars(decodedHeader.result.target, 8, 8);
     switch (operation[0]) {
       case OnChainRequestOp.Withdraw:
