@@ -8,6 +8,8 @@ enum Asset {
   AVAX = 'AVAX',
   ARB = 'ARB',
   BNB = 'BNB',
+  PYTH = 'PYTH',
+  SOL = 'SOL',
 }
 interface Patterns {
   [key: string]: RegExp;
@@ -22,6 +24,8 @@ export const getAssetIcon = (unitName?: string, size = 24) => {
     [Asset.AVAX]: new RegExp(Asset.AVAX, 'i'),
     [Asset.ARB]: new RegExp(Asset.ARB, 'i'),
     [Asset.BNB]: new RegExp(Asset.BNB, 'i'),
+    [Asset.PYTH]: new RegExp(Asset.PYTH, 'i'),
+    [Asset.SOL]: new RegExp(Asset.SOL, 'i'),
   };
   for (const asset in patterns) {
     regex = patterns[asset];
@@ -42,6 +46,10 @@ export const getAssetIcon = (unitName?: string, size = 24) => {
           return <Icon name="arbitrum" height={size} width={size} />;
         case 'BNB':
           return <Icon name="bnb" height={size} width={size} />;
+        case 'PYTH':
+          return <Icon name="pyth" height={size} width={size} />;
+        case 'SOL':
+          return <Icon name="sol" height={size} width={size} />;
       }
     }
   }
