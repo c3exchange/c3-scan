@@ -5,6 +5,8 @@ import { ReactComponent as Usdc } from '../../assets/icons/usdc.svg';
 import { ReactComponent as Bitcoin } from '../../assets/icons/wbtc.svg';
 import { ReactComponent as Ethereum } from '../../assets/icons/ethereum.svg';
 import { ReactComponent as Algo } from '../../assets/icons/algo.svg';
+import { ReactComponent as Pyth } from '../../assets/icons/pyth.svg';
+import { ReactComponent as Sol } from '../../assets/icons/solana.svg';
 import { ReactComponent as Reddit } from '../../assets/icons/reddit.svg';
 import { ReactComponent as X } from '../../assets/icons/x.svg';
 import { ReactComponent as Hamburger } from '../../assets/icons/hamburger.svg';
@@ -33,6 +35,8 @@ export type IconName =
   | 'bnb'
   | 'usdc'
   | 'algo'
+  | 'pyth'
+  | 'sol'
   | 'reddit'
   | 'x'
   | 'discord'
@@ -69,6 +73,8 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     hamburger: <Hamburger {...childProps} />,
     arbitrum: <Arbitrum {...childProps} />,
     avax: <Avax {...childProps} />,
+    pyth: <Pyth {...childProps} />,
+    sol: <Sol {...childProps} />,
     bnb: <BNB {...childProps} />,
     usdc: <Usdc {...childProps} />,
     reddit: <Reddit {...childProps} />,
