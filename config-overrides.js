@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const { resolve } = require('path');
 const os = require('os');
 
-process.env.SASS_PATH = resolve(__dirname, 'node_modules') + (os.platform == 'win32' ? ';' : ':') + resolve(__dirname, 'src', 'styles')
+process.env.SASS_PATH = resolve(__dirname, 'node_modules') + (os.platform === 'win32' ? ';' : ':') + resolve(__dirname, 'src', 'styles')
 process.env.GENERATE_SOURCEMAP = false
 
 module.exports = {
@@ -40,27 +40,30 @@ module.exports = {
     };
 
     config.ignoreWarnings = (config.ignoreWarnings || []).concat([/Failed to parse source map/]);
-    config.optimization.runtimeChunk = false;
-    config.optimization.splitChunks = {
-      chunks: 'all',
-      minSize: 500000,
-      maxSize: 8000000,
-      minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automaticNameDelimiter: '~',
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
+    
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.runtimeChunk = false;
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        minSize: 500000,
+        maxSize: 8000000,
+        minChunks: 1,
+        maxAsyncRequests: 5,
+        maxInitialRequests: 3,
+        automaticNameDelimiter: '~',
+        cacheGroups: {
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
         },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
-    };
+      };
+    }
     return config;
-  }
+  },
 };
