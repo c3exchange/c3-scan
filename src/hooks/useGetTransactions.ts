@@ -1,8 +1,5 @@
 import { useGlobalContext } from '../contexts/GlobalContext';
-
-interface ITx {
-  group?: string;
-}
+import { Transaction } from 'algosdk';
 
 export const useGetTransactions = () => {
   const { algoIndexer } = useGlobalContext();
@@ -14,7 +11,7 @@ export const useGetTransactions = () => {
       .round(parseInt(block))
       .do();
     const transactions = response.transactions;
-    const groupTxs = transactions.filter((tx: ITx) => tx.group === groupId);
+    const groupTxs = transactions.filter((tx: any) => tx['group'] === groupId);
     return groupTxs;
   };
 

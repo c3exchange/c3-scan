@@ -316,17 +316,12 @@ export const decodeMessage = (
   }
 };
 
-interface ITransaction {
-  'application-transaction': {
-    'application-args': string[];
-  };
-}
 export const decodeMsgFromTxDetails = (
   groupTxs: any,
   onChainC3State: ServerInstrument[]
 ) => {
   let message;
-  const allAppArgs = groupTxs.map((tx: ITransaction) => {
+  const allAppArgs = groupTxs.map((tx: any) => {
     if (tx['application-transaction']) {
       return tx['application-transaction']['application-args'];
     } else {
