@@ -4,7 +4,6 @@ import {
   IPackedInfo,
   decodeUint16,
   decodeUint,
-  decodeABIValue,
   CHAIN_UTILS,
   CHAIN_ID_ALGORAND,
   Instrument,
@@ -13,7 +12,23 @@ import {
   convertUint64toInt64,
   getChainNameByChainId,
   ChainId,
+  encodeBase16,
+  decodeABIValue,
+  signedMessageFormat,
 } from '@c3exchange/common';
+import { ABIValue } from 'algosdk';
+
+export const CREATE_ABI_SELECTOR = '0c5f0186';
+export const UPDATE_INSTRUMENT_ABI_SELECTOR = 'd0e96ff3';
+export const UPDATE_PARAMETER_ABI_SELECTOR = 'da73965d';
+export const POOL_MOVE_ABI_SELECTOR = '6904886c';
+export const ADD_ORDER_ABI_SELECTOR = 'e80737cd';
+export const SETTLE_ABI_SELECTOR = '05c23896';
+export const WITHDRAW_ABI_SELECTOR = '1de3bc55';
+export const ACCOUNT_MOVE_ABI_SELECTOR = 'abb4088e';
+export const LIQUIDATE_ABI_SELECTOR = '7716a1b3';
+export const FUND_MBR_ABI_SELECTOR = 'd1474b5a';
+export const CLEAN_ORDERS_ABI_SELECTOR = '6dd96ba8';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
@@ -301,6 +316,52 @@ export const decodeMessage = (
   }
 };
 
+interface ITransaction {
+  'application-transaction': {
+    'application-args': string[];
+  };
+}
+export const decodeMsgFromTxDetails = (
+  groupTxs: any,
+  onChainC3State: ServerInstrument[]
+) => {
+  let message;
+  const allAppArgs = groupTxs.map((tx: ITransaction) => {
+    if (tx['application-transaction']) {
+      return tx['application-transaction']['application-args'];
+    } else {
+      return [];
+    }
+  });
+
+  for (let i = 0; i < allAppArgs.length; i++) {
+    const txArgs = allAppArgs[i];
+    if (!txArgs.length) continue;
+    const codOp = encodeBase16(decodeBase64(txArgs[0]));
+
+    if (
+      codOp === ADD_ORDER_ABI_SELECTOR ||
+      codOp === SETTLE_ABI_SELECTOR ||
+      codOp === POOL_MOVE_ABI_SELECTOR ||
+      codOp === WITHDRAW_ABI_SELECTOR
+    ) {
+      const signedOperation = decodeBase64(txArgs[2]);
+      const abiFormat = packABIString(signedMessageFormat);
+      const decodeABIValueVar = decodeABIValue(signedOperation, abiFormat);
+      const uintArr = abiValueToUint8Array(decodeABIValueVar, signedMessageFormat);
+
+      if (codOp === ADD_ORDER_ABI_SELECTOR || codOp === SETTLE_ABI_SELECTOR) {
+        message = decodeSettle(uintArr[1], onChainC3State);
+      } else if (codOp === POOL_MOVE_ABI_SELECTOR) {
+        message = decodePoolMove(uintArr[1], onChainC3State);
+      } else if (codOp === WITHDRAW_ABI_SELECTOR) {
+        message = decodeWithdraw(uintArr[1], onChainC3State);
+      }
+    }
+  }
+  return message;
+};
+
 export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   amount: 'Amount',
   target: 'Destination',
@@ -352,7 +413,7 @@ export const processValue = (value: any) => {
   return { primaryValue, secondaryValue };
 };
 
-export const urlMsgToBase64Msg = (urlParam: string | null): string => {
+export const urlParamToBase64 = (urlParam: string | null): string => {
   if (!urlParam) return '';
 
   const welcomeRegex = /^\s*Welcome to C3/;
@@ -368,3 +429,14 @@ This request will not trigger a blockchain transaction or cost any gas fees.
   const operation = match[1].trim().replace(/ /g, '+');
   return `${welcomeString}${operation}`;
 };
+
+export function abiValueToUint8Array(arr: ABIValue[], format: IPackedInfo): any {
+  return arr.map((value: ABIValue, i: number) => {
+    const a = format[Object.keys(format)[i]];
+    if (a.type === 'object')
+      return abiValueToUint8Array(value as Array<ABIValue>, a.info as IPackedInfo);
+    if (a.type === 'base64' || a.type === 'bytes' || Array.isArray(value))
+      return new Uint8Array(value as Array<number>);
+    else return value;
+  });
+}

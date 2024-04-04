@@ -5,7 +5,7 @@ import Banner from '../../components/Banner/Banner';
 import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.svg';
 import DecoderBox from './components/DecoderBox/DecoderBox';
 import DecodedInfo from './components/DecodedInfo/DecodedInfo';
-import { urlMsgToBase64Msg, decodeMessage } from '../../utils';
+import { urlParamToBase64, decodeMessage, decodeMsgFromTxDetails } from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
@@ -14,8 +14,11 @@ import { breakpoints } from '../../theme';
 import { ServerInstrument } from '@c3exchange/common';
 
 import * as S from './styles';
+import { useGetTransactions } from '../../hooks/useGetTransactions';
 
 const Decoder = () => {
+  const { getGroupTxs } = useGetTransactions();
+
   const windowSize = useWindowSize();
   const isMediumDesktop = useMemo(
     () => windowSize.width < breakpoints.mediumDesktop,
@@ -34,26 +37,41 @@ const Decoder = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParameters = new URLSearchParams(location.search);
-  const queryMessage = queryParameters.get('message');
 
+  const queryGroupId = queryParameters.get('groupId');
+  const queryBlock = queryParameters.get('block');
   useEffect(() => {
-    if (queryMessage) handleUrlDecode();
+    if (queryGroupId && queryBlock) handleUrlGroupIdDecode();
+  }, [queryGroupId, queryBlock]);
+
+  const handleUrlGroupIdDecode = async () => {
+    if (!onChainC3State.length) return;
+    const groupId = urlParamToBase64(queryGroupId || '');
+    const groupTxs = await getGroupTxs(groupId || '', queryBlock || '');
+    const msg = decodeMsgFromTxDetails(groupTxs, onChainC3State);
+    if (msg) setDecodedMessage(msg);
+  };
+
+  const queryMessage = queryParameters.get('message');
+  useEffect(() => {
+    if (queryMessage) handleUrlMsgDecode();
   }, [queryMessage]);
 
   const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
   useEffect(() => {
     if (!onChainC3State.length || initialURLDecodeDone) return;
     setInitialURLDecodeDone(true);
-    if (queryMessage) handleUrlDecode();
+    if (queryMessage) handleUrlMsgDecode();
+    if (queryGroupId && queryBlock) handleUrlGroupIdDecode();
   }, [onChainC3State]);
 
-  const handleUrlDecode = () => {
+  const handleUrlMsgDecode = () => {
     if (!decodedMessage || message !== queryMessage) {
-      onUrlDecode(urlMsgToBase64Msg(queryMessage));
+      onUrlMsgDecode(urlParamToBase64(queryMessage));
     }
   };
 
-  const onUrlDecode = (queryMessageBase64: string) => {
+  const onUrlMsgDecode = (queryMessageBase64: string) => {
     setMessage(queryMessageBase64);
     if (!onChainC3State || !onChainC3State.length) return;
     const messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
