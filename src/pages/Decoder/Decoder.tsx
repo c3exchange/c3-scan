@@ -40,14 +40,16 @@ const Decoder = () => {
 
   const queryGroupId = queryParameters.get('groupId');
   const queryBlock = queryParameters.get('block');
+  const queryIndex = queryParameters.get('index');
   useEffect(() => {
-    if (queryGroupId && queryBlock) handleUrlGroupIdDecode();
-  }, [queryGroupId, queryBlock]);
+    if (queryGroupId && queryBlock && queryIndex) handleUrlGroupIdDecode();
+  }, [queryGroupId, queryBlock, queryIndex]);
 
   const handleUrlGroupIdDecode = async () => {
+    if (!queryGroupId || !queryBlock || !queryIndex) return;
     if (!onChainC3State.length) return;
-    const groupId = urlParamToBase64(queryGroupId || '');
-    const groupTxs = await getGroupTxs(groupId || '', queryBlock || '');
+    const groupId = urlParamToBase64(queryGroupId);
+    const groupTxs = await getGroupTxs(groupId, queryBlock, queryIndex);
     const msg = decodeMsgFromTxDetails(groupTxs, onChainC3State);
     if (msg) setDecodedMessage(msg);
   };

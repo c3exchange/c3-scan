@@ -412,8 +412,8 @@ export const urlParamToBase64 = (urlParam: string | null): string => {
   if (!urlParam) return '';
 
   const welcomeRegex = /^\s*Welcome to C3/;
-
   if (!welcomeRegex.test(urlParam)) return urlParam.replace(/ /g, '+');
+
   const finalWordMatcher = /([A-Za-z0-9+/= ]+)\s*$/;
   const match = urlParam.match(finalWordMatcher);
   if (!match) return '';
