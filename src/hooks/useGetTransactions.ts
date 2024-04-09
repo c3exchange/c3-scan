@@ -1,5 +1,4 @@
 import { useGlobalContext } from '../contexts/GlobalContext';
-import { Transaction } from 'algosdk';
 
 export const useGetTransactions = () => {
   const { algoIndexer } = useGlobalContext();
