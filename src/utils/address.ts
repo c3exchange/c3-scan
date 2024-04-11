@@ -25,7 +25,8 @@ export const getPublicKeyByAddress = (address: UserAddress): Uint8Array => {
 export const getC3Address = (address: UserAddress): string => {
   if (isValidAccountId(address)) {
     return address;
-  } else if (isValidAddress(address)) {
+  }
+  if (isValidAddress(address)) {
     return userAddressToAccountId(address);
   }
   throw new Error(`Invalid address: ${address}`);
