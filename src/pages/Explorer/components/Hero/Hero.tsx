@@ -36,24 +36,13 @@ const Hero = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [focusedInput, setFocusedInput] = useState(false);
 
-  const [lastValidAddress, setLastValidAddress] = useState<string>('');
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (!wrongAddress && address.length && event.key === 'Enter') {
+    if (address.length && event.key === 'Enter') {
       onSearch();
-      if (address === lastValidAddress || address === C3Address) {
-        setFocusedInput(false);
-        inputRef.current?.blur();
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (hasC3Address) {
-      setLastValidAddress(address);
       setFocusedInput(false);
       inputRef.current?.blur();
     }
-  }, [C3Address]);
+  };
 
   const { paste } = usePaste();
   const onPaste = (event: React.MouseEvent) => {
@@ -80,11 +69,11 @@ const Hero = ({
     <S.Container
       container
       direction="column"
-      _hasC3Address={hasC3Address}
+      _hasC3Address={hasC3Address || wrongAddress}
       onKeyUp={handleKeyPress}
     >
       <Grid container>
-        <S.Title _hasC3Address={hasC3Address}>
+        <S.Title _hasC3Address={hasC3Address || wrongAddress}>
           Search C3 data directly from the Blockchain
         </S.Title>
       </Grid>
@@ -99,7 +88,6 @@ const Hero = ({
                 onFocus={() => setFocusedInput(true)}
                 onBlur={() => setFocusedInput(false)}
                 placeholder="Search by address or account id"
-                error={wrongAddress}
                 endAdornment={
                   !!address ? (
                     <div onMouseDown={onClearInput}>
@@ -127,17 +115,12 @@ const Hero = ({
                   ))
                 }
               />
-              {wrongAddress && <S.Error>Invalid Address</S.Error>}
             </S.InputContainer>
           </Grid>
           {!isMobile && (
             <Grid item desktop>
               <S.SearchContainer>
-                <CustomButton
-                  height="56px"
-                  onClick={onSearch}
-                  disabled={!address.length || wrongAddress}
-                >
+                <CustomButton height="56px" onClick={onSearch} disabled={!address.length}>
                   <S.SearchBtn>
                     <Icon name="search" width={16} height={16} />
                     <S.SearchTxt>Search</S.SearchTxt>

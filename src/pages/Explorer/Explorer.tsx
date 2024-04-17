@@ -17,6 +17,7 @@ import { useWindowSize } from '../../hooks/useWindowSize';
 import TooltipInfo from '../../components/TooltipInfo/TooltipInfo';
 import Icon from '../../components/Icon/Icon';
 import useCopy from '../../hooks/useCopy';
+import EmptyTable from '../../components/EmptyTable/EmptyTable';
 
 import * as S from './styles';
 
@@ -41,12 +42,12 @@ const Explorer = () => {
 
   const onClear = () => {
     setAddress('');
-    setWrongAddress(false);
   };
 
   const onReturnHomePage = () => {
     onClear();
     setC3Address('');
+    setWrongAddress(false);
   };
 
   const { copy } = useCopy();
@@ -56,7 +57,6 @@ const Explorer = () => {
 
   const onChangeAddress = (adrInput: string) => {
     setAddress(adrInput);
-    setWrongAddress(false);
   };
 
   const onSearch = () => {
@@ -66,6 +66,7 @@ const Explorer = () => {
       setWrongAddress(false);
     } catch (error) {
       setWrongAddress(true);
+      setC3Address('');
       console.error('Invalid address: ', address, error);
     }
   };
@@ -109,17 +110,27 @@ const Explorer = () => {
           </S.Copy>
         </S.ShowAddressContainer>
       ) : (
-        <S.Subtitle>C3 Overview</S.Subtitle>
+        !wrongAddress && <S.Subtitle>C3 Overview</S.Subtitle>
       )}
       <Grid item mobile={12}>
         <Grid container columnSpacing={2}>
           <Grid item mobile={12} mediumDesktop={8}>
-            <Deposit
-              c3Assets={holdingAssets}
-              isLoading={isLoading}
-              C3Address={C3Address}
-              userCash={userCash}
-            />
+            {!wrongAddress ? (
+              <Deposit
+                c3Assets={holdingAssets}
+                isLoading={isLoading}
+                C3Address={C3Address}
+                userCash={userCash}
+              />
+            ) : (
+              <S.WrongAddressContainer>
+                <EmptyTable icon={{ name: 'emptyInfoAddress', size: 48 }}>
+                  <S.WrongAddressTableText>
+                    No matching C3 account was found for this address
+                  </S.WrongAddressTableText>
+                </EmptyTable>
+              </S.WrongAddressContainer>
+            )}
           </Grid>
           {!isMediumDesktop && (
             <Grid item mobile={4}>
@@ -128,20 +139,22 @@ const Explorer = () => {
           )}
         </Grid>
       </Grid>
-      <S.MarginPoolContainer item mobile={12}>
-        {!C3Address ? (
-          <MarginPool onChainAppState={onChainC3State} />
-        ) : (
-          <Grid container spacing={2}>
-            <Grid item mobile={12} mediumDesktop={6}>
-              <Borrow userPool={userPool} />
+      {!wrongAddress && (
+        <S.MarginPoolContainer item mobile={12}>
+          {!C3Address ? (
+            <MarginPool onChainAppState={onChainC3State} />
+          ) : (
+            <Grid container spacing={2}>
+              <Grid item mobile={12} mediumDesktop={6}>
+                <Borrow userPool={userPool} />
+              </Grid>
+              <Grid item mobile={12} mediumDesktop={6}>
+                <Earn userPool={userPool} />
+              </Grid>
             </Grid>
-            <Grid item mobile={12} mediumDesktop={6}>
-              <Earn userPool={userPool} />
-            </Grid>
-          </Grid>
-        )}
-      </S.MarginPoolContainer>
+          )}
+        </S.MarginPoolContainer>
+      )}
       {isMediumDesktop && (
         <Grid item mobile={12}>
           <Banner separator={isMobile} {...(isMobile && { size: 80 })} />
