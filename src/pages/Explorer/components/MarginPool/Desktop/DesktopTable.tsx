@@ -6,7 +6,7 @@ import { getAssetIcon, formatNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
 
 import * as S from './styles';
-import UtilizationCircularProgress from '../../../../../components/CircularProgress/CIrcularProgress';
+import UtilizationCircularProgress from '../../../../../components/CircularProgress/CircularProgress';
 
 const DesktopTable = (props: IMarginPoolTable) => {
   const { onChainAppState, getUSDValue } = props;
