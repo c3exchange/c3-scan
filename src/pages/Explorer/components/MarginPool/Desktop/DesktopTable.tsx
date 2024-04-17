@@ -6,6 +6,7 @@ import { getAssetIcon, formatNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
 
 import * as S from './styles';
+import UtilizationCircularProgress from '../../../../../components/CircularProgress/CIrcularProgress';
 
 const DesktopTable = (props: IMarginPoolTable) => {
   const { onChainAppState, getUSDValue } = props;
@@ -78,6 +79,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
                 {serverInstrument.instrument.id}
               </S.AssetIconContainer>
               <Grid item desktop={2} display="flex">
+                <UtilizationCircularProgress value={utilizationRate} />
                 {formatNumber(utilizationRate)} %
               </Grid>
               <Grid item desktop={3}>
