@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 import Icon from '../../../../components/Icon/Icon';
@@ -12,7 +12,6 @@ import usePaste from '../../../../hooks/usePaste';
 interface IHero {
   address: string;
   hasC3Address: boolean;
-  C3Address: string;
   wrongAddress: boolean;
   onSearch: () => void;
   onChangeAddress: (address: string) => void;
@@ -21,7 +20,6 @@ interface IHero {
 const Hero = ({
   address,
   hasC3Address,
-  C3Address,
   onSearch,
   onClear,
   onChangeAddress,
@@ -37,7 +35,7 @@ const Hero = ({
   const [focusedInput, setFocusedInput] = useState(false);
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (address.length && event.key === 'Enter') {
+    if (event.key === 'Enter' && address.length) {
       onSearch();
       setFocusedInput(false);
       inputRef.current?.blur();

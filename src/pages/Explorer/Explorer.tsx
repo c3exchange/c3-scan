@@ -65,8 +65,8 @@ const Explorer = () => {
       setC3Address(c3Address);
       setWrongAddress(false);
     } catch (error) {
-      setWrongAddress(true);
       setC3Address('');
+      setWrongAddress(true);
       console.error('Invalid address: ', address, error);
     }
   };
@@ -95,7 +95,6 @@ const Explorer = () => {
           onClear={onClear}
           onChangeAddress={onChangeAddress}
           hasC3Address={!!C3Address}
-          C3Address={C3Address}
         />
       </Grid>
       {C3Address ? (
