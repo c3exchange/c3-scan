@@ -80,18 +80,11 @@ export const EmptyContainer = styled(Grid)(({ theme }) => ({
 
 export const WrongAddressContainer = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
-  width: '100%',
   borderRadius: theme.spacing(1),
   maxHeight: '350px',
   minHeight: '350px',
   background: theme.palette.background.default,
-  color: theme.palette.primary.contrastText,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  fontSize: '15px',
-  fontWeight: 800,
+  fontWeight: 700,
   [theme.breakpoints.down('mediumDesktop')]: {
     maxHeight: '240px',
     minHeight: '240px',
