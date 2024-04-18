@@ -1,12 +1,11 @@
 import Grid from '@mui/material/Grid';
 import { InstrumentAmount } from '@c3exchange/common';
-
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
 import { getAssetIcon, formatNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
+import UtilizationCircularProgress from '../../../../../components/CircularProgress/CircularProgress';
 
 import * as S from './styles';
-import UtilizationCircularProgress from '../../../../../components/CircularProgress/CircularProgress';
 
 const DesktopTable = (props: IMarginPoolTable) => {
   const { onChainAppState, getUSDValue } = props;

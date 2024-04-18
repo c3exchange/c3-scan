@@ -23,17 +23,19 @@ const DesktopTable = (props: IEarnTable) => {
           )}
         </S.AccountValue>
       </S.Title>
-      <S.AssetInfo container>
-        <Grid item desktop={2}>
-          Asset
-        </Grid>
-        <S.RightAlignedGrid item desktop={4}>
-          Subscribed Amount
-        </S.RightAlignedGrid>
-        <S.RightAlignedGrid item desktop={4}>
-          Subscribed Value
-        </S.RightAlignedGrid>
-      </S.AssetInfo>
+      {!isEmpty && (
+        <S.AssetInfo container>
+          <Grid item desktop={2}>
+            Asset
+          </Grid>
+          <S.RightAlignedGrid item desktop={4}>
+            Subscribed Amount
+          </S.RightAlignedGrid>
+          <S.RightAlignedGrid item desktop={4}>
+            Subscribed Value
+          </S.RightAlignedGrid>
+        </S.AssetInfo>
+      )}
       <S.ScrollableContent _empty={isEmpty}>
         {!isEmpty ? (
           loans.map((asset) => (
