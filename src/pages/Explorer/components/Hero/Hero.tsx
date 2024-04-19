@@ -67,11 +67,11 @@ const Hero = ({
     <S.Container
       container
       direction="column"
-      _hasC3Address={hasC3Address || wrongAddress}
+      _isResultPage={hasC3Address || wrongAddress}
       onKeyUp={handleKeyPress}
     >
       <Grid container>
-        <S.Title _hasC3Address={hasC3Address || wrongAddress}>
+        <S.Title _isResultPage={hasC3Address || wrongAddress}>
           Search C3 data directly from the Blockchain
         </S.Title>
       </Grid>

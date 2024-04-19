@@ -80,9 +80,9 @@ const Explorer = () => {
         onClick: () => onReturnHomePage(),
       },
     ];
-    if (C3Address) values.push({ text: 'Search result' });
+    if (C3Address || wrongAddress) values.push({ text: 'Search result' });
     return values;
-  }, [C3Address, onClear]);
+  }, [C3Address, onClear, wrongAddress]);
 
   return (
     <S.Container container>
@@ -97,19 +97,23 @@ const Explorer = () => {
           hasC3Address={!!C3Address}
         />
       </Grid>
-      {C3Address ? (
-        <S.ShowAddressContainer item mobile={12}>
-          <S.AddressLabel>
-            Your Primary C3 Account ID:
-            <TooltipInfo message="This is the AccountId used in the API interface." />
-          </S.AddressLabel>
-          {truncateText(C3Address, [9, 4])}
-          <S.Copy onClick={() => onCopy(C3Address)}>
-            <Icon name="copy" width={16} height={16} />
-          </S.Copy>
-        </S.ShowAddressContainer>
-      ) : (
-        !wrongAddress && <S.Subtitle>C3 Overview</S.Subtitle>
+      {!wrongAddress && (
+        <>
+          {C3Address ? (
+            <S.ShowAddressContainer item mobile={12}>
+              <S.AddressLabel>
+                Your Primary C3 Account ID:
+                <TooltipInfo message="This is the AccountId used in the API interface." />
+              </S.AddressLabel>
+              {truncateText(C3Address, [9, 4])}
+              <S.Copy onClick={() => onCopy(C3Address)}>
+                <Icon name="copy" width={16} height={16} />
+              </S.Copy>
+            </S.ShowAddressContainer>
+          ) : (
+            <S.Subtitle>C3 Overview</S.Subtitle>
+          )}
+        </>
       )}
       <Grid item mobile={12}>
         <Grid container columnSpacing={2}>
