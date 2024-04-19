@@ -13,10 +13,10 @@ const DesktopTable = (props: IMarginPoolTable) => {
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
       <S.AssetInfo container>
-        <Grid item desktop={1.5}>
+        <Grid item desktop={2}>
           Asset
         </Grid>
-        <Grid item desktop={1.5} display="flex">
+        <Grid item desktop={2} display="flex">
           Utilization
           <TooltipInfo message="The percentage of the total supplied asset that's already been lent out" />
         </Grid>
@@ -76,13 +76,13 @@ const DesktopTable = (props: IMarginPoolTable) => {
 
           return (
             <S.Row key={serverInstrument.instrument.id}>
-              <S.AssetIconContainer item desktop={1.5}>
+              <S.AssetIconContainer item desktop={2}>
                 <S.IconContainer>
                   {getAssetIcon(serverInstrument.instrument.id)}
                 </S.IconContainer>
                 {serverInstrument.instrument.id}
               </S.AssetIconContainer>
-              <Grid item desktop={1.5} display="flex">
+              <Grid item desktop={2} display="flex">
                 {formatNumber(utilizationRate)} %
               </Grid>
               <Grid item desktop={1} display="flex">
