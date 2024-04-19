@@ -7,10 +7,12 @@ import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { breakpoints } from '../../../../theme';
 import { IMarginPool } from './interfaces';
 import { usePrices } from '../../../../hooks/usePrices';
+import { useGetInstrumentsPools } from '../../../../hooks/useGetInstrumentsPools';
 
 const MarginPool = (props: IMarginPool) => {
   const { onChainAppState } = props;
   const { getUSDValue } = usePrices();
+  const { getLendAPR } = useGetInstrumentsPools();
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -21,9 +23,17 @@ const MarginPool = (props: IMarginPool) => {
   return (
     <>
       {isMobile ? (
-        <MobileTable onChainAppState={onChainAppState} getUSDValue={getUSDValue} />
+        <MobileTable
+          onChainAppState={onChainAppState}
+          getUSDValue={getUSDValue}
+          getLendAPR={getLendAPR}
+        />
       ) : (
-        <DesktopTable onChainAppState={onChainAppState} getUSDValue={getUSDValue} />
+        <DesktopTable
+          onChainAppState={onChainAppState}
+          getUSDValue={getUSDValue}
+          getLendAPR={getLendAPR}
+        />
       )}
     </>
   );
