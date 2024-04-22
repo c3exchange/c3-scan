@@ -1,9 +1,9 @@
 import Grid from '@mui/material/Grid';
 import { InstrumentAmount } from '@c3exchange/common';
-
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
 import { getAssetIcon, formatNumber, formatApyNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
+import UtilizationCircularProgress from '../../../../../components/CircularProgress/CircularProgress';
 
 import * as S from './styles';
 
@@ -83,6 +83,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
                 {serverInstrument.instrument.id}
               </S.AssetIconContainer>
               <Grid item desktop={2} display="flex">
+                <UtilizationCircularProgress value={utilizationRate} />
                 {formatNumber(utilizationRate)} %
               </Grid>
               <Grid item desktop={1} display="flex">

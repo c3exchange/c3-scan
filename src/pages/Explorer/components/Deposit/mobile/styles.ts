@@ -20,8 +20,11 @@ export const Container = styled(Grid)(({ theme }) => ({
 export const Title = styled(Grid)(() => ({
   fontFamily: 'Bricolage Grotesque',
   height: '38px',
+  minHeight: '38px',
+  maxHeight: '38px',
   display: 'flex',
   alignItems: 'center',
+  paddingLeft: '10px',
   fontSize: '14px',
 }));
 
@@ -76,7 +79,7 @@ export const Footer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: '38px',
+  height: '40px',
   fontSize: '12px',
   fontWeight: 700,
   lineHeight: '20px',

@@ -23,6 +23,8 @@ export const Container = styled(Grid)(({ theme }) => ({
 export const Title = styled(Grid)(({ theme }) => ({
   fontFamily: 'Bricolage Grotesque',
   height: '38px',
+  minHeight: '38px',
+  maxHeight: '38px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   display: 'flex',
   alignItems: 'center',
@@ -32,6 +34,8 @@ export const Title = styled(Grid)(({ theme }) => ({
 
 export const AssetInfo = styled(Grid)(({ theme }) => ({
   height: '44px',
+  minHeight: '44px',
+  maxHeight: '44px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   color: theme.palette.text.primary,
   display: 'flex',
@@ -54,6 +58,8 @@ export const Footer = styled(Grid)(() => ({
   display: 'flex',
   alignItems: 'center',
   height: '38px',
+  minHeight: '38px',
+  maxHeight: '38px',
   fontSize: '12px',
   lineHeight: '20px',
   paddingLeft: '32px',
