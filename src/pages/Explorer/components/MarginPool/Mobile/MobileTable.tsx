@@ -6,7 +6,7 @@ import { IMarginPoolTable } from '../interfaces';
 import * as S from './styles';
 
 const MobileTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getUSDValue, getLendAPR } = props;
+  const { onChainAppState, getUSDValue, getEarnAPR } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -25,7 +25,7 @@ const MobileTable = (props: IMarginPoolTable) => {
             ).toDecimal()
           );
           const utilizationRate = liquidity !== 0 ? (borrowed / liquidity) * 100 : 0;
-          const earnAPR = getLendAPR(serverInstrument.instrument.id) || 0;
+          const earnAPR = getEarnAPR(serverInstrument.instrument.id) || 0;
 
           return (
             <S.Card container key={serverInstrument.instrument.id}>
@@ -51,7 +51,7 @@ const MobileTable = (props: IMarginPoolTable) => {
               </S.Row>
               <S.Row container justifyContent="space-between">
                 <S.Item item _isTitle>
-                  Lend APY
+                  Earn APY
                 </S.Item>
                 <S.Item item gap="4px">
                   {formatApyNumber(earnAPR * 100)} %

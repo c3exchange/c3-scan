@@ -6,7 +6,7 @@ interface IMarginPool {
 
 interface IMarginPoolTable extends IMarginPool {
   getUSDValue: (instrumentId: string, amount: number) => number;
-  getLendAPR: (instrumentId: string) => number | undefined;
+  getEarnAPR: (instrumentId: string) => number | undefined;
 }
 
 export type { IMarginPool, IMarginPoolTable };

@@ -8,7 +8,7 @@ import { IMarginPoolTable } from '../interfaces';
 import * as S from './styles';
 
 const DesktopTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getUSDValue, getLendAPR } = props;
+  const { onChainAppState, getUSDValue, getEarnAPR } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -21,7 +21,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
           <TooltipInfo message="The percentage of the total supplied asset that's already been lent out" />
         </Grid>
         <Grid item desktop={1} display="flex">
-          Lend APY
+          Earn APY
         </Grid>
         <Grid item desktop={3} display="flex">
           <S.ValorizedCompoundColumn container>
@@ -72,7 +72,7 @@ const DesktopTable = (props: IMarginPoolTable) => {
             ).toDecimal()
           );
           const utilizationRate = liquidity !== 0 ? (borrowed / liquidity) * 100 : 0;
-          const earnAPR = getLendAPR(serverInstrument.instrument.id) || 0;
+          const earnAPR = getEarnAPR(serverInstrument.instrument.id) || 0;
 
           return (
             <S.Row key={serverInstrument.instrument.id}>

@@ -12,7 +12,7 @@ import { useGetInstrumentsPools } from '../../../../hooks/useGetInstrumentsPools
 const MarginPool = (props: IMarginPool) => {
   const { onChainAppState } = props;
   const { getUSDValue } = usePrices();
-  const { getLendAPR } = useGetInstrumentsPools();
+  const { getEarnAPR } = useGetInstrumentsPools();
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -26,13 +26,13 @@ const MarginPool = (props: IMarginPool) => {
         <MobileTable
           onChainAppState={onChainAppState}
           getUSDValue={getUSDValue}
-          getLendAPR={getLendAPR}
+          getEarnAPR={getEarnAPR}
         />
       ) : (
         <DesktopTable
           onChainAppState={onChainAppState}
           getUSDValue={getUSDValue}
-          getLendAPR={getLendAPR}
+          getEarnAPR={getEarnAPR}
         />
       )}
     </>

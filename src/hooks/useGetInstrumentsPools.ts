@@ -15,9 +15,9 @@ export const useGetInstrumentsPools = () => {
     fetchPools(`${config.c3ApiUrl}/instruments/pools`)
   );
 
-  const getLendAPR = (instrumentId: string) => {
+  const getEarnAPR = (instrumentId: string) => {
     return qPools?.data?.find((pool) => pool.id === instrumentId)?.lendApr;
   };
 
-  return { instrumentsPools: qPools?.data, getLendAPR };
+  return { instrumentsPools: qPools?.data, getEarnAPR };
 };
