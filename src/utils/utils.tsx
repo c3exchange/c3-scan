@@ -63,3 +63,8 @@ export const truncateText = (text = '', [start, end]: number[] = [6, 6]) => {
   const tail = text.slice(-1 * end, text.length);
   return text.length > start + end ? [head, tail].join('...') : text;
 };
+
+export const formatApyNumber = (num: number) => {
+  if (num % 1 !== 0) return num.toFixed(3);
+  return num;
+};

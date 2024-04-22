@@ -1,12 +1,12 @@
 import { InstrumentAmount } from '@c3exchange/common';
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
-import { getAssetIcon, formatNumber } from '../../../../../utils';
+import { getAssetIcon, formatNumber, formatApyNumber } from '../../../../../utils';
 import { IMarginPoolTable } from '../interfaces';
 
 import * as S from './styles';
 
 const MobileTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getUSDValue } = props;
+  const { onChainAppState, getUSDValue, getEarnAPR } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -25,6 +25,8 @@ const MobileTable = (props: IMarginPoolTable) => {
             ).toDecimal()
           );
           const utilizationRate = liquidity !== 0 ? (borrowed / liquidity) * 100 : 0;
+          const earnAPR = getEarnAPR(serverInstrument.instrument.id) || 0;
+
           return (
             <S.Card container key={serverInstrument.instrument.id}>
               <S.Row container justifyContent="space-between">
@@ -45,6 +47,14 @@ const MobileTable = (props: IMarginPoolTable) => {
                 </S.Item>
                 <S.Item item gap="4px">
                   {formatNumber(utilizationRate)} %
+                </S.Item>
+              </S.Row>
+              <S.Row container justifyContent="space-between">
+                <S.Item item _isTitle>
+                  Earn APY
+                </S.Item>
+                <S.Item item gap="4px">
+                  {formatApyNumber(earnAPR * 100)} %
                 </S.Item>
               </S.Row>
 
