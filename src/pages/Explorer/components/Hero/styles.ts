@@ -3,7 +3,7 @@ import styled from '@mui/material/styles/styled';
 import { createShouldForwardProp } from '../../../../utils';
 
 interface IContainer {
-  _hasC3Address: boolean;
+  _isResultPage: boolean;
 }
 
 interface IInputContainer {
@@ -12,39 +12,39 @@ interface IInputContainer {
 }
 
 export const Container = styled(Grid, {
-  shouldForwardProp: createShouldForwardProp(['_hasC3Address']),
-})<IContainer>(({ theme, _hasC3Address }) => ({
+  shouldForwardProp: createShouldForwardProp(['_isResultPage']),
+})<IContainer>(({ theme, _isResultPage }) => ({
   borderRadius: theme.spacing(2),
   width: '100%',
-  height: _hasC3Address ? '130px' : '144px',
-  paddingTop: _hasC3Address ? '0px' : '20px',
-  paddingLeft: _hasC3Address ? '0px' : '40px',
-  paddingBottom: _hasC3Address ? '0px' : '32px',
-  background: _hasC3Address
+  height: _isResultPage ? '130px' : '144px',
+  paddingTop: _isResultPage ? '0px' : '20px',
+  paddingLeft: _isResultPage ? '0px' : '40px',
+  paddingBottom: _isResultPage ? '0px' : '32px',
+  background: _isResultPage
     ? 'none'
     : `linear-gradient(180deg, #53308A -68.06%, #05061B 95.83%)`,
-  marginBottom: _hasC3Address ? '16px' : '32px',
+  marginBottom: _isResultPage ? '16px' : '32px',
   [theme.breakpoints.down('desktop')]: {
-    paddingRight: _hasC3Address ? '0px' : '40px',
-    paddingBottom: _hasC3Address && '12px',
+    paddingRight: _isResultPage ? '0px' : '40px',
+    paddingBottom: _isResultPage && '12px',
     height: 'auto',
   },
   [theme.breakpoints.down('laptop')]: {
-    paddingLeft: _hasC3Address ? '0px' : '15px',
-    paddingRight: _hasC3Address ? '0px' : '15px',
-    paddingBottom: _hasC3Address ? '12px' : '24px',
+    paddingLeft: _isResultPage ? '0px' : '15px',
+    paddingRight: _isResultPage ? '0px' : '15px',
+    paddingBottom: _isResultPage ? '12px' : '24px',
   },
 }));
 
 export const Title = styled('div', {
-  shouldForwardProp: createShouldForwardProp(['_hasC3Address']),
-})<IContainer>(({ theme, _hasC3Address }) => ({
+  shouldForwardProp: createShouldForwardProp(['_isResultPage']),
+})<IContainer>(({ theme, _isResultPage }) => ({
   fontFamily: 'Bricolage Grotesque',
-  fontSize: _hasC3Address ? '40px' : '18px',
+  fontSize: _isResultPage ? '40px' : '18px',
   fontWeight: 500,
   marginBottom: 10,
   [theme.breakpoints.down('desktop')]: {
-    fontSize: _hasC3Address ? '28px' : '16px',
+    fontSize: _isResultPage ? '28px' : '16px',
   },
 }));
 

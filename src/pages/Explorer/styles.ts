@@ -77,3 +77,23 @@ export const EmptyContainer = styled(Grid)(({ theme }) => ({
   borderRadius: theme.spacing(1),
   background: theme.palette.background.default,
 }));
+
+export const WrongAddressContainer = styled(Grid)(({ theme }) => ({
+  fontFamily: 'Manrope',
+  borderRadius: theme.spacing(1),
+  maxHeight: '350px',
+  minHeight: '350px',
+  background: theme.palette.background.default,
+  fontWeight: 700,
+  [theme.breakpoints.down('mediumDesktop')]: {
+    maxHeight: '240px',
+    minHeight: '240px',
+    marginBottom: 16,
+  },
+}));
+
+export const WrongAddressTableText = styled('div')(() => ({
+  marginTop: '16px',
+  padding: '0 15%',
+  textAlign: 'center',
+}));
