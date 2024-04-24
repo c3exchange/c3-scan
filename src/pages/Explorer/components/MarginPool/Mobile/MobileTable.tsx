@@ -7,7 +7,7 @@ import UtilizationCircularProgress from '../../../../../components/CircularProgr
 import * as S from './styles';
 
 const MobileTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getUSDValue, getEarnAPR } = props;
+  const { onChainAppState, getUSDValue, getEarnAPR, getBorrowAPR } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
@@ -27,6 +27,7 @@ const MobileTable = (props: IMarginPoolTable) => {
           );
           const utilizationRate = liquidity !== 0 ? (borrowed / liquidity) * 100 : 0;
           const earnAPR = getEarnAPR(serverInstrument.instrument.id) || 0;
+          const borrowAPR = getBorrowAPR(serverInstrument.instrument.id) || 0;
 
           return (
             <S.Card container key={serverInstrument.instrument.id}>
@@ -57,6 +58,14 @@ const MobileTable = (props: IMarginPoolTable) => {
                 </S.Item>
                 <S.Item item gap="4px">
                   {formatApyNumber(earnAPR * 100)} %
+                </S.Item>
+              </S.Row>
+              <S.Row container justifyContent="space-between">
+                <S.Item item _isTitle>
+                  Borrow APR
+                </S.Item>
+                <S.Item item gap="4px">
+                  {formatApyNumber(borrowAPR * 100)} %
                 </S.Item>
               </S.Row>
 

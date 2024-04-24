@@ -19,5 +19,9 @@ export const useGetInstrumentsPools = () => {
     return qPools?.data?.find((pool) => pool.id === instrumentId)?.lendApr;
   };
 
-  return { instrumentsPools: qPools?.data, getEarnAPR };
+  const getBorrowAPR = (instrumentId: string) => {
+    return qPools?.data?.find((pool) => pool.id === instrumentId)?.borrowApr;
+  };
+
+  return { instrumentsPools: qPools?.data, getEarnAPR, getBorrowAPR };
 };
