@@ -8,20 +8,23 @@ import UtilizationCircularProgress from '../../../../../components/CircularProgr
 import * as S from './styles';
 
 const DesktopTable = (props: IMarginPoolTable) => {
-  const { onChainAppState, getUSDValue, getEarnAPR } = props;
+  const { onChainAppState, getUSDValue, getEarnAPR, getBorrowAPR } = props;
   return (
     <S.Container>
       <S.Title>C3's Margin Pool</S.Title>
       <S.AssetInfo container>
-        <Grid item desktop={2}>
+        <Grid item desktop={1}>
           Asset
         </Grid>
-        <Grid item desktop={2} display="flex">
+        <Grid item desktop={1} display="flex">
           Utilization
           <TooltipInfo message="The percentage of the total supplied asset that's already been lent out" />
         </Grid>
         <Grid item desktop={1} display="flex">
           Earn APY
+        </Grid>
+        <Grid item desktop={1} display="flex">
+          Borrow APR
         </Grid>
         <Grid item desktop={3} display="flex">
           <S.ValorizedCompoundColumn container>
@@ -39,7 +42,6 @@ const DesktopTable = (props: IMarginPoolTable) => {
             </S.CompoundSubtitle>
           </S.ValorizedCompoundColumn>
         </Grid>
-        <Grid desktop={1}></Grid>
         <Grid item desktop={3} display="flex">
           <S.ValorizedCompoundColumn container>
             <S.CompoundTitle item>
@@ -73,21 +75,25 @@ const DesktopTable = (props: IMarginPoolTable) => {
           );
           const utilizationRate = liquidity !== 0 ? (borrowed / liquidity) * 100 : 0;
           const earnAPR = getEarnAPR(serverInstrument.instrument.id) || 0;
+          const borrowAPR = getBorrowAPR(serverInstrument.instrument.id) || 0;
 
           return (
             <S.Row key={serverInstrument.instrument.id}>
-              <S.AssetIconContainer item desktop={2}>
+              <S.AssetIconContainer item desktop={1}>
                 <S.IconContainer>
                   {getAssetIcon(serverInstrument.instrument.id)}
                 </S.IconContainer>
                 {serverInstrument.instrument.id}
               </S.AssetIconContainer>
-              <Grid item desktop={2} display="flex">
+              <Grid item desktop={1} display="flex">
                 <UtilizationCircularProgress value={utilizationRate} />
                 {formatNumber(utilizationRate)} %
               </Grid>
               <Grid item desktop={1} display="flex">
                 {formatApyNumber(earnAPR * 100)} %
+              </Grid>
+              <Grid item desktop={1} display="flex">
+                {formatApyNumber(borrowAPR * 100)} %
               </Grid>
               <Grid item desktop={3}>
                 <S.ValorizedInfoContainer container>
@@ -100,7 +106,6 @@ const DesktopTable = (props: IMarginPoolTable) => {
                   </S.RightAlignedGrid>
                 </S.ValorizedInfoContainer>
               </Grid>
-              <Grid desktop={1}></Grid>
               <Grid item desktop={3}>
                 <S.ValorizedInfoContainer container>
                   <S.RightAlignedGrid item desktop={6}>
