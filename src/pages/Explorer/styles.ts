@@ -30,12 +30,18 @@ export const Copy = styled('div')(({ theme }) => ({
 
 export const ShowAddressContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
   marginBottom: '32px',
   fontFamily: 'Manrope',
   [theme.breakpoints.down('desktop')]: {
     fontSize: '14px',
     marginBottom: '16px',
   },
+}));
+
+export const ShowAddressItem = styled(Grid)(({ theme }) => ({
+  display: 'flex',
 }));
 
 export const Subtitle = styled('div')(({ theme }) => ({

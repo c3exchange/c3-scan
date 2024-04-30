@@ -24,6 +24,7 @@ import * as S from './styles';
 const Explorer = () => {
   const [address, setAddress] = useState<string>('');
   const [C3Address, setC3Address] = useState<string>('');
+  const [userAddress, setUserAddress] = useState<string>('');
   const [wrongAddress, setWrongAddress] = useState<boolean>(false);
 
   const windowSize = useWindowSize();
@@ -47,6 +48,7 @@ const Explorer = () => {
   const onReturnHomePage = () => {
     onClear();
     setC3Address('');
+    setUserAddress('');
     setWrongAddress(false);
   };
 
@@ -61,11 +63,15 @@ const Explorer = () => {
 
   const onSearch = () => {
     try {
-      const c3Address = getC3Address(address);
+      const addresses = getC3Address(address);
+      const c3Address = addresses[0];
+      const userAddress = addresses[1];
       setC3Address(c3Address);
+      setUserAddress(userAddress);
       setWrongAddress(false);
     } catch (error) {
       setC3Address('');
+      setUserAddress('');
       setWrongAddress(true);
       console.error('Invalid address: ', address, error);
     }
@@ -100,15 +106,24 @@ const Explorer = () => {
       {!wrongAddress && (
         <>
           {C3Address ? (
-            <S.ShowAddressContainer item mobile={12}>
-              <S.AddressLabel>
-                Your Primary C3 Account ID:
-                <TooltipInfo message="This is the AccountId used in the API interface." />
-              </S.AddressLabel>
-              {truncateText(C3Address, [9, 4])}
-              <S.Copy onClick={() => onCopy(C3Address)}>
-                <Icon name="copy" width={16} height={16} />
-              </S.Copy>
+            <S.ShowAddressContainer>
+              <S.ShowAddressItem item mobile={12}>
+                <S.AddressLabel>
+                  Your Primary C3 Account ID:
+                  <TooltipInfo message="This is the AccountId used in the API interface." />
+                </S.AddressLabel>
+                {truncateText(C3Address, [9, 4])}
+                <S.Copy onClick={() => onCopy(C3Address)}>
+                  <Icon name="copy" width={16} height={16} />
+                </S.Copy>
+              </S.ShowAddressItem>
+              <S.ShowAddressItem item mobile={12}>
+                <S.AddressLabel>Your Address:</S.AddressLabel>
+                {truncateText(userAddress, [7, 5])}
+                <S.Copy onClick={() => onCopy(userAddress)}>
+                  <Icon name="copy" width={16} height={16} />
+                </S.Copy>
+              </S.ShowAddressItem>
             </S.ShowAddressContainer>
           ) : (
             <S.Subtitle>C3 Overview</S.Subtitle>
