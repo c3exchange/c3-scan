@@ -9,7 +9,7 @@ import Earn from './components/Earn/Earn';
 import Path, { IPath } from '../../components/Path/Path';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
-import { getC3Address, truncateText } from '../../utils';
+import { getC3AndUserAddresses, truncateText } from '../../utils';
 import { useGetAddressState } from '../../hooks/useGetAddressState';
 import { AppRoutes } from '../../routes/routes';
 import { breakpoints } from '../../theme';
@@ -22,7 +22,7 @@ import EmptyTable from '../../components/EmptyTable/EmptyTable';
 import * as S from './styles';
 
 const Explorer = () => {
-  const [address, setAddress] = useState<string>('');
+  const [inputAddress, setInputAddress] = useState<string>('');
   const [C3Address, setC3Address] = useState<string>('');
   const [userAddress, setUserAddress] = useState<string>('');
   const [wrongAddress, setWrongAddress] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const Explorer = () => {
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
 
   const onClear = () => {
-    setAddress('');
+    setInputAddress('');
   };
 
   const onReturnHomePage = () => {
@@ -57,15 +57,15 @@ const Explorer = () => {
     copy(address);
   };
 
-  const onChangeAddress = (adrInput: string) => {
-    setAddress(adrInput);
+  const onChangeAddress = (inputAddress: string) => {
+    setInputAddress(inputAddress);
   };
 
   const onSearch = () => {
     try {
-      const addresses = getC3Address(address);
-      const c3Address = addresses[0];
-      const userAddress = addresses[1];
+      const addresses = getC3AndUserAddresses(inputAddress);
+      const c3Address = addresses.c3Address;
+      const userAddress = addresses.userAddress;
       setC3Address(c3Address);
       setUserAddress(userAddress);
       setWrongAddress(false);
@@ -73,7 +73,7 @@ const Explorer = () => {
       setC3Address('');
       setUserAddress('');
       setWrongAddress(true);
-      console.error('Invalid address: ', address, error);
+      console.error('Invalid address: ', inputAddress, error);
     }
   };
 
@@ -96,7 +96,7 @@ const Explorer = () => {
         <Path values={path} />
         <Hero
           wrongAddress={wrongAddress}
-          address={address}
+          address={inputAddress}
           onSearch={onSearch}
           onClear={onClear}
           onChangeAddress={onChangeAddress}

@@ -23,13 +23,17 @@ export const getPublicKeyByAddress = (address: UserAddress): Uint8Array => {
   return chainUtility.getPublicKey(address);
 };
 
-export const getC3Address = (address: UserAddress): [string, string] => {
+interface IAddressPair {
+  c3Address: UserAddress;
+  userAddress: UserAddress;
+}
+export const getC3AndUserAddresses = (address: UserAddress): IAddressPair => {
   if (isValidAccountId(address)) {
-    return [address, accountIdToUserAddress(address)];
+    return { c3Address: address, userAddress: accountIdToUserAddress(address) };
   }
   if (isValidAddress(address)) {
     const c3Address = userAddressToAccountId(address);
-    return [c3Address, accountIdToUserAddress(c3Address)];
+    return { c3Address: c3Address, userAddress: accountIdToUserAddress(c3Address) };
   }
   throw new Error(`Invalid address: ${address}`);
 };
