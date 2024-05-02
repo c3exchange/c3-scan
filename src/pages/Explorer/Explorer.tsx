@@ -9,7 +9,7 @@ import Earn from './components/Earn/Earn';
 import Path, { IPath } from '../../components/Path/Path';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
-import { getC3AndUserAddresses, truncateText } from '../../utils';
+import { getC3Address, getUserAddress, truncateText } from '../../utils';
 import { useGetAddressState } from '../../hooks/useGetAddressState';
 import { AppRoutes } from '../../routes/routes';
 import { breakpoints } from '../../theme';
@@ -63,9 +63,8 @@ const Explorer = () => {
 
   const onSearch = () => {
     try {
-      const addresses = getC3AndUserAddresses(inputAddress);
-      const c3Address = addresses.c3Address;
-      const userAddress = addresses.userAddress;
+      const c3Address = getC3Address(inputAddress);
+      const userAddress = getUserAddress(c3Address);
       setC3Address(c3Address);
       setUserAddress(userAddress);
       setWrongAddress(false);
