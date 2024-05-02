@@ -9,7 +9,7 @@ import Earn from './components/Earn/Earn';
 import Path, { IPath } from '../../components/Path/Path';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
-import { getC3Address, truncateText } from '../../utils';
+import { getC3Address, getUserAddress, truncateText } from '../../utils';
 import { useGetAddressState } from '../../hooks/useGetAddressState';
 import { AppRoutes } from '../../routes/routes';
 import { breakpoints } from '../../theme';
@@ -22,8 +22,9 @@ import EmptyTable from '../../components/EmptyTable/EmptyTable';
 import * as S from './styles';
 
 const Explorer = () => {
-  const [address, setAddress] = useState<string>('');
+  const [inputAddress, setInputAddress] = useState<string>('');
   const [C3Address, setC3Address] = useState<string>('');
+  const [userAddress, setUserAddress] = useState<string>('');
   const [wrongAddress, setWrongAddress] = useState<boolean>(false);
 
   const windowSize = useWindowSize();
@@ -41,12 +42,13 @@ const Explorer = () => {
   const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
 
   const onClear = () => {
-    setAddress('');
+    setInputAddress('');
   };
 
   const onReturnHomePage = () => {
     onClear();
     setC3Address('');
+    setUserAddress('');
     setWrongAddress(false);
   };
 
@@ -55,19 +57,22 @@ const Explorer = () => {
     copy(address);
   };
 
-  const onChangeAddress = (adrInput: string) => {
-    setAddress(adrInput);
+  const onChangeAddress = (inputAddress: string) => {
+    setInputAddress(inputAddress);
   };
 
   const onSearch = () => {
     try {
-      const c3Address = getC3Address(address);
+      const c3Address = getC3Address(inputAddress);
+      const userAddress = getUserAddress(c3Address);
       setC3Address(c3Address);
+      setUserAddress(userAddress);
       setWrongAddress(false);
     } catch (error) {
       setC3Address('');
+      setUserAddress('');
       setWrongAddress(true);
-      console.error('Invalid address: ', address, error);
+      console.error('Invalid address: ', inputAddress, error);
     }
   };
 
@@ -90,7 +95,7 @@ const Explorer = () => {
         <Path values={path} />
         <Hero
           wrongAddress={wrongAddress}
-          address={address}
+          address={inputAddress}
           onSearch={onSearch}
           onClear={onClear}
           onChangeAddress={onChangeAddress}
@@ -100,15 +105,24 @@ const Explorer = () => {
       {!wrongAddress && (
         <>
           {C3Address ? (
-            <S.ShowAddressContainer item mobile={12}>
-              <S.AddressLabel>
-                Your Primary C3 Account ID:
-                <TooltipInfo message="This is the AccountId used in the API interface." />
-              </S.AddressLabel>
-              {truncateText(C3Address, [9, 4])}
-              <S.Copy onClick={() => onCopy(C3Address)}>
-                <Icon name="copy" width={16} height={16} />
-              </S.Copy>
+            <S.ShowAddressContainer>
+              <S.ShowAddressItem item mobile={12}>
+                <S.AddressLabel>
+                  Your Primary C3 Account ID:
+                  <TooltipInfo message="This is the AccountId used in the API interface." />
+                </S.AddressLabel>
+                {truncateText(C3Address, [9, 4])}
+                <S.Copy onClick={() => onCopy(C3Address)}>
+                  <Icon name="copy" width={16} height={16} />
+                </S.Copy>
+              </S.ShowAddressItem>
+              <S.ShowAddressItem item mobile={12}>
+                <S.AddressLabel>Your Address:</S.AddressLabel>
+                {truncateText(userAddress, [7, 5])}
+                <S.Copy onClick={() => onCopy(userAddress)}>
+                  <Icon name="copy" width={16} height={16} />
+                </S.Copy>
+              </S.ShowAddressItem>
             </S.ShowAddressContainer>
           ) : (
             <S.Subtitle>C3 Overview</S.Subtitle>

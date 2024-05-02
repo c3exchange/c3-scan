@@ -5,6 +5,8 @@ import {
   isValidAddress,
   isValidAccountId,
   userAddressToAccountId,
+  accountIdToUserAddress,
+  AccountId,
 } from '@c3exchange/common';
 
 const getChainUtilityByAddress = (address: UserAddress) => {
@@ -22,12 +24,22 @@ export const getPublicKeyByAddress = (address: UserAddress): Uint8Array => {
   return chainUtility.getPublicKey(address);
 };
 
-export const getC3Address = (address: UserAddress): string => {
+export const getC3Address = (address: UserAddress): AccountId => {
   if (isValidAccountId(address)) {
     return address;
   }
   if (isValidAddress(address)) {
     return userAddressToAccountId(address);
+  }
+  throw new Error(`Invalid address: ${address}`);
+};
+
+export const getUserAddress = (address: AccountId): UserAddress => {
+  if (isValidAccountId(address)) {
+    return accountIdToUserAddress(address);
+  }
+  if (isValidAddress(address)) {
+    return address;
   }
   throw new Error(`Invalid address: ${address}`);
 };
