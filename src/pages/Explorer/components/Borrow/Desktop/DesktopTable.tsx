@@ -23,17 +23,19 @@ const DesktopTable = (props: IBorrowTable) => {
           )}
         </S.AccountValue>
       </S.Title>
-      <S.AssetInfo container>
-        <Grid item desktop={2}>
-          Asset
-        </Grid>
-        <S.RightAlignedGrid item desktop={4}>
-          Utilization
-        </S.RightAlignedGrid>
-        <S.RightAlignedGrid item desktop={4}>
-          Total supplied
-        </S.RightAlignedGrid>
-      </S.AssetInfo>
+      {!isEmpty && (
+        <S.AssetInfo container>
+          <Grid item desktop={2}>
+            Asset
+          </Grid>
+          <S.RightAlignedGrid item desktop={4}>
+            Utilization
+          </S.RightAlignedGrid>
+          <S.RightAlignedGrid item desktop={4}>
+            Total supplied
+          </S.RightAlignedGrid>
+        </S.AssetInfo>
+      )}
       <S.ScrollableContent _empty={isEmpty}>
         {!isEmpty ? (
           borrows.map((asset) => (

@@ -1,19 +1,6 @@
 import Icon from '../components/Icon/Icon';
+import { Asset, Patterns } from './utils';
 
-enum Asset {
-  USDC = 'USDC',
-  BTC = 'BTC',
-  ETH = 'ETH',
-  ALGO = 'ALGO',
-  AVAX = 'AVAX',
-  ARB = 'ARB',
-  BNB = 'BNB',
-  PYTH = 'PYTH',
-  SOL = 'SOL',
-}
-interface Patterns {
-  [key: string]: RegExp;
-}
 export const getAssetIcon = (unitName?: string, size = 24) => {
   let regex, match;
   const patterns: Patterns = {
@@ -26,30 +13,33 @@ export const getAssetIcon = (unitName?: string, size = 24) => {
     [Asset.BNB]: new RegExp(Asset.BNB, 'i'),
     [Asset.PYTH]: new RegExp(Asset.PYTH, 'i'),
     [Asset.SOL]: new RegExp(Asset.SOL, 'i'),
+    [Asset.W]: new RegExp(Asset.W, 'i'),
   };
   for (const asset in patterns) {
     regex = patterns[asset];
     match = unitName ? unitName.match(regex) : null;
     if (match) {
       switch (asset) {
-        case 'USDC':
+        case Asset.USDC:
           return <Icon name="usdc" height={size} width={size} />;
-        case 'BTC':
+        case Asset.BTC:
           return <Icon name="btc" height={size} width={size} />;
-        case 'ETH':
+        case Asset.ETH:
           return <Icon name="eth" height={size} width={size} />;
-        case 'ALGO':
+        case Asset.ALGO:
           return <Icon name="algo" height={size} width={size} />;
-        case 'AVAX':
+        case Asset.AVAX:
           return <Icon name="avax" height={size} width={size} />;
-        case 'ARB':
+        case Asset.ARB:
           return <Icon name="arbitrum" height={size} width={size} />;
-        case 'BNB':
+        case Asset.BNB:
           return <Icon name="bnb" height={size} width={size} />;
-        case 'PYTH':
+        case Asset.PYTH:
           return <Icon name="pyth" height={size} width={size} />;
-        case 'SOL':
+        case Asset.SOL:
           return <Icon name="sol" height={size} width={size} />;
+        case Asset.W:
+          return <Icon name="w" height={size} width={size} />;
       }
     }
   }

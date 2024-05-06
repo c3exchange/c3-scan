@@ -25,6 +25,8 @@ export const Container = styled(Grid, {
 export const Title = styled(Grid)(({ theme }) => ({
   fontFamily: 'Bricolage Grotesque',
   height: '38px',
+  maxHeight: '38px',
+  minHeight: '38px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   display: 'flex',
   alignItems: 'center',
@@ -45,6 +47,8 @@ export const AccountValue = styled('span')(({ theme }) => ({
 
 export const AssetInfo = styled(Grid)(({ theme }) => ({
   height: '44px',
+  maxHeight: '44px',
+  minHeight: '44px',
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   color: theme.palette.text.primary,
   display: 'flex',

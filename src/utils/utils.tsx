@@ -2,13 +2,37 @@ import { AssetId, Instrument } from '@c3exchange/common';
 import IndexerClient from 'algosdk/dist/types/client/v2/indexer/indexer';
 import { shouldForwardProp as defaultShouldForwardProp } from '@mui/system';
 
+export enum Asset {
+  USDC = 'USDC',
+  BTC = 'BTC',
+  ETH = 'ETH',
+  ALGO = 'ALGO',
+  AVAX = 'AVAX',
+  ARB = 'ARB',
+  BNB = 'BNB',
+  PYTH = 'PYTH',
+  SOL = 'SOL',
+  W = 'W',
+}
+export interface Patterns {
+  [key: string]: RegExp;
+}
+
 export const cleanC3Prefix = (value: string) => {
   return value.replace(/^C3/, '');
 };
 
 export const cleanWrappedPrefix = (value: string) => {
-  const match = value.match(new RegExp('BTC', 'i'));
-  return match ? value : value.replace(/^W/, '');
+  if (value === Asset.W) return value;
+  let regex;
+  const patterns: Patterns = {
+    [Asset.BTC]: new RegExp(Asset.BTC, 'i'),
+  };
+  for (const asset in patterns) {
+    regex = patterns[asset];
+    if (value.match(regex)) return value;
+  }
+  return value.replace(/^W/, '');
 };
 
 export const getInstrumentInfo = async (
@@ -38,4 +62,9 @@ export const truncateText = (text = '', [start, end]: number[] = [6, 6]) => {
   const head = text.slice(0, start);
   const tail = text.slice(-1 * end, text.length);
   return text.length > start + end ? [head, tail].join('...') : text;
+};
+
+export const formatApyNumber = (num: number) => {
+  if (num % 1 !== 0) return num.toFixed(3);
+  return num;
 };

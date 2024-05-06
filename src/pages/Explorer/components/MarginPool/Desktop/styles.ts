@@ -36,6 +36,7 @@ export const AssetInfo = styled(Grid)(({ theme }) => ({
   fontWeight: '500',
   display: 'flex',
   alignItems: 'center',
+  columnGap: '2%',
 }));
 
 export const Row = styled(Grid)(({ theme }) => ({
@@ -46,10 +47,13 @@ export const Row = styled(Grid)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.primary.dark}`,
   display: 'flex',
   alignItems: 'center',
+  columnGap: '2%',
+  width: 'calc(100% + 4px)',
 }));
 
 export const ScrollableContent = styled('div')(() => ({
   overflowY: 'auto',
+  overflowX: 'hidden',
   height: 'calc(100% - 120px)',
   '&::-webkit-scrollbar': {
     width: '4px',
@@ -71,6 +75,7 @@ export const ValorizedCompoundColumn = styled(Grid)(({ theme }) => ({
   justifyContent: 'space-between',
   height: '100%',
   gap: '4px',
+  padding: '0 10px',
 }));
 
 export const CompoundTitle = styled(Grid)(({ theme }) => ({
@@ -93,7 +98,7 @@ export const CompoundSubtitle = styled(Grid)(({ theme }) => ({
 export const ValorizedInfoContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: '0 8px',
+  padding: '0 18px',
 }));
 
 export const RightAlignedGrid = styled(Grid)(({ theme }) => ({

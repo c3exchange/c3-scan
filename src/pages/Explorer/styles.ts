@@ -30,12 +30,18 @@ export const Copy = styled('div')(({ theme }) => ({
 
 export const ShowAddressContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
   marginBottom: '32px',
   fontFamily: 'Manrope',
   [theme.breakpoints.down('desktop')]: {
     fontSize: '14px',
     marginBottom: '16px',
   },
+}));
+
+export const ShowAddressItem = styled(Grid)(({ theme }) => ({
+  display: 'flex',
 }));
 
 export const Subtitle = styled('div')(({ theme }) => ({
@@ -76,4 +82,24 @@ export const EmptyContainer = styled(Grid)(({ theme }) => ({
   minHeight: '350px',
   borderRadius: theme.spacing(1),
   background: theme.palette.background.default,
+}));
+
+export const WrongAddressContainer = styled(Grid)(({ theme }) => ({
+  fontFamily: 'Manrope',
+  borderRadius: theme.spacing(1),
+  maxHeight: '350px',
+  minHeight: '350px',
+  background: theme.palette.background.default,
+  fontWeight: 700,
+  [theme.breakpoints.down('mediumDesktop')]: {
+    maxHeight: '240px',
+    minHeight: '240px',
+    marginBottom: 16,
+  },
+}));
+
+export const WrongAddressTableText = styled('div')(() => ({
+  marginTop: '16px',
+  padding: '0 15%',
+  textAlign: 'center',
 }));
