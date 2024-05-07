@@ -412,12 +412,14 @@ export const processValue = (value: any) => {
 
 export const urlParamToBase64 = (urlParam: string | null): string => {
   if (!urlParam) return '';
-
   const welcomeRegex = /^\s*Welcome to C3/;
-  if (!welcomeRegex.test(urlParam)) return urlParam.replace(/ /g, '+');
+  if (welcomeRegex.test(urlParam)) return urlWelcomeMsgToBase64(urlParam);
+  return urlParam.replace(/ /g, '+');
+};
 
+export const urlWelcomeMsgToBase64 = (urlWelcomeMsg: string): string => {
   const finalWordMatcher = /([A-Za-z0-9+/= ]+)\s*$/;
-  const match = urlParam.match(finalWordMatcher);
+  const match = urlWelcomeMsg.match(finalWordMatcher);
   if (!match) return '';
   const welcomeString = `Welcome to C3:
 Click to sign and accept the C3 Terms of Service (https://c3.io/terms)

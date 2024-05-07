@@ -10,11 +10,11 @@ import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
 import { useWindowSize } from '../../hooks/useWindowSize';
+import { useGetTransactions } from '../../hooks/useGetTransactions';
 import { breakpoints } from '../../theme';
 import { ServerInstrument } from '@c3exchange/common';
 
 import * as S from './styles';
-import { useGetTransactions } from '../../hooks/useGetTransactions';
 
 const Decoder = () => {
   const windowSize = useWindowSize();
@@ -53,8 +53,9 @@ const Decoder = () => {
   // Decode URL parameters: groupId, block, blockIndex
   const { getGroupTxs } = useGetTransactions();
   useEffect(() => {
-    setMessage('');
     if (queryGroupId && queryBlock && queryBlockIndex) handleUrlGroupIdDecode();
+    else return;
+    setMessage('');
   }, [queryGroupId, queryBlock, queryBlockIndex]);
 
   const handleUrlGroupIdDecode = async () => {
