@@ -17,8 +17,6 @@ import * as S from './styles';
 import { useGetTransactions } from '../../hooks/useGetTransactions';
 
 const Decoder = () => {
-  const { getGroupTxs } = useGetTransactions();
-
   const windowSize = useWindowSize();
   const isMediumDesktop = useMemo(
     () => windowSize.width < breakpoints.mediumDesktop,
@@ -29,43 +27,49 @@ const Decoder = () => {
     [windowSize.width]
   );
 
-  const [message, setMessage] = useState('');
-  const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
   const { data: holdingAssets } = useGetC3HoldingAssets();
   const onChainC3State: ServerInstrument[] = useGetOnChainC3State(holdingAssets);
+  const [message, setMessage] = useState('');
+  const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
+  const [secondDecodedMessage, setSecondDecodedMessage] = useState<DecodedMessage>();
 
   const navigate = useNavigate();
   const location = useLocation();
   const queryParameters = new URLSearchParams(location.search);
-
+  const queryMessage = queryParameters.get('message');
   const queryGroupId = queryParameters.get('groupId');
   const queryBlock = queryParameters.get('block');
   const queryBlockIndex = queryParameters.get('blockIndex');
-  useEffect(() => {
-    if (queryGroupId && queryBlock && queryBlockIndex) handleUrlGroupIdDecode();
-  }, [queryGroupId, queryBlock, queryBlockIndex]);
 
-  const handleUrlGroupIdDecode = async () => {
-    if (!queryGroupId || !queryBlock || !queryBlockIndex) return;
-    if (!onChainC3State.length) return;
-    const groupId = urlParamToBase64(queryGroupId);
-    const groupTxs = await getGroupTxs(groupId, queryBlock, queryBlockIndex);
-    const msg = decodeMsgFromTxDetails(groupTxs, onChainC3State);
-    if (msg) setDecodedMessage(msg);
-  };
-
-  const queryMessage = queryParameters.get('message');
-  useEffect(() => {
-    if (queryMessage) handleUrlMsgDecode();
-  }, [queryMessage]);
-
+  // Decode URL parameters on initial page load
   const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
   useEffect(() => {
     if (!onChainC3State.length || initialURLDecodeDone) return;
     setInitialURLDecodeDone(true);
     if (queryMessage) handleUrlMsgDecode();
-    if (queryGroupId && queryBlock) handleUrlGroupIdDecode();
+    if (queryGroupId && queryBlock && queryBlockIndex) handleUrlGroupIdDecode();
   }, [onChainC3State]);
+
+  // Decode URL parameters: groupId, block, blockIndex
+  const { getGroupTxs } = useGetTransactions();
+  useEffect(() => {
+    setMessage('');
+    if (queryGroupId && queryBlock && queryBlockIndex) handleUrlGroupIdDecode();
+  }, [queryGroupId, queryBlock, queryBlockIndex]);
+
+  const handleUrlGroupIdDecode = async () => {
+    if (!onChainC3State.length) return;
+    const groupId = urlParamToBase64(queryGroupId);
+    const groupTxs = await getGroupTxs(groupId, queryBlock, queryBlockIndex);
+    const messages = decodeMsgFromTxDetails(groupTxs, onChainC3State);
+    if (messages[0]) setDecodedMessage(messages[0]);
+    if (messages[1]) setSecondDecodedMessage(messages[1]);
+  };
+
+  // Decode URL parameter: message
+  useEffect(() => {
+    if (queryMessage) handleUrlMsgDecode();
+  }, [queryMessage]);
 
   const handleUrlMsgDecode = () => {
     if (!decodedMessage || message !== queryMessage) {
@@ -80,12 +84,16 @@ const Decoder = () => {
     if (messageDecoded) setDecodedMessage(messageDecoded);
   };
 
+  // Decode message on user input
   const onDecode = () => {
     if (!onChainC3State || !onChainC3State.length) return;
     const messageDecoded = decodeMessage(message, onChainC3State);
     if (messageDecoded) {
       setDecodedMessage(messageDecoded);
       queryParameters.set('message', message);
+      queryParameters.delete('groupId');
+      queryParameters.delete('block');
+      queryParameters.delete('blockIndex');
       navigate(`?${queryParameters.toString()}`);
     }
   };
@@ -100,7 +108,10 @@ const Decoder = () => {
           </Grid>
           <Grid item mobile={12} mediumDesktop={5} largeDesktop={6}>
             {decodedMessage ? (
-              <DecodedInfo decodedMsg={decodedMessage} />
+              <DecodedInfo
+                decodedMsg={decodedMessage}
+                secondDecodedMsg={secondDecodedMessage}
+              />
             ) : (
               !isMediumDesktop && <DecoderLogo width="100%" height={430} />
             )}

@@ -22,7 +22,7 @@ export const Container = styled(Grid, {
   borderTop: `1px solid ${theme.palette.secondary.main}`,
   position: 'relative',
   marginLeft: '0px',
-  ...(!_separator && { maxWidth: '1275px' }),
+  // ...(!_separator && { maxWidth: '1275px' }),
   '&:before, &:after': {
     content: '""',
     position: 'absolute',

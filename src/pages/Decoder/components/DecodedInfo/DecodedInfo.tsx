@@ -4,9 +4,10 @@ import * as S from './styles';
 
 interface IDecodedInfo {
   decodedMsg?: DecodedMessage;
+  secondDecodedMsg?: DecodedMessage;
 }
 
-const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
+const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
   const formatValue = (value: any) => {
     const { primaryValue, secondaryValue } = processValue(value);
     return (
@@ -23,8 +24,22 @@ const DecodedInfo = ({ decodedMsg }: IDecodedInfo) => {
       {decodedMsg &&
         Object.entries(decodedMsg).map(([key, value]) => {
           const label = keyToLabelMapping[key as keyof DecodedMessage] || key;
+          if (secondDecodedMsg && key !== 'operationType') {
+            return (
+              <S.Row key={key}>
+                <S.Label item>{label}:</S.Label>
+                <S.DoubleValue item>
+                  <S.Value item>{formatValue(value)}</S.Value>
+                  <S.ValueRight item>
+                    {formatValue(secondDecodedMsg[key as keyof DecodedMessage])}
+                  </S.ValueRight>
+                </S.DoubleValue>
+              </S.Row>
+            );
+          }
+
           return (
-            <S.Row justifyContent="space-between">
+            <S.Row key={key}>
               <S.Label item>{label}:</S.Label>
               <S.Value item>{formatValue(value)}</S.Value>
             </S.Row>

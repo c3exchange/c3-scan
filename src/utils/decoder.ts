@@ -319,9 +319,9 @@ export const decodeMessage = (
 export const decodeMsgFromTxDetails = (
   groupTxs: any,
   onChainC3State: ServerInstrument[]
-) => {
-  let message;
-  const allAppArgs = groupTxs.map((tx: any) => {
+): DecodedMessage[] => {
+  let message: DecodedMessage[] = [];
+  const allTransactionsArgs = groupTxs.map((tx: any) => {
     if (tx['application-transaction']) {
       return tx['application-transaction']['application-args'];
     } else {
@@ -329,8 +329,8 @@ export const decodeMsgFromTxDetails = (
     }
   });
 
-  for (let i = 0; i < allAppArgs.length; i++) {
-    const txArgs = allAppArgs[i];
+  for (let i = 0; i < allTransactionsArgs.length; i++) {
+    const txArgs = allTransactionsArgs[i];
     if (!txArgs.length) continue;
     const codOp = encodeBase16(decodeBase64(txArgs[0]));
 
@@ -346,11 +346,13 @@ export const decodeMsgFromTxDetails = (
       const uintArr = abiValueToUint8Array(decodeABIValueVar, signedMessageFormat);
 
       if (codOp === ADD_ORDER_ABI_SELECTOR || codOp === SETTLE_ABI_SELECTOR) {
-        message = decodeSettle(uintArr[1], onChainC3State);
-      } else if (codOp === POOL_MOVE_ABI_SELECTOR) {
-        message = decodePoolMove(uintArr[1], onChainC3State);
-      } else if (codOp === WITHDRAW_ABI_SELECTOR) {
-        message = decodeWithdraw(uintArr[1], onChainC3State);
+        message.push(decodeSettle(uintArr[1], onChainC3State));
+      }
+      if (codOp === POOL_MOVE_ABI_SELECTOR) {
+        message.push(decodePoolMove(uintArr[1], onChainC3State));
+      }
+      if (codOp === WITHDRAW_ABI_SELECTOR) {
+        message.push(decodeWithdraw(uintArr[1], onChainC3State));
       }
     }
   }
