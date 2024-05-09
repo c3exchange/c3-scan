@@ -13,22 +13,23 @@ import {
   getChainNameByChainId,
   ChainId,
   encodeBase16,
+  encodeBase64,
   decodeABIValue,
   signedMessageFormat,
+  encodeAccountId,
+  C3_ACCOUNT_TYPES,
+  C3_ACCOUNT_TYPE_UTILS,
+  CHAIN_ID_TO_ACCOUNT_TYPE,
+  C3AccountType,
+  SupportedChainId,
 } from '@c3exchange/common';
 import { ABIValue } from 'algosdk';
+import { truncateText } from './utils';
 
-export const CREATE_ABI_SELECTOR = '0c5f0186';
-export const UPDATE_INSTRUMENT_ABI_SELECTOR = 'd0e96ff3';
-export const UPDATE_PARAMETER_ABI_SELECTOR = 'da73965d';
-export const POOL_MOVE_ABI_SELECTOR = '6904886c';
-export const ADD_ORDER_ABI_SELECTOR = 'e80737cd';
-export const SETTLE_ABI_SELECTOR = '05c23896';
-export const WITHDRAW_ABI_SELECTOR = '1de3bc55';
-export const ACCOUNT_MOVE_ABI_SELECTOR = 'abb4088e';
-export const LIQUIDATE_ABI_SELECTOR = '7716a1b3';
-export const FUND_MBR_ABI_SELECTOR = 'd1474b5a';
-export const CLEAN_ORDERS_ABI_SELECTOR = '6dd96ba8';
+const POOL_MOVE_ABI_SELECTOR = '6904886c';
+const ADD_ORDER_ABI_SELECTOR = 'e80737cd';
+const SETTLE_ABI_SELECTOR = '05c23896';
+const WITHDRAW_ABI_SELECTOR = '1de3bc55';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
@@ -264,7 +265,7 @@ function decodeDelegate(operation: Uint8Array) {
   );
   const delegateResult = decodeABIValue(operation, delegateFormat);
   const extractedDelegateAddress = delegateResult[1];
-  const delegateAddress = getFirstAndLastChars(extractedDelegateAddress, 8, 8);
+  const delegateAddress = truncateText(extractedDelegateAddress, [8, 8]);
   const nonce = Number(delegateResult[2]);
   const extractedExpirationTime = delegateResult[3];
   const expiresOn = new Date(parseInt(extractedExpirationTime) * 1000).toLocaleString();
@@ -294,7 +295,7 @@ export const decodeMessage = (
     const fullMessage = new Uint8Array(bytesArray).slice(8);
     const decodedHeader = unpackPartialData(fullMessage);
     const operation = fullMessage.slice(decodedHeader.bytesRead);
-    const target: string = getFirstAndLastChars(decodedHeader.result.target, 8, 8);
+    const target: string = truncateText(decodedHeader.result.target, [8, 8]);
     switch (operation[0]) {
       case OnChainRequestOp.Withdraw:
         const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
@@ -319,44 +320,65 @@ export const decodeMessage = (
 export const decodeMsgFromTxDetails = (
   groupTxs: any,
   onChainC3State: ServerInstrument[]
-): DecodedMessage[] => {
-  let message: DecodedMessage[] = [];
-  const allTransactionsArgs = groupTxs.map((tx: any) => {
-    if (tx['application-transaction']) {
-      return tx['application-transaction']['application-args'];
-    } else {
-      return [];
+): DecodedMessage[] | undefined => {
+  try {
+    let message: DecodedMessage[] = [];
+    const allTransactionsArgs = groupTxs.map((tx: any) => {
+      if (tx['application-transaction']) {
+        return tx['application-transaction']['application-args'];
+      } else {
+        return [];
+      }
+    });
+
+    for (let i = 0; i < allTransactionsArgs.length; i++) {
+      const txArgs = allTransactionsArgs[i];
+      if (!txArgs.length) continue;
+      const opCode = encodeBase16(decodeBase64(txArgs[0]));
+
+      if (
+        opCode === ADD_ORDER_ABI_SELECTOR ||
+        opCode === SETTLE_ABI_SELECTOR ||
+        opCode === POOL_MOVE_ABI_SELECTOR ||
+        opCode === WITHDRAW_ABI_SELECTOR
+      ) {
+        const signedOperation = decodeBase64(txArgs[2]);
+        const signedOpABIFormat = packABIString(signedMessageFormat);
+        const decodedSignedOp = decodeABIValue(signedOperation, signedOpABIFormat);
+        const signedOpUintArray = mapABIArraytoUintArray(
+          decodedSignedOp,
+          signedMessageFormat
+        );
+
+        const delegationChain = decodeBase64(txArgs[3]);
+        const delegChainABIFormat = packABIString(signedMessageFormat) + '[]';
+        const decodedDelegChain = decodeABIValue(delegationChain, delegChainABIFormat);
+        const delegChainUintArray = decodedDelegChain.map((deleg: any) =>
+          mapABIArraytoUintArray(deleg, signedMessageFormat)
+        );
+
+        const accountId = getTxAccountId(signedOpUintArray, delegChainUintArray);
+        const account = truncateText(accountId, [9, 4], true);
+
+        const operation = signedOpUintArray[1];
+        if (opCode === ADD_ORDER_ABI_SELECTOR || opCode === SETTLE_ABI_SELECTOR) {
+          const settleDecoded = decodeSettle(operation, onChainC3State);
+          message.push({ ...settleDecoded, account });
+        }
+        if (opCode === POOL_MOVE_ABI_SELECTOR) {
+          const poolMoveDecoded = decodePoolMove(operation, onChainC3State);
+          message.push({ ...poolMoveDecoded, account });
+        }
+        if (opCode === WITHDRAW_ABI_SELECTOR) {
+          const withdrawDecoded = decodeWithdraw(operation, onChainC3State);
+          message.push({ ...withdrawDecoded, account });
+        }
+      }
     }
-  });
-
-  for (let i = 0; i < allTransactionsArgs.length; i++) {
-    const txArgs = allTransactionsArgs[i];
-    if (!txArgs.length) continue;
-    const codOp = encodeBase16(decodeBase64(txArgs[0]));
-
-    if (
-      codOp === ADD_ORDER_ABI_SELECTOR ||
-      codOp === SETTLE_ABI_SELECTOR ||
-      codOp === POOL_MOVE_ABI_SELECTOR ||
-      codOp === WITHDRAW_ABI_SELECTOR
-    ) {
-      const signedOperation = decodeBase64(txArgs[2]);
-      const abiFormat = packABIString(signedMessageFormat);
-      const decodeABIValueVar = decodeABIValue(signedOperation, abiFormat);
-      const uintArr = abiValueToUint8Array(decodeABIValueVar, signedMessageFormat);
-
-      if (codOp === ADD_ORDER_ABI_SELECTOR || codOp === SETTLE_ABI_SELECTOR) {
-        message.push(decodeSettle(uintArr[1], onChainC3State));
-      }
-      if (codOp === POOL_MOVE_ABI_SELECTOR) {
-        message.push(decodePoolMove(uintArr[1], onChainC3State));
-      }
-      if (codOp === WITHDRAW_ABI_SELECTOR) {
-        message.push(decodeWithdraw(uintArr[1], onChainC3State));
-      }
-    }
+    return message;
+  } catch (error) {
+    console.error(error);
   }
-  return message;
 };
 
 export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
@@ -377,15 +399,6 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   sellAssetId: 'Sell Asset',
   chain: 'Chain',
   delegateAddress: 'Delegate Address',
-};
-
-export const getFirstAndLastChars = (
-  str: string,
-  leftChars: number,
-  rightChars: number
-) => {
-  if (str.length <= leftChars + rightChars) return str;
-  return str.slice(0, leftChars) + '...' + str.slice(-rightChars);
 };
 
 export const getEnumKeyByEnumValue = (
@@ -429,13 +442,52 @@ This request will not trigger a blockchain transaction or cost any gas fees.
   return `${welcomeString}${operation}`;
 };
 
-export function abiValueToUint8Array(arr: ABIValue[], format: IPackedInfo): any {
-  return arr.map((value: ABIValue, i: number) => {
-    const a = format[Object.keys(format)[i]];
-    if (a.type === 'object')
-      return abiValueToUint8Array(value as Array<ABIValue>, a.info as IPackedInfo);
-    if (a.type === 'base64' || a.type === 'bytes' || Array.isArray(value))
+export function mapABIArraytoUintArray(abiArray: ABIValue[], format: IPackedInfo): any {
+  return abiArray.map((value: ABIValue, i: number) => {
+    const [, elemFormat] = Object.entries(format)[i];
+    if (elemFormat.type === 'object')
+      return mapABIArraytoUintArray(
+        value as Array<ABIValue>,
+        elemFormat.info as IPackedInfo
+      );
+    if (
+      elemFormat.type === 'base64' ||
+      elemFormat.type === 'bytes' ||
+      Array.isArray(value)
+    )
       return new Uint8Array(value as Array<number>);
     else return value;
   });
 }
+
+const prefixToAccountType = (prefix: string, dataLength: number): C3AccountType => {
+  const accountTypes = C3_ACCOUNT_TYPES.filter((accType) => {
+    const checkPrefix = C3_ACCOUNT_TYPE_UTILS[accType].getDataPrefix(dataLength);
+    return encodeBase64(checkPrefix) === prefix;
+  });
+  return accountTypes.length > 0 ? accountTypes[0] : -1;
+};
+
+const accountTypeToChainId = (accType: number) => {
+  const chainId = getEnumKeyByEnumValue(CHAIN_ID_TO_ACCOUNT_TYPE, accType);
+  return chainId ? parseInt(chainId) : -1;
+};
+
+const getTxAccountId = (signedOpUintArray: any, delegChainUintArray: any) => {
+  let accountId = '';
+  if (delegChainUintArray.length === 0) {
+    const prefix = encodeBase64(signedOpUintArray[6]);
+    const encodedSignedData = signedOpUintArray[2];
+    const accountType = prefixToAccountType(prefix, encodedSignedData.length);
+    const chainId = accountTypeToChainId(accountType);
+    accountId = encodeAccountId(signedOpUintArray[0][0], chainId as SupportedChainId);
+  } else {
+    const firstDelegUintArray = delegChainUintArray[0];
+    const prefix = encodeBase64(firstDelegUintArray[6]);
+    const encodedSignedData = firstDelegUintArray[2];
+    const accountType = prefixToAccountType(prefix, encodedSignedData.length);
+    const chainId = accountTypeToChainId(accountType);
+    accountId = encodeAccountId(firstDelegUintArray[0][0], chainId as SupportedChainId);
+  }
+  return accountId;
+};
