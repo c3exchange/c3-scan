@@ -53,7 +53,7 @@ export const SecondaryValue = styled('span')(({ theme }) => ({
 }));
 
 export const DoubleValue = styled(Grid)({
-  width: '60%',
+  width: '70%',
   gap: '5%',
   display: 'flex',
   justifyContent: 'space-between',

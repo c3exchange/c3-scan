@@ -8,8 +8,8 @@ interface IDecodedInfo {
 }
 
 const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
-  const formatValue = (value: any) => {
-    const { primaryValue, secondaryValue } = processValue(value);
+  const formatValue = (key: string, value: any) => {
+    const { primaryValue, secondaryValue } = processValue(key, value);
     return (
       <>
         {primaryValue}
@@ -29,9 +29,9 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
               <S.Row key={key}>
                 <S.Label item>{label}:</S.Label>
                 <S.DoubleValue item>
-                  <S.Value item>{formatValue(value)}</S.Value>
+                  <S.Value item>{formatValue(key, value)}</S.Value>
                   <S.ValueRight item>
-                    {formatValue(secondDecodedMsg[key as keyof DecodedMessage])}
+                    {formatValue(key, secondDecodedMsg[key as keyof DecodedMessage])}
                   </S.ValueRight>
                 </S.DoubleValue>
               </S.Row>
@@ -41,7 +41,7 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
           return (
             <S.Row key={key}>
               <S.Label item>{label}:</S.Label>
-              <S.Value item>{formatValue(value)}</S.Value>
+              <S.Value item>{formatValue(key, value)}</S.Value>
             </S.Row>
           );
         })}

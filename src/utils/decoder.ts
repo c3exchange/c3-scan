@@ -319,7 +319,8 @@ export const decodeMessage = (
 
 export const decodeMsgFromTxDetails = (
   groupTxs: any,
-  onChainC3State: ServerInstrument[]
+  onChainC3State: ServerInstrument[],
+  queryAccountId: string | null
 ): DecodedMessage[] | undefined => {
   try {
     let message: DecodedMessage[] = [];
@@ -363,7 +364,9 @@ export const decodeMsgFromTxDetails = (
         const operation = signedOpUintArray[1];
         if (opCode === ADD_ORDER_ABI_SELECTOR || opCode === SETTLE_ABI_SELECTOR) {
           const settleDecoded = decodeSettle(operation, onChainC3State);
-          message.push({ ...settleDecoded, account });
+          if (queryAccountId && queryAccountId === accountId)
+            message.push({ ...settleDecoded, account: { account, modifier: ' (you)' } });
+          else message.push({ ...settleDecoded, account });
         }
         if (opCode === POOL_MOVE_ABI_SELECTOR) {
           const poolMoveDecoded = decodePoolMove(operation, onChainC3State);
@@ -409,16 +412,19 @@ export const getEnumKeyByEnumValue = (
   return keys.length > 0 ? keys[0] : undefined;
 };
 
-export const processValue = (value: any) => {
+export const processValue = (key: string, value: any) => {
   let primaryValue: string = '';
   let secondaryValue: string = '';
-  if (value?.chainId) {
+  if (typeof value !== 'object') {
+    primaryValue = value;
+  } else if (key === 'chain') {
     primaryValue = value?.chainId;
     secondaryValue = ' - ' + value?.chainName;
-  } else if (typeof value === 'object') {
-    primaryValue = JSON.stringify(value);
+  } else if (key === 'account') {
+    primaryValue = value?.account;
+    secondaryValue = value?.modifier;
   } else {
-    primaryValue = value;
+    primaryValue = JSON.stringify(value);
   }
   return { primaryValue, secondaryValue };
 };

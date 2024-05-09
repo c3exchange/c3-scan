@@ -25,7 +25,12 @@ export interface DecodedMessage {
   userID?: string;
   creationTime?: string;
   expiresOn?: string;
-  account?: string;
+  account?:
+    | string
+    | {
+        account: string;
+        modifier: string;
+      };
   nonce?: number;
   sellAssetId?: string;
   sellAmount?: number;

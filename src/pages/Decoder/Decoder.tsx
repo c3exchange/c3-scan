@@ -40,6 +40,7 @@ const Decoder = () => {
   const queryGroupId = queryParameters.get('groupId');
   const queryBlock = queryParameters.get('block');
   const queryBlockIndex = queryParameters.get('blockIndex');
+  const queryAccountId = queryParameters.get('accountId');
 
   // Decode URL parameters on initial page load
   const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
@@ -62,7 +63,7 @@ const Decoder = () => {
     if (!onChainC3State.length) return;
     const groupId = urlParamToBase64(queryGroupId);
     const groupTxs = await getGroupTxs(groupId, queryBlock, queryBlockIndex);
-    const messages = decodeMsgFromTxDetails(groupTxs, onChainC3State);
+    const messages = decodeMsgFromTxDetails(groupTxs, onChainC3State, queryAccountId);
     if (messages && messages[0]) setDecodedMessage(messages[0]);
     if (messages && messages[1]) setSecondDecodedMessage(messages[1]);
   };
