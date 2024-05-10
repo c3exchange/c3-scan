@@ -1,5 +1,5 @@
 import { DecodedMessage } from '../../../../interfaces/interfaces';
-import { keyToLabelMapping, processValue } from '../../../../utils';
+import { keyToLabelMapping, processDecodedMessageValue } from '../../../../utils';
 import * as S from './styles';
 
 interface IDecodedInfo {
@@ -9,7 +9,7 @@ interface IDecodedInfo {
 
 const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
   const formatValue = (key: string, value: any) => {
-    const { primaryValue, secondaryValue } = processValue(key, value);
+    const { primaryValue, secondaryValue } = processDecodedMessageValue(key, value);
     return (
       <>
         {primaryValue}
