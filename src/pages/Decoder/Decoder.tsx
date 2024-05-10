@@ -64,8 +64,8 @@ const Decoder = () => {
     const groupId = urlParamToBase64(queryGroupId);
     const groupTxs = await getGroupTxs(groupId, queryBlock, queryBlockIndex);
     const messages = decodeMsgFromTxDetails(groupTxs, onChainC3State, queryAccountId);
-    if (messages && messages[0]) setDecodedMessage(messages[0]);
-    if (messages && messages[1]) setSecondDecodedMessage(messages[1]);
+    if (messages?.[0]) setDecodedMessage(messages[0]);
+    if (messages?.[1]) setSecondDecodedMessage(messages[1]);
   };
 
   // Decode URL parameter: message

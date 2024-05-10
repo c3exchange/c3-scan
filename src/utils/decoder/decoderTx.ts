@@ -152,22 +152,14 @@ const accountTypeToChainId = (accType: number) => {
  * @returns {string} - The account ID of the target of the signed message.
  */
 const getTxAccountId = (signedOpUintArray: any, delegChainUintArray: any) => {
-  let accountId = '';
   // If there is no delegation chain, the account ID corresponds to the target of the signed operation.
   // Otherwise, the account ID corresponds to the target of the first delegation in the chain.
-  if (delegChainUintArray.length === 0) {
-    const prefix = encodeBase64(signedOpUintArray[6]);
-    const encodedSignedData = signedOpUintArray[2];
-    const accountType = prefixToAccountType(prefix, encodedSignedData.length);
-    const chainId = accountTypeToChainId(accountType);
-    accountId = encodeAccountId(signedOpUintArray[0][0], chainId as SupportedChainId);
-  } else {
-    const firstDelegUintArray = delegChainUintArray[0];
-    const prefix = encodeBase64(firstDelegUintArray[6]);
-    const encodedSignedData = firstDelegUintArray[2];
-    const accountType = prefixToAccountType(prefix, encodedSignedData.length);
-    const chainId = accountTypeToChainId(accountType);
-    accountId = encodeAccountId(firstDelegUintArray[0][0], chainId as SupportedChainId);
-  }
-  return accountId;
+  let signedMessage: any = signedOpUintArray;
+  if (delegChainUintArray.length > 0) signedMessage = delegChainUintArray[0];
+
+  const prefix = encodeBase64(signedMessage[6]);
+  const encodedSignedData = signedMessage[2];
+  const accountType = prefixToAccountType(prefix, encodedSignedData.length);
+  const chainId = accountTypeToChainId(accountType);
+  return encodeAccountId(signedMessage[0][0], chainId as SupportedChainId);
 };
