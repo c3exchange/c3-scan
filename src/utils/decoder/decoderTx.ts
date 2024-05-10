@@ -1,4 +1,4 @@
-import { DecodedMessage } from '../../interfaces/interfaces';
+import { AccountWithModifier, DecodedMessage } from '../../interfaces/interfaces';
 import {
   decodeBase64,
   IPackedInfo,
@@ -23,6 +23,12 @@ const POOL_MOVE_ABI_SELECTOR = '6904886c';
 const ADD_ORDER_ABI_SELECTOR = 'e80737cd';
 const SETTLE_ABI_SELECTOR = '05c23896';
 const WITHDRAW_ABI_SELECTOR = '1de3bc55';
+const validABISelectors = [
+  POOL_MOVE_ABI_SELECTOR,
+  ADD_ORDER_ABI_SELECTOR,
+  SETTLE_ABI_SELECTOR,
+  WITHDRAW_ABI_SELECTOR,
+];
 
 /**
  * Decodes the signed messages from the details of the transactions from the group.
@@ -38,13 +44,11 @@ export const decodeMsgFromTxDetails = (
   queryAccountId: string | null
 ): DecodedMessage[] | undefined => {
   try {
-    let message: DecodedMessage[] = [];
+    let messages: DecodedMessage[] = [];
     const allTransactionsArgs = groupTxs.map((tx: any) => {
-      if (tx['application-transaction']) {
-        return tx['application-transaction']['application-args'];
-      } else {
-        return [];
-      }
+      return tx['application-transaction']
+        ? tx['application-transaction']['application-args']
+        : [];
     });
 
     for (let i = 0; i < allTransactionsArgs.length; i++) {
@@ -52,48 +56,47 @@ export const decodeMsgFromTxDetails = (
       if (!txArgs.length) continue;
       const opCode = encodeBase16(decodeBase64(txArgs[0]));
 
-      if (
-        opCode === ADD_ORDER_ABI_SELECTOR ||
-        opCode === SETTLE_ABI_SELECTOR ||
-        opCode === POOL_MOVE_ABI_SELECTOR ||
-        opCode === WITHDRAW_ABI_SELECTOR
-      ) {
-        const signedOperation = decodeBase64(txArgs[2]);
-        const signedOpABIFormat = packABIString(signedMessageFormat);
-        const decodedSignedOp = decodeABIValue(signedOperation, signedOpABIFormat);
-        const signedOpUintArray = mapABIArraytoUintArray(
-          decodedSignedOp,
-          signedMessageFormat
-        );
+      if (!validABISelectors.includes(opCode)) continue;
 
-        const delegationChain = decodeBase64(txArgs[3]);
-        const delegChainABIFormat = packABIString(signedMessageFormat) + '[]';
-        const decodedDelegChain = decodeABIValue(delegationChain, delegChainABIFormat);
-        const delegChainUintArray = decodedDelegChain.map((deleg: any) =>
-          mapABIArraytoUintArray(deleg, signedMessageFormat)
-        );
+      const signedOperation = decodeBase64(txArgs[2]);
+      const signedOpABIFormat = packABIString(signedMessageFormat);
+      const decodedSignedOp = decodeABIValue(signedOperation, signedOpABIFormat);
+      const signedOpUintArray = mapABIArraytoUintArray(
+        decodedSignedOp,
+        signedMessageFormat
+      );
 
-        const accountId = getTxAccountId(signedOpUintArray, delegChainUintArray);
-        const account = truncateText(accountId, [9, 4], true);
+      const delegationChain = decodeBase64(txArgs[3]);
+      const delegChainABIFormat = packABIString(signedMessageFormat) + '[]';
+      const decodedDelegChain = decodeABIValue(delegationChain, delegChainABIFormat);
+      const delegChainUintArray = decodedDelegChain.map((deleg: any) =>
+        mapABIArraytoUintArray(deleg, signedMessageFormat)
+      );
 
-        const operation = signedOpUintArray[1];
-        if (opCode === ADD_ORDER_ABI_SELECTOR || opCode === SETTLE_ABI_SELECTOR) {
-          const settleDecoded = decodeSettle(operation, onChainC3State);
+      const accountId = getTxAccountId(signedOpUintArray, delegChainUintArray);
+      let account: string | AccountWithModifier = truncateText(accountId, [9, 4], true);
+
+      const operation = signedOpUintArray[1];
+      let decodedMessage;
+      switch (opCode) {
+        case ADD_ORDER_ABI_SELECTOR:
+        case SETTLE_ABI_SELECTOR:
+          decodedMessage = decodeSettle(operation, onChainC3State);
           if (queryAccountId && queryAccountId === accountId)
-            message.push({ ...settleDecoded, account: { account, modifier: ' (you)' } });
-          else message.push({ ...settleDecoded, account });
-        }
-        if (opCode === POOL_MOVE_ABI_SELECTOR) {
-          const poolMoveDecoded = decodePoolMove(operation, onChainC3State);
-          message.push({ ...poolMoveDecoded, account });
-        }
-        if (opCode === WITHDRAW_ABI_SELECTOR) {
-          const withdrawDecoded = decodeWithdraw(operation, onChainC3State);
-          message.push({ ...withdrawDecoded, account });
-        }
+            account = { account, modifier: ' (you)' };
+          break;
+        case POOL_MOVE_ABI_SELECTOR:
+          decodedMessage = decodePoolMove(operation, onChainC3State);
+          break;
+        case WITHDRAW_ABI_SELECTOR:
+          decodedMessage = decodeWithdraw(operation, onChainC3State);
+          break;
+        default:
+          break;
       }
+      messages.push({ ...decodedMessage, account });
     }
-    return message;
+    return messages;
   } catch (error) {
     console.error(error);
   }
@@ -102,18 +105,21 @@ export const decodeMsgFromTxDetails = (
 export function mapABIArraytoUintArray(abiArray: ABIValue[], format: IPackedInfo): any {
   return abiArray.map((value: ABIValue, i: number) => {
     const [, elemFormat] = Object.entries(format)[i];
-    if (elemFormat.type === 'object')
-      return mapABIArraytoUintArray(
-        value as Array<ABIValue>,
-        elemFormat.info as IPackedInfo
-      );
-    if (
-      elemFormat.type === 'base64' ||
-      elemFormat.type === 'bytes' ||
-      Array.isArray(value)
-    )
-      return new Uint8Array(value as Array<number>);
-    else return value;
+
+    switch (elemFormat.type) {
+      case 'object':
+        return mapABIArraytoUintArray(
+          value as Array<ABIValue>,
+          elemFormat.info as IPackedInfo
+        );
+      case 'string':
+      case 'bytes':
+      case 'base64':
+      case 'address':
+        return new Uint8Array(value as Array<number>);
+      default:
+        return value;
+    }
   });
 }
 
