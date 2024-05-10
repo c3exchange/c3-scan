@@ -86,17 +86,24 @@ export const getEnumKeyByEnumValue = (
 export const processDecodedMessageValue = (key: string, value: any) => {
   let primaryValue: string = '';
   let secondaryValue: string = '';
+
   if (typeof value !== 'object') {
     primaryValue = value;
-  } else if (key === 'chain') {
-    primaryValue = value?.chainId;
-    secondaryValue = ' - ' + value?.chainName;
-  } else if (key === 'account') {
-    primaryValue = value?.account;
-    secondaryValue = value?.modifier;
-  } else {
-    primaryValue = JSON.stringify(value);
+    return { primaryValue, secondaryValue };
   }
+  switch (key) {
+    case 'chain':
+      primaryValue = value?.chainId;
+      secondaryValue = ' - ' + value?.chainName;
+      break;
+    case 'account':
+      primaryValue = value?.account;
+      secondaryValue = value?.modifier;
+      break;
+    default:
+      primaryValue = JSON.stringify(value);
+  }
+
   return { primaryValue, secondaryValue };
 };
 
