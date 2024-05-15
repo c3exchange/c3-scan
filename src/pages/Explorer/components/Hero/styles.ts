@@ -88,6 +88,9 @@ export const Error = styled('div')(({ theme }) => ({
 }));
 
 export const SearchContainer = styled('div')(() => ({
-  width: '144px',
+  width: 'calc(100%-32px)',
   marginLeft: '16px',
+  marginRight: '16px',
+  display: 'flex',
+  gap: '16px',
 }));

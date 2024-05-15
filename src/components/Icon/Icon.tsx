@@ -28,6 +28,7 @@ import { ReactComponent as ToastSuccess } from '../../assets/icons/toastSuccess.
 import { ReactComponent as ToastError } from '../../assets/icons/toastError.svg';
 import { ReactComponent as BackArrow } from '../../assets/icons/back-arrow.svg';
 import { ReactComponent as Paste } from '../../assets/icons/paste.svg';
+import { ReactComponent as Refresh } from '../../assets/icons/refresh.svg';
 
 export type IconName =
   | 'hamburger'
@@ -59,7 +60,8 @@ export type IconName =
   | 'toastError'
   | 'emptyInfoAddress'
   | 'backArrow'
-  | 'paste';
+  | 'paste'
+  | 'refresh';
 
 interface IIcon {
   name: IconName;
@@ -102,6 +104,7 @@ const Icon = ({ name, width, height, color, onClick }: IIcon) => {
     paste: <Paste {...childProps} />,
     toastSuccess: <ToastSuccess {...childProps} />,
     toastError: <ToastError {...childProps} />,
+    refresh: <Refresh {...childProps} />,
   }[name];
 };
 
