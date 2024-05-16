@@ -25,6 +25,7 @@ export const Row = styled(Grid)(({ theme }) => ({
   background: theme.palette.primary.dark,
   height: '44px',
   display: 'flex',
+  justifyContent: 'space-between',
   alignItems: 'center',
   borderRadius: '8px',
   marginBottom: '8px',
@@ -34,7 +35,9 @@ export const Row = styled(Grid)(({ theme }) => ({
 
 export const Label = styled(Grid)(({ theme }) => ({
   color: theme.palette.text.primary,
+  width: '20%',
   fontSize: '14px',
+  textAlign: 'left',
 }));
 
 export const Value = styled(Grid)(({ theme }) => ({
@@ -47,4 +50,19 @@ export const SecondaryValue = styled('span')(({ theme }) => ({
   color: theme.palette.text.primary,
   fontWeight: 300,
   fontSize: '14px',
+}));
+
+export const DoubleValue = styled(Grid)({
+  width: '70%',
+  gap: '5%',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+export const ValueRight = styled(Grid)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  fontWeight: 500,
+  fontSize: '14px',
+  textAlign: 'right',
 }));

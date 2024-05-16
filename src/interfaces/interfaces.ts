@@ -25,7 +25,7 @@ export interface DecodedMessage {
   userID?: string;
   creationTime?: string;
   expiresOn?: string;
-  account?: string;
+  account?: string | AccountWithModifier;
   nonce?: number;
   sellAssetId?: string;
   sellAmount?: number;
@@ -38,6 +38,11 @@ export interface DecodedMessage {
     chainName: string;
   };
   delegateAddress?: string;
+}
+
+export interface AccountWithModifier {
+  account: string;
+  modifier: string;
 }
 
 export enum OnChainRequestOp {

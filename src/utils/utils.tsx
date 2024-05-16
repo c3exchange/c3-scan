@@ -58,10 +58,15 @@ export const formatNumber = new Intl.NumberFormat('en-US', {
 export const createShouldForwardProp = (propsToOmit: string[]) => (prop: PropertyKey) =>
   defaultShouldForwardProp(prop) && !propsToOmit.includes(String(prop));
 
-export const truncateText = (text = '', [start, end]: number[] = [6, 6]) => {
+export const truncateText = (
+  text = '',
+  [start, end]: number[] = [6, 6],
+  spacing: Boolean = false
+) => {
   const head = text.slice(0, start);
   const tail = text.slice(-1 * end, text.length);
-  return text.length > start + end ? [head, tail].join('...') : text;
+  const separator = spacing ? ' ... ' : '...';
+  return text.length > start + end ? [head, tail].join(separator) : text;
 };
 
 export const formatApyNumber = (num: number) => {

@@ -1,33 +1,30 @@
-import { DecodedMessage, OnChainRequestOp } from '../interfaces/interfaces';
+import { DecodedMessage, OnChainRequestOp } from '../../interfaces/interfaces';
 import {
   decodeBase64,
   IPackedInfo,
   decodeUint16,
   decodeUint,
-  decodeABIValue,
   CHAIN_UTILS,
   CHAIN_ID_ALGORAND,
-  Instrument,
   InstrumentAmount,
   ServerInstrument,
   convertUint64toInt64,
   getChainNameByChainId,
   ChainId,
+  decodeABIValue,
 } from '@c3exchange/common';
+import { truncateText } from '../utils';
+import {
+  getEnumKeyByEnumValue,
+  getInstrumentfromSlotId,
+  packABIString,
+} from './decoderUtils';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
 export const delegateFormat = '(byte,address,uint64,uint64)';
 export const accountMoveFormat = '(byte,address,(uint8,uint64)[],(uint8,uint64)[])';
 export const ORDER_OPERATION_STR = '06';
-const defaultInstrument = {
-  id: '',
-  asaId: 0,
-  asaName: '',
-  asaUnitName: '',
-  asaDecimals: 0,
-  chains: [],
-};
 
 const orderDataFormat: IPackedInfo = {
   operation: { type: 'fixed', valueHex: ORDER_OPERATION_STR },
@@ -42,38 +39,6 @@ const orderDataFormat: IPackedInfo = {
   maxRepay: { type: 'uint' },
 };
 
-export const packABIString = (format: IPackedInfo): string => {
-  const internalPackABIString = (format: IPackedInfo): string[] => {
-    return Object.entries(format).map(([, type]) => {
-      switch (type.type) {
-        case 'object':
-        case 'hash':
-          return '(' + internalPackABIString(type.info) + ')';
-        case 'array':
-          return internalPackABIString({ value: type.info }) + '[]';
-        case 'address':
-          return 'address';
-        case 'byte':
-          return 'byte';
-        case 'bytes':
-        case 'string':
-        case 'base64':
-          return 'byte[' + (type.size ?? '') + ']';
-        case 'number':
-        case 'uint':
-          return 'uint' + (type.size ?? 8) * 8;
-        case 'fixed':
-          if (type.valueHex.length === 2) {
-            return 'byte';
-          }
-          return 'byte[' + type.valueHex.length / 2 + ']';
-        default:
-          throw new Error(`Type ${type.type} is not supported or recognized`);
-      }
-    });
-  };
-  return '(' + internalPackABIString(format).join(',') + ')';
-};
 export const settleFormat = packABIString(orderDataFormat);
 
 /**
@@ -97,23 +62,17 @@ const decodeWelcomeMessage = (encodedMessage: string) => {
   return { operationType, userID, creationTime };
 };
 
-export function getInstrumentfromSlotId(
-  id: number,
-  appState: ServerInstrument[]
-): Instrument {
-  for (let instrument of appState) {
-    if (instrument.slotId === id) {
-      return instrument.instrument;
-    }
-  }
-  return defaultInstrument;
-}
-
 interface UnpackedData {
   result: Record<string, any>;
   bytesRead: number;
 }
 
+/**
+ * Decodes the partial data of the header of a signed message.
+ *
+ * @param {Uint8Array} data - The data to decode.
+ * @returns {UnpackedData} - An object containing the result and the number of bytes read.
+ */
 export const unpackPartialData = (data: Uint8Array): UnpackedData => {
   const formatOpt: IPackedInfo = {
     target: { type: 'address' },
@@ -166,7 +125,7 @@ export const unpackPartialData = (data: Uint8Array): UnpackedData => {
   return { result, bytesRead };
 };
 
-function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
+export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
   const withdrawResult = decodeABIValue(operation, withdrawFormat);
   const operationType = getEnumKeyByEnumValue(
     OnChainRequestOp,
@@ -187,7 +146,7 @@ function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument[]) {
   return { operationType, instrumentName, amount, chain };
 }
 
-function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
+export function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   const poolResult = decodeABIValue(operation, poolMoveFormat);
   const instrumentSlotId = Number(poolResult[1]);
   const encodedAmount = convertUint64toInt64(poolResult[2]);
@@ -206,7 +165,7 @@ function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
   return { operationType, instrumentName, amount };
 }
 
-function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
+export function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
   const settleResult = decodeABIValue(operation, settleFormat);
   const operationType = getEnumKeyByEnumValue(OnChainRequestOp, OnChainRequestOp.Settle);
   const nonce = Number(settleResult[2]);
@@ -234,8 +193,8 @@ function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]) {
     nonce,
     expiresOn,
     sellAssetId: sellAsset.id,
-    buyAssetId: buyAsset.id,
     sellAmount,
+    buyAssetId: buyAsset.id,
     buyAmount,
     maxBorrow,
     maxRepay,
@@ -249,7 +208,7 @@ function decodeDelegate(operation: Uint8Array) {
   );
   const delegateResult = decodeABIValue(operation, delegateFormat);
   const extractedDelegateAddress = delegateResult[1];
-  const delegateAddress = getFirstAndLastChars(extractedDelegateAddress, 8, 8);
+  const delegateAddress = truncateText(extractedDelegateAddress, [8, 8]);
   const nonce = Number(delegateResult[2]);
   const extractedExpirationTime = delegateResult[3];
   const expiresOn = new Date(parseInt(extractedExpirationTime) * 1000).toLocaleString();
@@ -263,6 +222,13 @@ function decodeDelegate(operation: Uint8Array) {
   };
 }
 
+/**
+ * Decodes a message corresponding to it's operation type.
+ *
+ * @param {string} encodeMessage - The encoded message.
+ * @param {ServerInstrument[]} serverInstruments - The server instruments.
+ * @returns {DecodedMessage} - An object containing the decoded message.
+ */
 export const decodeMessage = (
   encodeMessage: string,
   serverInstruments: ServerInstrument[]
@@ -279,7 +245,7 @@ export const decodeMessage = (
     const fullMessage = new Uint8Array(bytesArray).slice(8);
     const decodedHeader = unpackPartialData(fullMessage);
     const operation = fullMessage.slice(decodedHeader.bytesRead);
-    const target: string = getFirstAndLastChars(decodedHeader.result.target, 8, 8);
+    const target: string = truncateText(decodedHeader.result.target, [8, 8]);
     switch (operation[0]) {
       case OnChainRequestOp.Withdraw:
         const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
@@ -299,72 +265,4 @@ export const decodeMessage = (
   } catch (error) {
     console.error(error);
   }
-};
-
-export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
-  amount: 'Amount',
-  target: 'Destination',
-  instrumentName: 'Asset',
-  operationType: 'Type',
-  userID: 'User ID',
-  creationTime: 'Creation Time',
-  account: 'Account',
-  expiresOn: 'Expiration Time',
-  buyAmount: 'Buy Amount',
-  buyAssetId: 'Buy Asset',
-  maxBorrow: 'Max Borrow',
-  maxRepay: 'Max Repay',
-  nonce: 'Nonce',
-  sellAmount: 'Sell Amount',
-  sellAssetId: 'Sell Asset',
-  chain: 'Chain',
-  delegateAddress: 'Delegate Address',
-};
-
-export const getFirstAndLastChars = (
-  str: string,
-  leftChars: number,
-  rightChars: number
-) => {
-  if (str.length <= leftChars + rightChars) return str;
-  return str.slice(0, leftChars) + '...' + str.slice(-rightChars);
-};
-
-export const getEnumKeyByEnumValue = (
-  enumObj: any,
-  enumValue: number
-): string | undefined => {
-  let keys = Object.keys(enumObj).filter((x) => enumObj[x] === enumValue);
-  return keys.length > 0 ? keys[0] : undefined;
-};
-
-export const processValue = (value: any) => {
-  let primaryValue: string = '';
-  let secondaryValue: string = '';
-  if (value?.chainId) {
-    primaryValue = value?.chainId;
-    secondaryValue = ' - ' + value?.chainName;
-  } else if (typeof value === 'object') {
-    primaryValue = JSON.stringify(value);
-  } else {
-    primaryValue = value;
-  }
-  return { primaryValue, secondaryValue };
-};
-
-export const urlMsgToBase64Msg = (urlParam: string | null): string => {
-  if (!urlParam) return '';
-
-  const welcomeRegex = /^\s*Welcome to C3/;
-
-  if (!welcomeRegex.test(urlParam)) return urlParam.replace(/ /g, '+');
-  const finalWordMatcher = /([A-Za-z0-9+/= ]+)\s*$/;
-  const match = urlParam.match(finalWordMatcher);
-  if (!match) return '';
-  const welcomeString = `Welcome to C3:
-Click to sign and accept the C3 Terms of Service (https://c3.io/terms)
-This request will not trigger a blockchain transaction or cost any gas fees.
-`;
-  const operation = match[1].trim().replace(/ /g, '+');
-  return `${welcomeString}${operation}`;
 };
