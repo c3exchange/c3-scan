@@ -68,3 +68,13 @@ export const formatApyNumber = (num: number) => {
   if (num % 1 !== 0) return num.toFixed(3);
   return num;
 };
+
+export const formatPriceNumber = (num: number) => {
+  let fractionDigits = 4;
+  if (num / 1000 > 1) fractionDigits = 3;
+  if (num / 10000 > 1) fractionDigits = 1;
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: fractionDigits,
+  }).format(num);
+};

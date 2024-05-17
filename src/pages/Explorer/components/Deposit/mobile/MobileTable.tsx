@@ -1,5 +1,5 @@
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
-import { getAssetIcon, formatNumber } from '../../../../../utils';
+import { getAssetIcon, formatNumber, formatPriceNumber } from '../../../../../utils';
 import Loader from '../../../../../components/Loader/Loader';
 import { IDepositTable } from '../interfaces';
 
@@ -13,6 +13,7 @@ const MobileTable = (props: IDepositTable) => {
     isLoading,
     totalValueLocked,
     totalAccountValue,
+    getUSDPrice,
   } = props;
   return (
     <S.Container>
@@ -41,6 +42,14 @@ const MobileTable = (props: IDepositTable) => {
                 </S.Row>
                 <S.Row container justifyContent="space-between">
                   <S.Item item _isTitle>
+                    Price
+                  </S.Item>
+                  <S.Item item gap="4px">
+                    {formatPriceNumber(getUSDPrice(asset.instrument.id))}
+                  </S.Item>
+                </S.Row>
+                <S.Row container justifyContent="space-between">
+                  <S.Item item _isTitle>
                     Amount
                   </S.Item>
                   <S.Item item gap="4px">
@@ -64,6 +73,14 @@ const MobileTable = (props: IDepositTable) => {
                   <S.Item item>
                     <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                     {asset.instrument.id}
+                  </S.Item>
+                </S.Row>
+                <S.Row container justifyContent="space-between">
+                  <S.Item item _isTitle>
+                    Price
+                  </S.Item>
+                  <S.Item item gap="4px">
+                    {formatPriceNumber(getUSDPrice(asset.instrument.id))}
                   </S.Item>
                 </S.Row>
                 <S.Row container justifyContent="space-between">
