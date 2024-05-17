@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGlobalContext } from '../contexts/GlobalContext';
 import { AssetHolding } from '../interfaces/interfaces';
 import {
@@ -77,17 +77,24 @@ export const useGetAddressState = (
   const [userCash, setUserCash] = useState<AssetHolding[]>(assetHoldings);
   const [userPool, setUserPool] = useState<AssetHolding[]>([]);
 
+  const addressRef = useRef(address);
+  useEffect(() => {
+    addressRef.current = address;
+  }, [address]);
+
   const [hadError, setHadError] = useState<boolean>(false);
   const maxRetries = 1;
   const timeBetweenRetries = 2000;
 
   const getAddressOnChainState = async (
-    address: string,
+    addressToSearch: string,
     coreAppId: number,
     retryCount: number = 0
   ) => {
+    // In case of asynchronous retries, we want to make sure the hook is still looking for the same address
+    if (addressRef.current !== addressToSearch) return;
     try {
-      const decodedAddress = decodeAccountId(address);
+      const decodedAddress = decodeAccountId(addressToSearch);
       const rawCoreAccountState = await algoClient
         .getApplicationBoxByName(coreAppId, decodedAddress)
         .do();
@@ -107,7 +114,7 @@ export const useGetAddressState = (
       setUserPool([]);
       if (retryCount < maxRetries) {
         setTimeout(() => {
-          getAddressOnChainState(address, coreAppId, retryCount + 1);
+          getAddressOnChainState(addressToSearch, coreAppId, retryCount + 1);
         }, timeBetweenRetries);
       }
       if (retryCount === maxRetries) {
@@ -129,9 +136,8 @@ export const useGetAddressState = (
   };
 
   useEffect(() => {
-    if (address === '') setClearState();
+    setClearState();
     if (!coreAppId || !address) return;
-    setHadError(false);
     getAddressOnChainState(address, coreAppId);
   }, [address, coreAppId]);
 

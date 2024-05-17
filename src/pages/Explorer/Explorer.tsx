@@ -82,9 +82,8 @@ const Explorer = () => {
       const inputUserAddress = getUserAddress(inputC3Address);
       if (inputC3Address === C3Address) {
         onRefreshAddress();
-      } else {
-        setIsAddrStateLoading(true);
       }
+      setIsAddrStateLoading(true);
       setC3Address(inputC3Address);
       setUserAddress(inputUserAddress);
       setWrongAddress(false);
