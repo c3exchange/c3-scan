@@ -29,31 +29,44 @@ const DesktopTable = (props: IDepositTable) => {
         )}
       </S.Title>
       <S.AssetInfo container>
-        <Grid item desktop={2}>
-          Asset
-        </Grid>
-        <Grid item desktop={1}>
-          Price
-        </Grid>
-        <S.RightAlignedGrid item desktop={4}>
-          Amount
-        </S.RightAlignedGrid>
-        <S.RightAlignedGrid item desktop={3}>
-          Value
-        </S.RightAlignedGrid>
+        {C3Address ? (
+          <>
+            <Grid item desktop={3}>
+              Asset
+            </Grid>
+            <S.RightAlignedGrid item desktop={3}>
+              Amount
+            </S.RightAlignedGrid>
+            <S.RightAlignedGrid item desktop={4}>
+              Value
+            </S.RightAlignedGrid>
+          </>
+        ) : (
+          <>
+            <Grid item desktop={2}>
+              Asset
+            </Grid>
+            <Grid item desktop={1}>
+              Price
+            </Grid>
+            <S.RightAlignedGrid item desktop={4}>
+              Amount
+            </S.RightAlignedGrid>
+            <S.RightAlignedGrid item desktop={3}>
+              Value
+            </S.RightAlignedGrid>
+          </>
+        )}
       </S.AssetInfo>
       <S.ScrollableContent>
         {isLoading && <Loader />}
         {C3Address
           ? userCash.map((asset) => (
               <S.Row container key={asset.instrument.id}>
-                <S.AssetIconContainer item desktop={2}>
+                <S.AssetIconContainer item desktop={3}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={1}>
-                  {formatPriceNumber(getUSDPrice(asset.instrument.id))}
-                </Grid>
                 <S.RightAlignedGrid item desktop={3}>
                   {Formatter.fromInstrumentAmount(asset.amount).precision().formatted()}{' '}
                   {asset.instrument.id}

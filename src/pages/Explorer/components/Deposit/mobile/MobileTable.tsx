@@ -42,14 +42,6 @@ const MobileTable = (props: IDepositTable) => {
                 </S.Row>
                 <S.Row container justifyContent="space-between">
                   <S.Item item _isTitle>
-                    Price
-                  </S.Item>
-                  <S.Item item gap="4px">
-                    {formatPriceNumber(getUSDPrice(asset.instrument.id))}
-                  </S.Item>
-                </S.Row>
-                <S.Row container justifyContent="space-between">
-                  <S.Item item _isTitle>
                     Amount
                   </S.Item>
                   <S.Item item gap="4px">
