@@ -82,7 +82,7 @@ export const useGetAddressState = (
     addressRef.current = address;
   }, [address]);
 
-  const [hadError, setHadError] = useState<boolean>(false);
+  const [addressStateError, setAddrStateError] = useState<boolean>(false);
   const maxRetries = 1;
   const timeBetweenRetries = 2000;
 
@@ -107,7 +107,7 @@ export const useGetAddressState = (
       );
       setUserCash(cash);
       setUserPool(pool);
-      setHadError(false);
+      setAddrStateError(false);
     } catch (error) {
       console.log('Error:', error);
       setUserCash([]);
@@ -118,7 +118,7 @@ export const useGetAddressState = (
         }, timeBetweenRetries);
       }
       if (retryCount === maxRetries) {
-        setHadError(true);
+        setAddrStateError(true);
       }
     }
   };
@@ -126,7 +126,7 @@ export const useGetAddressState = (
   const setClearState = () => {
     setUserCash([]);
     setUserPool([]);
-    setHadError(false);
+    setAddrStateError(false);
   };
 
   const refreshAddressOnChainState = () => {
@@ -141,5 +141,5 @@ export const useGetAddressState = (
     getAddressOnChainState(address, coreAppId);
   }, [address, coreAppId]);
 
-  return { userCash, userPool, error: hadError, refreshAddressOnChainState };
+  return { userCash, userPool, addressStateError, refreshAddressOnChainState };
 };

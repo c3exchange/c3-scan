@@ -41,12 +41,8 @@ const Explorer = () => {
 
   const { data: holdingAssets, isLoading } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
-  const {
-    userCash,
-    userPool,
-    error: addressStateError,
-    refreshAddressOnChainState,
-  } = useGetAddressState(C3Address, onChainC3State);
+  const { userCash, userPool, addressStateError, refreshAddressOnChainState } =
+    useGetAddressState(C3Address, onChainC3State);
   useEffect(() => {
     if (userCash.length || addressStateError) {
       setIsAddrStateLoading(false);
