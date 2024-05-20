@@ -70,12 +70,9 @@ export const formatApyNumber = (num: number) => {
 };
 
 export const formatPriceNumber = (num: number) => {
-  let fractionDigits = 4;
-  if (num / 100 > 1) fractionDigits = 3;
-  if (num / 1000 > 1) fractionDigits = 2;
-  if (num / 10000 > 1) fractionDigits = 1;
+  const roundedNum = Number(num).toPrecision(6);
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 1,
-    maximumFractionDigits: fractionDigits,
-  }).format(num);
+    maximumFractionDigits: 4,
+  }).format(Number(roundedNum));
 };
