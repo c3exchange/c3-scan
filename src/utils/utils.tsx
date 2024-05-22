@@ -68,11 +68,3 @@ export const formatApyNumber = (num: number) => {
   if (num % 1 !== 0) return num.toFixed(3);
   return num;
 };
-
-export const formatPriceNumber = (num: number) => {
-  const roundedNum = Number(num).toPrecision(6);
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 4,
-  }).format(Number(roundedNum));
-};

@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
-import { getAssetIcon, formatNumber, formatPriceNumber } from '../../../../../utils';
+import { getAssetIcon, formatNumber } from '../../../../../utils';
 import Loader from '../../../../../components/Loader/Loader';
 import { IDepositTable } from '../interfaces';
 import Formatter from '../../../../../utils/formatter';
@@ -83,7 +83,10 @@ const DesktopTable = (props: IDepositTable) => {
                   {asset.instrument.id}
                 </S.AssetIconContainer>
                 <Grid item desktop={1}>
-                  {formatPriceNumber(getUSDPrice(asset.instrument.id))}
+                  {'$ '}
+                  {Formatter.fromNumber(getUSDPrice(asset.instrument.id))
+                    .precision(4)
+                    .formatted()}
                 </Grid>
                 <S.RightAlignedGrid item desktop={4}>
                   {formatNumber(asset.amount)} {asset.instrument.id}

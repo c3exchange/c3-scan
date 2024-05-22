@@ -1,7 +1,8 @@
 import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
-import { getAssetIcon, formatNumber, formatPriceNumber } from '../../../../../utils';
+import { getAssetIcon, formatNumber } from '../../../../../utils';
 import Loader from '../../../../../components/Loader/Loader';
 import { IDepositTable } from '../interfaces';
+import Formatter from '../../../../../utils/formatter';
 
 import * as S from './styles';
 
@@ -72,7 +73,10 @@ const MobileTable = (props: IDepositTable) => {
                     Price
                   </S.Item>
                   <S.Item item gap="4px">
-                    {formatPriceNumber(getUSDPrice(asset.instrument.id))}
+                    {'$ '}
+                    {Formatter.fromNumber(getUSDPrice(asset.instrument.id))
+                      .precision(4)
+                      .formatted()}
                   </S.Item>
                 </S.Row>
                 <S.Row container justifyContent="space-between">
