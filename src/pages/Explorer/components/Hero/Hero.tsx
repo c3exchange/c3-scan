@@ -124,7 +124,6 @@ const Hero = ({
               <S.SearchContainer>
                 <CustomButton
                   height="56px"
-                  width="100%"
                   maxWidth="144px"
                   onClick={onSearch}
                   disabled={!address.length || enableRefresh}
@@ -136,7 +135,6 @@ const Hero = ({
                 </CustomButton>
                 <CustomButton
                   height="56px"
-                  width="100%"
                   maxWidth="144px"
                   onClick={onRefreshAddress}
                   disabled={!enableRefresh}

@@ -7,11 +7,11 @@ interface CustomButtonProps extends MUIButtonProps {
   maxWidth?: string;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = (props) => (
+const CustomButton: React.FC<CustomButtonProps> = ({ maxWidth, ...props }) => (
   <S.Button
     height={props.height}
     width={props.width}
-    _maxWidth={props.maxWidth}
+    _maxWidth={maxWidth}
     {...props}
     disableRipple
   />
