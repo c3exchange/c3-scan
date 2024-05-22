@@ -123,8 +123,8 @@ const Hero = ({
             <Grid item desktop>
               <S.SearchContainer>
                 <CustomButton
-                  height="56px"
-                  maxWidth="144px"
+                  _height="56px"
+                  _maxWidth="144px"
                   onClick={onSearch}
                   disabled={!address.length || enableRefresh}
                 >
@@ -134,8 +134,8 @@ const Hero = ({
                   </S.SearchBtn>
                 </CustomButton>
                 <CustomButton
-                  height="56px"
-                  maxWidth="144px"
+                  _height="56px"
+                  _maxWidth="144px"
                   onClick={onRefreshAddress}
                   disabled={!enableRefresh}
                 >

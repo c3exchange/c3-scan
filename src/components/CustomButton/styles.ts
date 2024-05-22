@@ -4,16 +4,16 @@ import { ButtonProps as MUIButtonProps } from '@mui/material/Button';
 import { createShouldForwardProp } from '../../utils';
 
 interface CustomButtonProps extends MUIButtonProps {
-  height?: string;
-  width?: string;
+  _height?: string;
+  _width?: string;
   _maxWidth?: string;
 }
 
 export const Button = styled(MUIButton, {
-  shouldForwardProp: createShouldForwardProp(['_maxWidth']),
-})<CustomButtonProps>(({ theme, width, height, _maxWidth, disabled }) => ({
-  width: width || '100%',
-  height: height || '46px',
+  shouldForwardProp: createShouldForwardProp(['_width', '_height', '_maxWidth']),
+})<CustomButtonProps>(({ theme, _width, _height, _maxWidth, disabled }) => ({
+  width: _width || '100%',
+  height: _height || '46px',
   maxWidth: _maxWidth,
   borderRadius: theme.spacing(1),
   textTransform: 'none',
