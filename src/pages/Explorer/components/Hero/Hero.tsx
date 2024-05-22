@@ -13,17 +13,21 @@ interface IHero {
   address: string;
   hasC3Address: boolean;
   wrongAddress: boolean;
+  enableRefresh: boolean;
   onSearch: () => void;
+  onRefreshAddress: () => void;
   onChangeAddress: (address: string) => void;
   onClear: () => void;
 }
 const Hero = ({
   address,
   hasC3Address,
-  onSearch,
-  onClear,
-  onChangeAddress,
   wrongAddress,
+  enableRefresh,
+  onSearch,
+  onRefreshAddress,
+  onChangeAddress,
+  onClear,
 }: IHero) => {
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -118,10 +122,26 @@ const Hero = ({
           {!isMobile && (
             <Grid item desktop>
               <S.SearchContainer>
-                <CustomButton height="56px" onClick={onSearch} disabled={!address.length}>
+                <CustomButton
+                  _height="56px"
+                  _maxWidth="144px"
+                  onClick={onSearch}
+                  disabled={!address.length || enableRefresh}
+                >
                   <S.SearchBtn>
                     <Icon name="search" width={16} height={16} />
                     <S.SearchTxt>Search</S.SearchTxt>
+                  </S.SearchBtn>
+                </CustomButton>
+                <CustomButton
+                  _height="56px"
+                  _maxWidth="144px"
+                  onClick={onRefreshAddress}
+                  disabled={!enableRefresh}
+                >
+                  <S.SearchBtn>
+                    <Icon name="refresh" width={16} height={16} />
+                    <S.SearchTxt>Refresh</S.SearchTxt>
                   </S.SearchBtn>
                 </CustomButton>
               </S.SearchContainer>

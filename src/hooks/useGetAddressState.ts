@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGlobalContext } from '../contexts/GlobalContext';
 import { AssetHolding } from '../interfaces/interfaces';
 import {
@@ -77,9 +77,24 @@ export const useGetAddressState = (
   const [userCash, setUserCash] = useState<AssetHolding[]>(assetHoldings);
   const [userPool, setUserPool] = useState<AssetHolding[]>([]);
 
-  const getAddressOnChainState = async (address: string, coreAppId: number) => {
+  const addressRef = useRef(address);
+  useEffect(() => {
+    addressRef.current = address;
+  }, [address]);
+
+  const [addressStateError, setAddrStateError] = useState<boolean>(false);
+  const maxRetries = 1;
+  const timeBetweenRetries = 2000;
+
+  const getAddressOnChainState = async (
+    addressToSearch: string,
+    coreAppId: number,
+    retryCount: number = 0
+  ) => {
+    // In case of asynchronous retries, we want to make sure the hook is still looking for the same address
+    if (addressRef.current !== addressToSearch) return;
     try {
-      const decodedAddress = decodeAccountId(address);
+      const decodedAddress = decodeAccountId(addressToSearch);
       const rawCoreAccountState = await algoClient
         .getApplicationBoxByName(coreAppId, decodedAddress)
         .do();
@@ -92,17 +107,39 @@ export const useGetAddressState = (
       );
       setUserCash(cash);
       setUserPool(pool);
+      setAddrStateError(false);
     } catch (error) {
-      setUserCash(assetHoldings);
+      console.log('Error:', error);
+      setUserCash([]);
       setUserPool([]);
-      console.error(error);
+      if (retryCount < maxRetries) {
+        setTimeout(() => {
+          getAddressOnChainState(addressToSearch, coreAppId, retryCount + 1);
+        }, timeBetweenRetries);
+      }
+      if (retryCount === maxRetries) {
+        setAddrStateError(true);
+      }
     }
   };
 
+  const setClearState = () => {
+    setUserCash([]);
+    setUserPool([]);
+    setAddrStateError(false);
+  };
+
+  const refreshAddressOnChainState = () => {
+    setClearState();
+    if (!coreAppId || !address) return;
+    getAddressOnChainState(address, coreAppId);
+  };
+
   useEffect(() => {
+    setClearState();
     if (!coreAppId || !address) return;
     getAddressOnChainState(address, coreAppId);
   }, [address, coreAppId]);
 
-  return { userCash, userPool };
+  return { userCash, userPool, addressStateError, refreshAddressOnChainState };
 };

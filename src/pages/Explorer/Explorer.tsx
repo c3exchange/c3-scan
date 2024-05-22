@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Hero from './components/Hero/Hero';
 import Deposit from './components/Deposit/Deposit';
@@ -26,6 +26,8 @@ const Explorer = () => {
   const [C3Address, setC3Address] = useState<string>('');
   const [userAddress, setUserAddress] = useState<string>('');
   const [wrongAddress, setWrongAddress] = useState<boolean>(false);
+  const [enableRefresh, setEnableRefresh] = useState<boolean>(false);
+  const [isAddrStateLoading, setIsAddrStateLoading] = useState<boolean>(false);
 
   const windowSize = useWindowSize();
   const isMediumDesktop = useMemo(
@@ -39,10 +41,17 @@ const Explorer = () => {
 
   const { data: holdingAssets, isLoading } = useGetC3HoldingAssets();
   const onChainC3State = useGetOnChainC3State(holdingAssets);
-  const { userCash, userPool } = useGetAddressState(C3Address, onChainC3State);
+  const { userCash, userPool, addressStateError, refreshAddressOnChainState } =
+    useGetAddressState(C3Address, onChainC3State);
+  useEffect(() => {
+    if (userCash.length || addressStateError) {
+      setIsAddrStateLoading(false);
+    }
+  }, [userCash, userPool, addressStateError]);
 
   const onClear = () => {
     setInputAddress('');
+    setEnableRefresh(false);
   };
 
   const onReturnHomePage = () => {
@@ -50,6 +59,7 @@ const Explorer = () => {
     setC3Address('');
     setUserAddress('');
     setWrongAddress(false);
+    setIsAddrStateLoading(false);
   };
 
   const { copy } = useCopy();
@@ -59,21 +69,33 @@ const Explorer = () => {
 
   const onChangeAddress = (inputAddress: string) => {
     setInputAddress(inputAddress);
+    setEnableRefresh(false);
   };
 
   const onSearch = () => {
     try {
-      const c3Address = getC3Address(inputAddress);
-      const userAddress = getUserAddress(c3Address);
-      setC3Address(c3Address);
-      setUserAddress(userAddress);
+      const inputC3Address = getC3Address(inputAddress);
+      const inputUserAddress = getUserAddress(inputC3Address);
+      if (inputC3Address === C3Address) {
+        onRefreshAddress();
+      }
+      setIsAddrStateLoading(true);
+      setC3Address(inputC3Address);
+      setUserAddress(inputUserAddress);
       setWrongAddress(false);
+      setEnableRefresh(true);
     } catch (error) {
       setC3Address('');
       setUserAddress('');
       setWrongAddress(true);
+      setEnableRefresh(false);
       console.error('Invalid address: ', inputAddress, error);
     }
+  };
+
+  const onRefreshAddress = () => {
+    refreshAddressOnChainState();
+    setIsAddrStateLoading(true);
   };
 
   const path = useMemo(() => {
@@ -87,19 +109,21 @@ const Explorer = () => {
     ];
     if (C3Address || wrongAddress) values.push({ text: 'Search result' });
     return values;
-  }, [C3Address, onClear, wrongAddress]);
+  }, [C3Address, wrongAddress]);
 
   return (
     <S.Container container>
       <Grid item mobile={12}>
         <Path values={path} />
         <Hero
-          wrongAddress={wrongAddress}
           address={inputAddress}
-          onSearch={onSearch}
-          onClear={onClear}
-          onChangeAddress={onChangeAddress}
+          wrongAddress={wrongAddress}
           hasC3Address={!!C3Address}
+          enableRefresh={enableRefresh}
+          onSearch={onSearch}
+          onRefreshAddress={onRefreshAddress}
+          onChangeAddress={onChangeAddress}
+          onClear={onClear}
         />
       </Grid>
       {!wrongAddress && (
@@ -132,10 +156,10 @@ const Explorer = () => {
       <Grid item mobile={12}>
         <Grid container columnSpacing={2}>
           <Grid item mobile={12} mediumDesktop={8}>
-            {!wrongAddress ? (
+            {!wrongAddress && !addressStateError ? (
               <Deposit
                 c3Assets={holdingAssets}
-                isLoading={isLoading}
+                isLoading={isLoading || isAddrStateLoading}
                 C3Address={C3Address}
                 userCash={userCash}
               />
@@ -143,7 +167,9 @@ const Explorer = () => {
               <S.WrongAddressContainer>
                 <EmptyTable icon={{ name: 'emptyInfoAddress', size: 48 }}>
                   <S.WrongAddressTableText>
-                    No matching C3 account was found for this address
+                    {wrongAddress
+                      ? 'No matching C3 account was found for this address'
+                      : 'Error getting C3 account data Please try again'}
                   </S.WrongAddressTableText>
                 </EmptyTable>
               </S.WrongAddressContainer>
@@ -156,7 +182,7 @@ const Explorer = () => {
           )}
         </Grid>
       </Grid>
-      {!wrongAddress && (
+      {!wrongAddress && !addressStateError && (
         <S.MarginPoolContainer item mobile={12}>
           {!C3Address ? (
             <MarginPool onChainAppState={onChainC3State} />

@@ -37,7 +37,7 @@ const Banner = (props: IBanner) => {
       <S.ButtonContainer item mobile={12} laptop="auto" desktop>
         <CustomButton
           {...(!separator && { width: 'auto' })}
-          height="54px"
+          _height="54px"
           onClick={() => window.open('https://github.com/c3exchange/c3-scan/')}
         >
           <S.ViewDocumentationBtn>
