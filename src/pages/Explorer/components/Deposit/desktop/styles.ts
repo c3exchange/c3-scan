@@ -50,7 +50,7 @@ export const Row = styled(Grid)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '32px',
-  paddingRight: '32px',
+  paddingRight: '28px',
 }));
 
 export const Footer = styled(Grid)(() => ({

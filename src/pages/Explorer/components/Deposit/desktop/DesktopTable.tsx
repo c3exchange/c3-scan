@@ -15,6 +15,7 @@ const DesktopTable = (props: IDepositTable) => {
     isLoading,
     totalValueLocked,
     totalAccountValue,
+    getUSDPrice,
   } = props;
   return (
     <S.Container>
@@ -28,15 +29,34 @@ const DesktopTable = (props: IDepositTable) => {
         )}
       </S.Title>
       <S.AssetInfo container>
-        <Grid item desktop={3}>
-          Asset
-        </Grid>
-        <S.RightAlignedGrid item desktop={3}>
-          Amount
-        </S.RightAlignedGrid>
-        <S.RightAlignedGrid item desktop={4}>
-          Value
-        </S.RightAlignedGrid>
+        {C3Address ? (
+          <>
+            <Grid item desktop={3}>
+              Asset
+            </Grid>
+            <S.RightAlignedGrid item desktop={3}>
+              Amount
+            </S.RightAlignedGrid>
+            <S.RightAlignedGrid item desktop={4}>
+              Value
+            </S.RightAlignedGrid>
+          </>
+        ) : (
+          <>
+            <Grid item desktop={2}>
+              Asset
+            </Grid>
+            <Grid item desktop={1}>
+              Price
+            </Grid>
+            <S.RightAlignedGrid item desktop={4}>
+              Amount
+            </S.RightAlignedGrid>
+            <S.RightAlignedGrid item desktop={3}>
+              Value
+            </S.RightAlignedGrid>
+          </>
+        )}
       </S.AssetInfo>
       <S.ScrollableContent>
         {isLoading && <Loader />}
@@ -58,14 +78,20 @@ const DesktopTable = (props: IDepositTable) => {
             ))
           : c3Assets?.map((asset) => (
               <S.Row container key={asset.instrument.id}>
-                <S.AssetIconContainer item desktop={3}>
+                <S.AssetIconContainer item desktop={2}>
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <S.RightAlignedGrid item desktop={3}>
+                <Grid item desktop={1}>
+                  {'$ '}
+                  {Formatter.fromNumber(getUSDPrice(asset.instrument.id))
+                    .precision(4)
+                    .formatted()}
+                </Grid>
+                <S.RightAlignedGrid item desktop={4}>
                   {formatNumber(asset.amount)} {asset.instrument.id}
                 </S.RightAlignedGrid>
-                <S.RightAlignedGrid item desktop={4}>
+                <S.RightAlignedGrid item desktop={3}>
                   $ {formatNumber(asset.value)}
                 </S.RightAlignedGrid>
               </S.Row>

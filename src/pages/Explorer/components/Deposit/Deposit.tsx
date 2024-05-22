@@ -6,9 +6,11 @@ import MobileTable from './mobile/MobileTable';
 import { useWindowSize } from '../../../../hooks/useWindowSize';
 import { breakpoints } from '../../../../theme';
 import { IDeposit } from './interfaces';
+import { usePrices } from '../../../../hooks/usePrices';
 
 const Deposit = (props: IDeposit) => {
   const { c3Assets, C3Address, userCash, isLoading } = props;
+  const { getUSDPrice } = usePrices();
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -29,6 +31,7 @@ const Deposit = (props: IDeposit) => {
           isLoading={isLoading}
           totalValueLocked={totalValueLocked}
           totalAccountValue={totalAccountValue}
+          getUSDPrice={getUSDPrice}
         />
       ) : (
         <DesktopTable
@@ -38,6 +41,7 @@ const Deposit = (props: IDeposit) => {
           isLoading={isLoading}
           totalValueLocked={totalValueLocked}
           totalAccountValue={totalAccountValue}
+          getUSDPrice={getUSDPrice}
         />
       )}
     </>

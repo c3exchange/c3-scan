@@ -10,6 +10,7 @@ interface IDeposit {
 interface IDepositTable extends IDeposit {
   totalValueLocked?: number;
   totalAccountValue: number;
+  getUSDPrice: (asset: string) => number;
 }
 
 export type { IDeposit, IDepositTable };

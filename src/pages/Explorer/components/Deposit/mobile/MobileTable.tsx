@@ -2,6 +2,7 @@ import TooltipInfo from '../../../../../components/TooltipInfo/TooltipInfo';
 import { getAssetIcon, formatNumber } from '../../../../../utils';
 import Loader from '../../../../../components/Loader/Loader';
 import { IDepositTable } from '../interfaces';
+import Formatter from '../../../../../utils/formatter';
 
 import * as S from './styles';
 
@@ -13,6 +14,7 @@ const MobileTable = (props: IDepositTable) => {
     isLoading,
     totalValueLocked,
     totalAccountValue,
+    getUSDPrice,
   } = props;
   return (
     <S.Container>
@@ -64,6 +66,17 @@ const MobileTable = (props: IDepositTable) => {
                   <S.Item item>
                     <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                     {asset.instrument.id}
+                  </S.Item>
+                </S.Row>
+                <S.Row container justifyContent="space-between">
+                  <S.Item item _isTitle>
+                    Price
+                  </S.Item>
+                  <S.Item item gap="4px">
+                    {'$ '}
+                    {Formatter.fromNumber(getUSDPrice(asset.instrument.id))
+                      .precision(4)
+                      .formatted()}
                   </S.Item>
                 </S.Row>
                 <S.Row container justifyContent="space-between">
