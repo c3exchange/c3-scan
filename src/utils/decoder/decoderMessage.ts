@@ -138,7 +138,7 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
   const chainId = Number(withdrawResult[3][0]);
   const chainName = getChainNameByChainId(chainId as ChainId);
   const chain = { chainId, chainName };
-  const maxBorrow = Number(withdrawResult[4]);
+  const encodedMaxBorrow = withdrawResult[4];
 
   // The decodeABIValue function retrieves the value of the 'address' field of withdrawFormat, which corresponds
   // to a public key of a wallet. Then it converts it into an Algorand address and returns this address.
@@ -157,6 +157,12 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
     ).toDecimal()
   );
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
+  const maxBorrow = Number(
+    InstrumentAmount.fromContract(
+      getInstrumentfromSlotId(instrumentSlotId, appState),
+      BigInt(encodedMaxBorrow)
+    ).toDecimal()
+  );
 
   const withdrawDecoded: DecodedMessage = {
     operationType,
