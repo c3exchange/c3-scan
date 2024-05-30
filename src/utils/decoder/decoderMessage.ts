@@ -148,9 +148,6 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
   const targetAddress =
     CHAIN_UTILS[chainId as SupportedChainId].getAddressByPublicKey(publicKey);
   const target = truncateText(targetAddress, [8, 8]);
-  // console.log('wrongAlgoAddr', algorandAddress);
-  // console.log('pk', publicKey);
-  // console.log('targetAddress', targetAddress);
 
   const amount = Number(
     InstrumentAmount.fromContract(
