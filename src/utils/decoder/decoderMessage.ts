@@ -140,9 +140,10 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
   const chain = { chainId, chainName };
   const maxBorrow = Number(withdrawResult[4]);
 
-  // decodeABIValue converts the 'address' field, which is the public key of a wallet,
-  // into an Algorand address. However, this public key may not always be from Algorand,
-  // so we need to extract the public key and derive the correct address for the target chain.
+  // The decodeABIValue function retrieves the value of the 'address' field of withdrawFormat, which corresponds
+  // to a public key of a wallet. Then it converts it into an Algorand address and returns this address.
+  // However, this public key may be from another chain, so we need to extract the public key from
+  // the address and calculate the correct address for the target chain.
   const algorandAddress = withdrawResult[3][1];
   const publicKey = decodeAddress(algorandAddress).publicKey;
   const targetAddress =
