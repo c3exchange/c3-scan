@@ -12,6 +12,7 @@ import {
   getChainNameByChainId,
   ChainId,
   decodeABIValue,
+  SupportedChainId,
 } from '@c3exchange/common';
 import { truncateText } from '../utils';
 import {
@@ -19,6 +20,7 @@ import {
   getInstrumentfromSlotId,
   packABIString,
 } from './decoderUtils';
+import { decodeAddress } from 'algosdk';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
@@ -136,6 +138,18 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
   const chainId = Number(withdrawResult[3][0]);
   const chainName = getChainNameByChainId(chainId as ChainId);
   const chain = { chainId, chainName };
+  const encodedMaxBorrow = withdrawResult[4];
+
+  // The decodeABIValue function retrieves the value of the 'address' field of withdrawFormat, which corresponds
+  // to a public key of a wallet. Then it converts it into an Algorand address and returns this address.
+  // However, this public key may be from another chain, so we need to extract the public key from
+  // the address and calculate the correct address for the target chain.
+  const algorandAddress = withdrawResult[3][1];
+  const publicKey = decodeAddress(algorandAddress).publicKey;
+  const targetAddress =
+    CHAIN_UTILS[chainId as SupportedChainId].getAddressByPublicKey(publicKey);
+  const target = truncateText(targetAddress, [8, 8]);
+
   const amount = Number(
     InstrumentAmount.fromContract(
       getInstrumentfromSlotId(instrumentSlotId, appState),
@@ -143,7 +157,22 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
     ).toDecimal()
   );
   const instrumentName = getInstrumentfromSlotId(instrumentSlotId, appState).id;
-  return { operationType, instrumentName, amount, chain };
+  const maxBorrow = Number(
+    InstrumentAmount.fromContract(
+      getInstrumentfromSlotId(instrumentSlotId, appState),
+      BigInt(encodedMaxBorrow)
+    ).toDecimal()
+  );
+
+  const withdrawDecoded: DecodedMessage = {
+    operationType,
+    target,
+    chain,
+    instrumentName,
+    amount,
+  };
+  if (maxBorrow > 0) withdrawDecoded.maxBorrow = maxBorrow;
+  return withdrawDecoded;
 }
 
 export function decodePoolMove(operation: Uint8Array, appState: ServerInstrument[]) {
@@ -245,20 +274,20 @@ export const decodeMessage = (
     const fullMessage = new Uint8Array(bytesArray).slice(8);
     const decodedHeader = unpackPartialData(fullMessage);
     const operation = fullMessage.slice(decodedHeader.bytesRead);
-    const target: string = truncateText(decodedHeader.result.target, [8, 8]);
+    const account: string = truncateText(decodedHeader.result.target, [8, 8]);
     switch (operation[0]) {
       case OnChainRequestOp.Withdraw:
         const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
-        return { ...withdrawDecoded, target };
+        return { ...withdrawDecoded, account };
       case OnChainRequestOp.PoolMove:
         const poolMoveDecoded = decodePoolMove(operation, serverInstruments);
-        return { ...poolMoveDecoded, target };
+        return { ...poolMoveDecoded, account };
       case OnChainRequestOp.Settle:
         const settleDecoded = decodeSettle(operation, serverInstruments);
-        return { ...settleDecoded, target };
+        return { ...settleDecoded, account };
       case OnChainRequestOp.Delegate:
         const delegateDecoded = decodeDelegate(operation);
-        return { ...delegateDecoded, target };
+        return { ...delegateDecoded, account };
       default:
         break;
     }
