@@ -86,8 +86,13 @@ const Decoder = () => {
     let messageDecoded;
     try {
       messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
-    } catch (error) {}
-    if (messageDecoded) setDecodedMessage(messageDecoded);
+    } catch (error) {
+      setWrongMessage(true);
+    }
+    if (messageDecoded) {
+      setDecodedMessage(messageDecoded);
+      setWrongMessage(false);
+    }
   };
 
   // Update message on user input
