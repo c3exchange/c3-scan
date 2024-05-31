@@ -289,9 +289,10 @@ export const decodeMessage = (
         const delegateDecoded = decodeDelegate(operation);
         return { ...delegateDecoded, account };
       default:
-        break;
+        throw new Error(`Unknown operation type: ${operation[0]}`);
     }
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };

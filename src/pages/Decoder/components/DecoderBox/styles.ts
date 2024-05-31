@@ -1,6 +1,7 @@
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import styled from '@mui/material/styles/styled';
+import { createShouldForwardProp } from '../../../../utils';
 
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
@@ -83,4 +84,23 @@ export const InputText = styled(TextField)(({ theme }) => ({
   '& input': {
     color: theme.palette.primary.contrastText,
   },
+}));
+
+interface IInputContainer {
+  _wrongMessage: boolean;
+}
+
+export const InputContainer = styled('div', {
+  shouldForwardProp: createShouldForwardProp(['_wrongMessage']),
+})<IInputContainer>(({ _wrongMessage }) => ({
+  height: !_wrongMessage ? '160px' : 'auto',
+  width: '100%',
+  marginBottom: '16px',
+}));
+
+export const Error = styled('div')(({ theme }) => ({
+  height: '36px',
+  color: theme.palette.error.main,
+  fontSize: '14px',
+  marginTop: '4px',
 }));

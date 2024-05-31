@@ -32,6 +32,7 @@ const Decoder = () => {
   const [message, setMessage] = useState('');
   const [decodedMessage, setDecodedMessage] = useState<DecodedMessage>();
   const [secondDecodedMessage, setSecondDecodedMessage] = useState<DecodedMessage>();
+  const [wrongMessage, setWrongMessage] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -82,16 +83,36 @@ const Decoder = () => {
   const onUrlMsgDecode = (queryMessageBase64: string) => {
     setMessage(queryMessageBase64);
     if (!onChainC3State || !onChainC3State.length) return;
-    const messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
-    if (messageDecoded) setDecodedMessage(messageDecoded);
+    let messageDecoded;
+    try {
+      messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
+    } catch (error) {
+      setWrongMessage(true);
+    }
+    if (messageDecoded) {
+      setDecodedMessage(messageDecoded);
+      setWrongMessage(false);
+    }
+  };
+
+  // Update message on user input
+  const onChange = (value: string) => {
+    setMessage(value);
+    setWrongMessage(false);
   };
 
   // Decode message on user input
   const onDecode = () => {
     if (!onChainC3State || !onChainC3State.length) return;
-    const messageDecoded = decodeMessage(message, onChainC3State);
+    let messageDecoded;
+    try {
+      messageDecoded = decodeMessage(message, onChainC3State);
+    } catch (error) {
+      setWrongMessage(true);
+    }
     if (messageDecoded) {
       setDecodedMessage(messageDecoded);
+      setWrongMessage(false);
       queryParameters.set('message', message);
       queryParameters.delete('groupId');
       queryParameters.delete('block');
@@ -106,7 +127,12 @@ const Decoder = () => {
       <Grid item mobile={12}>
         <Grid container spacing={4}>
           <Grid item mobile={12} mediumDesktop={7} largeDesktop={6}>
-            <DecoderBox message={message} onChange={setMessage} onDecode={onDecode} />
+            <DecoderBox
+              message={message}
+              wrongMessage={wrongMessage}
+              onChange={onChange}
+              onDecode={onDecode}
+            />
           </Grid>
           <Grid item mobile={12} mediumDesktop={5} largeDesktop={6}>
             {decodedMessage ? (

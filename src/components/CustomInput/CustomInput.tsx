@@ -5,6 +5,8 @@ import { TextFieldProps as MUITextFieldProps } from '@mui/material/TextField';
 interface ICustomInputProps {
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
+  _height?: string;
+  _background?: string;
 }
 
 const CustomInput: React.FC<ICustomInputProps & MUITextFieldProps> = ({
