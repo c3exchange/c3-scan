@@ -81,12 +81,6 @@ export const InputContainer = styled('div', {
     }),
 }));
 
-export const Error = styled('div')(({ theme }) => ({
-  color: theme.palette.error.main,
-  fontSize: '14px',
-  marginTop: '4px',
-}));
-
 export const SearchContainer = styled('div')(() => ({
   width: 'calc(100%-32px)',
   marginLeft: '16px',
