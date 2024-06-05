@@ -74,7 +74,8 @@ const Explorer = () => {
 
   const onSearch = () => {
     try {
-      const inputC3Address = getC3Address(inputAddress);
+      const trimmedAddress = inputAddress.trim();
+      const inputC3Address = getC3Address(trimmedAddress);
       const inputUserAddress = getUserAddress(inputC3Address);
       if (inputC3Address === C3Address) {
         onRefreshAddress();
