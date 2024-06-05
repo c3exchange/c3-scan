@@ -46,10 +46,10 @@ const DesktopTable = (props: IDepositTable) => {
             <Grid item desktop={2}>
               Asset
             </Grid>
-            <Grid item desktop={1}>
+            <Grid item desktop={2}>
               Price
             </Grid>
-            <S.RightAlignedGrid item desktop={4}>
+            <S.RightAlignedGrid item desktop={3}>
               Amount
             </S.RightAlignedGrid>
             <S.RightAlignedGrid item desktop={3}>
@@ -82,13 +82,13 @@ const DesktopTable = (props: IDepositTable) => {
                   <S.IconContainer>{getAssetIcon(asset.instrument.id)}</S.IconContainer>
                   {asset.instrument.id}
                 </S.AssetIconContainer>
-                <Grid item desktop={1}>
+                <Grid item desktop={2}>
                   {'$ '}
                   {Formatter.fromNumber(getUSDPrice(asset.instrument.id))
                     .precision(4)
                     .formatted()}
                 </Grid>
-                <S.RightAlignedGrid item desktop={4}>
+                <S.RightAlignedGrid item desktop={3}>
                   {formatNumber(asset.amount)} {asset.instrument.id}
                 </S.RightAlignedGrid>
                 <S.RightAlignedGrid item desktop={3}>
