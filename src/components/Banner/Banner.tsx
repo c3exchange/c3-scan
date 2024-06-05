@@ -11,6 +11,7 @@ interface IBanner {
 
 const Banner = (props: IBanner) => {
   const { separator = true, size = 102 } = props;
+  console.log('test');
   return (
     <S.Container
       container
