@@ -91,6 +91,7 @@ const Decoder = () => {
     }
     if (messageDecoded) {
       setDecodedMessage(messageDecoded);
+      setSecondDecodedMessage(undefined);
       setWrongMessage(false);
     }
   };
@@ -112,6 +113,7 @@ const Decoder = () => {
     }
     if (messageDecoded) {
       setDecodedMessage(messageDecoded);
+      setSecondDecodedMessage(undefined);
       setWrongMessage(false);
       queryParameters.set('message', message);
       queryParameters.delete('groupId');
