@@ -9,6 +9,11 @@ import {
   parseCoreUserState,
 } from '@c3exchange/common';
 import { usePrices } from './usePrices';
+import {
+  DEFAULT_ADDR_STATE_RETRY_COUNT,
+  DEFAULT_ADDR_STATE_RETRY_INTERVAL_TIME,
+} from '../constants/constants';
+
 /**
  * Retrieves both cash and principal positions for a user's account.
  * @param {CoreUserState} userPositions - User positions mapping slot IDs to position details.
@@ -83,8 +88,8 @@ export const useGetAddressState = (
   }, [address]);
 
   const [addressStateError, setAddrStateError] = useState<boolean>(false);
-  const maxRetries = 1;
-  const timeBetweenRetries = 2000;
+  const maxRetries = DEFAULT_ADDR_STATE_RETRY_COUNT;
+  const timeBetweenRetries = DEFAULT_ADDR_STATE_RETRY_INTERVAL_TIME;
 
   const getAddressOnChainState = async (
     addressToSearch: string,
