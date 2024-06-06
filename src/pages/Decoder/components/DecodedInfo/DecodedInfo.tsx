@@ -18,20 +18,30 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
     );
   };
 
+  let combinedEntries: string[] | undefined = undefined;
+  if (decodedMsg && secondDecodedMsg) {
+    combinedEntries = Array.from(
+      new Set([...Object.keys(decodedMsg), ...Object.keys(secondDecodedMsg)])
+    );
+  }
+
   return (
     <S.Container container direction="column">
       <S.Title item>Translation (aka Parsed Text)</S.Title>
       {decodedMsg &&
-        Object.entries(decodedMsg).map(([key, value]) => {
-          const label = keyToLabelMapping[key as keyof DecodedMessage] || key;
+        combinedEntries &&
+        combinedEntries.map((key) => {
+          const msgKey = key as keyof DecodedMessage;
+          const label = keyToLabelMapping[msgKey] || msgKey;
+          const decodedValue = decodedMsg[msgKey];
           if (secondDecodedMsg && key !== 'operationType') {
             return (
               <S.Row key={key}>
                 <S.Label item>{label}:</S.Label>
                 <S.DoubleValue item>
-                  <S.Value item>{formatValue(key, value)}</S.Value>
+                  <S.Value item>{formatValue(key, decodedValue)}</S.Value>
                   <S.ValueRight item>
-                    {formatValue(key, secondDecodedMsg[key as keyof DecodedMessage])}
+                    {formatValue(key, secondDecodedMsg[msgKey])}
                   </S.ValueRight>
                 </S.DoubleValue>
               </S.Row>
@@ -41,7 +51,7 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
           return (
             <S.Row key={key}>
               <S.Label item>{label}:</S.Label>
-              <S.Value item>{formatValue(key, value)}</S.Value>
+              <S.Value item>{formatValue(key, decodedValue)}</S.Value>
             </S.Row>
           );
         })}
