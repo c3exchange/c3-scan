@@ -5,7 +5,12 @@ import Banner from '../../components/Banner/Banner';
 import { ReactComponent as DecoderLogo } from '../../assets/images/decoderLogo.svg';
 import DecoderBox from './components/DecoderBox/DecoderBox';
 import DecodedInfo from './components/DecodedInfo/DecodedInfo';
-import { urlParamToBase64, decodeMessage, decodeMsgFromTxDetails } from '../../utils';
+import {
+  urlParamToBase64,
+  decodeMessage,
+  decodeMsgFromTxDetails,
+  AddressesChains,
+} from '../../utils';
 import { DecodedMessage } from '../../interfaces/interfaces';
 import { useGetC3HoldingAssets } from '../../hooks/useGetHoldingAssets';
 import { useGetOnChainC3State } from '../../hooks/useGetOnChainC3State';
@@ -42,6 +47,10 @@ const Decoder = () => {
   const queryBlock = queryParameters.get('block');
   const queryBlockIndex = queryParameters.get('blockIndex');
   const queryAccountId = queryParameters.get('accountId');
+
+  const addressesChains: AddressesChains = { accountChain: null, delegationChain: null };
+  addressesChains.accountChain = queryParameters.get('accountChain');
+  addressesChains.delegationChain = queryParameters.get('delegationChain');
 
   // Decode URL parameters on initial page load
   const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
@@ -85,15 +94,11 @@ const Decoder = () => {
     if (!onChainC3State || !onChainC3State.length) return;
     let messageDecoded;
     try {
-      messageDecoded = decodeMessage(queryMessageBase64, onChainC3State);
+      messageDecoded = decodeMessage(queryMessageBase64, addressesChains, onChainC3State);
     } catch (error) {
       setWrongMessage(true);
     }
-    if (messageDecoded) {
-      setDecodedMessage(messageDecoded);
-      setSecondDecodedMessage(undefined);
-      setWrongMessage(false);
-    }
+    if (messageDecoded) handleValidDecodedMsg(messageDecoded);
   };
 
   // Update message on user input
@@ -107,20 +112,24 @@ const Decoder = () => {
     if (!onChainC3State || !onChainC3State.length) return;
     let messageDecoded;
     try {
-      messageDecoded = decodeMessage(message, onChainC3State);
+      messageDecoded = decodeMessage(message, addressesChains, onChainC3State);
     } catch (error) {
       setWrongMessage(true);
     }
     if (messageDecoded) {
-      setDecodedMessage(messageDecoded);
-      setSecondDecodedMessage(undefined);
-      setWrongMessage(false);
+      handleValidDecodedMsg(messageDecoded);
       queryParameters.set('message', message);
       queryParameters.delete('groupId');
       queryParameters.delete('block');
       queryParameters.delete('blockIndex');
       navigate(`?${queryParameters.toString()}`);
     }
+  };
+
+  const handleValidDecodedMsg = (messageDecoded: DecodedMessage) => {
+    setDecodedMessage(messageDecoded);
+    setSecondDecodedMessage(undefined);
+    setWrongMessage(false);
   };
 
   return (

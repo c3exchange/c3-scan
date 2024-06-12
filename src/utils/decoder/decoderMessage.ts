@@ -1,18 +1,27 @@
-import { DecodedMessage, OnChainRequestOp } from '../../interfaces/interfaces';
+import {
+  DecodedMessage,
+  OnChainRequestOp,
+  ChainAddressInfo,
+} from '../../interfaces/interfaces';
 import {
   decodeBase64,
   IPackedInfo,
   decodeUint16,
   decodeUint,
   CHAIN_UTILS,
+  CHAIN_ID_ETH,
+  CHAIN_ID_SOLANA,
   CHAIN_ID_ALGORAND,
   InstrumentAmount,
   ServerInstrument,
   convertUint64toInt64,
   getChainNameByChainId,
-  ChainId,
   decodeABIValue,
+  ChainId,
+  ChainName,
   SupportedChainId,
+  isEVMChain,
+  isChainId,
 } from '@c3exchange/common';
 import { truncateText } from '../utils';
 import {
@@ -75,7 +84,10 @@ interface UnpackedData {
  * @param {Uint8Array} data - The data to decode.
  * @returns {UnpackedData} - An object containing the result and the number of bytes read.
  */
-export const unpackPartialData = (data: Uint8Array): UnpackedData => {
+export const unpackPartialData = (
+  data: Uint8Array,
+  accountChain: string | null
+): UnpackedData => {
   const formatOpt: IPackedInfo = {
     target: { type: 'address' },
     lease: { type: 'bytes', size: 32 },
@@ -94,10 +106,14 @@ export const unpackPartialData = (data: Uint8Array): UnpackedData => {
     let value;
     switch (packedInfo.type) {
       case 'address':
-        //value = encodeAddress(data.slice(bytesRead, bytesRead + 32));
-        value = CHAIN_UTILS[CHAIN_ID_ALGORAND].getAddressByPublicKey(
-          data.slice(bytesRead, bytesRead + 32)
+        const publicKeyAddr = data.slice(bytesRead, bytesRead + 32);
+        const possibleChainAddresses = getChainAddresses(publicKeyAddr);
+        const chainAddresses = filterBySelectedChain(
+          possibleChainAddresses,
+          accountChain
         );
+        let recordChainAddresses = toObjectChainAddresses('account', chainAddresses);
+        result['accountAddresses'] = recordChainAddresses;
         bytesRead += 32;
         break;
       case 'bytes': {
@@ -121,7 +137,7 @@ export const unpackPartialData = (data: Uint8Array): UnpackedData => {
       default:
         throw new Error(`Unknown decode type: ${packedInfo}`);
     }
-    result[key] = value;
+    if (value !== null && value !== undefined) result[key] = value;
   }
 
   return { result, bytesRead };
@@ -230,7 +246,7 @@ export function decodeSettle(operation: Uint8Array, appState: ServerInstrument[]
   };
 }
 
-function decodeDelegate(operation: Uint8Array) {
+function decodeDelegate(operation: Uint8Array, delegationChain: string | null) {
   const operationType = getEnumKeyByEnumValue(
     OnChainRequestOp,
     OnChainRequestOp.Delegate
@@ -242,15 +258,28 @@ function decodeDelegate(operation: Uint8Array) {
   const extractedExpirationTime = delegateResult[3];
   const expiresOn = new Date(parseInt(extractedExpirationTime) * 1000).toLocaleString();
 
+  // This has a similar problem to the one in decodeWithdraw
+  // The value of extractedDelegateAddress is an Algorand address. So we need to extract
+  // the public key from the address and get the addresses for the every valid chain.
+  const publicKeyDelegAddr = decodeAddress(extractedDelegateAddress).publicKey;
+  const possibleChainAddresses = getChainAddresses(publicKeyDelegAddr);
+  const chainAddresses = filterBySelectedChain(possibleChainAddresses, delegationChain);
+  let recordChainAddresses = toObjectChainAddresses('delegateAddress', chainAddresses);
+
   const isEphemeralKeyDelegateMsg = nonce === 0;
   return {
     operationType: isEphemeralKeyDelegateMsg ? 'Ephemeral Key Delegate' : operationType,
-    delegateAddress,
+    ...(isEphemeralKeyDelegateMsg ? { delegateAddress } : {}),
+    ...recordChainAddresses,
     expiresOn,
     ...(isEphemeralKeyDelegateMsg ? {} : { nonce }),
   };
 }
 
+export type AddressesChains = {
+  accountChain: string | null;
+  delegationChain: string | null;
+};
 /**
  * Decodes a message corresponding to it's operation type.
  *
@@ -260,6 +289,7 @@ function decodeDelegate(operation: Uint8Array) {
  */
 export const decodeMessage = (
   encodeMessage: string,
+  addressesChains: AddressesChains,
   serverInstruments: ServerInstrument[]
 ): DecodedMessage | undefined => {
   try {
@@ -272,22 +302,26 @@ export const decodeMessage = (
     const base64String = decoder.decode(bytesToDecode);
     const bytesArray = Array.from(atob(base64String), (char) => char.charCodeAt(0));
     const fullMessage = new Uint8Array(bytesArray).slice(8);
-    const decodedHeader = unpackPartialData(fullMessage);
+    const decodedHeader = unpackPartialData(fullMessage, addressesChains.accountChain);
     const operation = fullMessage.slice(decodedHeader.bytesRead);
-    const account: string = truncateText(decodedHeader.result.target, [8, 8]);
+
+    const accountAddresses = decodedHeader.result.accountAddresses;
     switch (operation[0]) {
       case OnChainRequestOp.Withdraw:
         const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
-        return { ...withdrawDecoded, account };
+        return { ...withdrawDecoded, ...accountAddresses };
       case OnChainRequestOp.PoolMove:
         const poolMoveDecoded = decodePoolMove(operation, serverInstruments);
-        return { ...poolMoveDecoded, account };
+        return { ...poolMoveDecoded, ...accountAddresses };
       case OnChainRequestOp.Settle:
         const settleDecoded = decodeSettle(operation, serverInstruments);
-        return { ...settleDecoded, account };
+        return { ...settleDecoded, ...accountAddresses };
       case OnChainRequestOp.Delegate:
-        const delegateDecoded = decodeDelegate(operation);
-        return { ...delegateDecoded, account };
+        const delegateDecoded = decodeDelegate(
+          operation,
+          addressesChains.delegationChain
+        );
+        return { ...delegateDecoded, ...accountAddresses };
       default:
         throw new Error(`Unknown operation type: ${operation[0]}`);
     }
@@ -295,4 +329,71 @@ export const decodeMessage = (
     console.error(error);
     throw error;
   }
+};
+
+/**
+ * Gets all the valid addresses and corresponding chains for a public key.
+ *
+ * @param {Uint8Array} publicKey - The public key.
+ * @returns {ChainAddressInfo[]} - An array containing the chain addresses.
+ */
+function getChainAddresses(publicKey: Uint8Array): ChainAddressInfo[] {
+  const chainAddressesInfo = new Array<ChainAddressInfo>();
+  const toChainAddrInfo = (chain: string, address: string): ChainAddressInfo => {
+    return { address, chainName: chain };
+  };
+
+  if (publicKey.length === 20) {
+    const address = CHAIN_UTILS[CHAIN_ID_ETH].getAddressByPublicKey(publicKey);
+    chainAddressesInfo.push(toChainAddrInfo('EVM', address));
+  }
+  if (publicKey.length === 32) {
+    const first12Bytes = publicKey.subarray(0, 12);
+
+    if (first12Bytes.every((byte) => byte === 0)) {
+      const evmAddress = CHAIN_UTILS[CHAIN_ID_ETH].getAddressByPublicKey(publicKey);
+      chainAddressesInfo.push(toChainAddrInfo('EVM', evmAddress));
+    } else {
+      const algoAddress = CHAIN_UTILS[CHAIN_ID_ALGORAND].getAddressByPublicKey(publicKey);
+      chainAddressesInfo.push(toChainAddrInfo('Algorand', algoAddress));
+      const solAddress = CHAIN_UTILS[CHAIN_ID_SOLANA].getAddressByPublicKey(publicKey);
+      chainAddressesInfo.push(toChainAddrInfo('Solana', solAddress));
+    }
+  }
+  return chainAddressesInfo;
+}
+
+const filterBySelectedChain = (
+  possibleChainAddresses: ChainAddressInfo[],
+  selectedChain: string | null
+): ChainAddressInfo[] => {
+  if (possibleChainAddresses.length > 1 && selectedChain) {
+    if (!isNaN(+selectedChain) && isChainId(+selectedChain))
+      selectedChain = getChainNameByChainId(+selectedChain as ChainId);
+    if (isEVMChain(selectedChain as ChainName)) selectedChain = 'evm';
+    selectedChain = selectedChain.toLowerCase();
+
+    const chains = possibleChainAddresses.map((chainAddress) =>
+      chainAddress.chainName.toLowerCase()
+    );
+    if (!selectedChain || !chains.includes(selectedChain)) return possibleChainAddresses;
+    return possibleChainAddresses.filter((chainAddress) => {
+      return chainAddress.chainName.toLowerCase() === selectedChain;
+    });
+  }
+  return possibleChainAddresses;
+};
+
+const toObjectChainAddresses = (
+  paramName: string,
+  addresses: ChainAddressInfo[]
+): Record<string, ChainAddressInfo> => {
+  const result: Record<string, ChainAddressInfo> = {};
+  addresses.forEach((chainAddress) => {
+    result[`${paramName}${chainAddress.chainName}`] = {
+      ...chainAddress,
+      address: truncateText(chainAddress.address, [8, 8]),
+    };
+  });
+  return result;
 };

@@ -38,11 +38,23 @@ export interface DecodedMessage {
     chainName: string;
   };
   delegateAddress?: string;
+
+  accountEVM?: string | AccountWithModifier;
+  accountSolana?: string | AccountWithModifier;
+  accountAlgorand?: string | AccountWithModifier;
+  delegateAddressEVM?: string | AccountWithModifier;
+  delegateAddressSolana?: string | AccountWithModifier;
+  delegateAddressAlgorand?: string | AccountWithModifier;
 }
 
 export interface AccountWithModifier {
   account: string;
   modifier: string;
+}
+
+export interface ChainAddressInfo {
+  address: string;
+  chainName: string;
 }
 
 export enum OnChainRequestOp {

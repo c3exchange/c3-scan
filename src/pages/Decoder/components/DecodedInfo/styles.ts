@@ -35,6 +35,13 @@ export const Row = styled(Grid)(({ theme }) => ({
 
 export const Label = styled(Grid)(({ theme }) => ({
   color: theme.palette.text.primary,
+  width: '30%',
+  fontSize: '14px',
+  textAlign: 'left',
+}));
+
+export const LabelDoubleValue = styled(Grid)(({ theme }) => ({
+  color: theme.palette.text.primary,
   width: '20%',
   fontSize: '14px',
   textAlign: 'left',

@@ -18,12 +18,9 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
     );
   };
 
-  let combinedEntries: string[] | undefined = undefined;
-  if (decodedMsg && secondDecodedMsg) {
-    combinedEntries = Array.from(
-      new Set([...Object.keys(decodedMsg), ...Object.keys(secondDecodedMsg)])
-    );
-  }
+  const combinedEntries = Array.from(
+    new Set([...Object.keys(decodedMsg || {}), ...Object.keys(secondDecodedMsg || {})])
+  );
 
   return (
     <S.Container container direction="column">
@@ -37,7 +34,7 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
           if (secondDecodedMsg && key !== 'operationType') {
             return (
               <S.Row key={key}>
-                <S.Label item>{label}:</S.Label>
+                <S.LabelDoubleValue item>{label}:</S.LabelDoubleValue>
                 <S.DoubleValue item>
                   <S.Value item>{formatValue(key, decodedValue)}</S.Value>
                   <S.ValueRight item>

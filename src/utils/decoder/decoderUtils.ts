@@ -63,6 +63,9 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   userID: 'User ID',
   creationTime: 'Creation Time',
   account: 'Account',
+  accountEVM: 'Account',
+  accountSolana: 'Account',
+  accountAlgorand: 'Account',
   expiresOn: 'Expiration Time',
   buyAmount: 'Buy Amount',
   buyAssetId: 'Buy Asset',
@@ -73,6 +76,9 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   sellAssetId: 'Sell Asset',
   chain: 'Chain',
   delegateAddress: 'Delegate Address',
+  delegateAddressEVM: 'Delegate Address',
+  delegateAddressSolana: 'Delegate Address',
+  delegateAddressAlgorand: 'Delegate Address',
 };
 
 export const getEnumKeyByEnumValue = (
@@ -83,28 +89,49 @@ export const getEnumKeyByEnumValue = (
   return keys.length > 0 ? keys[0] : undefined;
 };
 
-export const processDecodedMessageValue = (key: string, value: any) => {
-  let primaryValue: string = '';
-  let secondaryValue: string = '';
+interface ProcessedMessage {
+  primaryValue: string;
+  secondaryValue: string;
+}
+
+export const processDecodedMessageValue = (key: string, value: any): ProcessedMessage => {
+  let result: ProcessedMessage = { primaryValue: '', secondaryValue: '' };
 
   if (typeof value !== 'object') {
-    primaryValue = value;
-    return { primaryValue, secondaryValue };
+    return { primaryValue: value.toString(), secondaryValue: '' };
   }
   switch (key) {
     case 'chain':
-      primaryValue = value?.chainId;
-      secondaryValue = ' - ' + value?.chainName;
+      result.primaryValue = value?.chainId;
+      result.secondaryValue = ' - ' + value?.chainName;
       break;
     case 'account':
-      primaryValue = value?.account;
-      secondaryValue = value?.modifier;
+      if (value?.modifier) {
+        result.primaryValue = value?.account;
+        result.secondaryValue = value?.modifier;
+      }
+      break;
+    case 'delegateAddress':
+      if (value?.modifier) {
+        result.primaryValue = value?.account;
+        result.secondaryValue = value?.modifier;
+      }
+      break;
+    case 'accountEVM':
+    case 'accountSolana':
+    case 'accountAlgorand':
+    case 'delegateAddressEVM':
+    case 'delegateAddressSolana':
+    case 'delegateAddressAlgorand':
+      if (value?.chainName) {
+        result.primaryValue = value?.address;
+        result.secondaryValue = ` - ${value?.chainName}`;
+      }
       break;
     default:
-      primaryValue = JSON.stringify(value);
+      result.primaryValue = JSON.stringify(value);
   }
-
-  return { primaryValue, secondaryValue };
+  return result;
 };
 
 /**
