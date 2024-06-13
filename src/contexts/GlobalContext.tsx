@@ -8,6 +8,7 @@ interface GlobalContextType {
   algoIndexer: algosdk.Indexer;
   algoClient: algosdk.Algodv2;
   assetHoldings: AssetHolding[];
+  instruments: Instrument[];
   isMainnet: boolean;
 }
 
@@ -17,6 +18,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const config = useConfig();
   const [coreAppId, setCoreAppId] = useState<number | undefined>();
   const [assetHoldings, setAssetHoldings] = useState<AssetHolding[]>([]);
+  const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [isMainnet, setIsMainnet] = useState<boolean>(config.isMainnet);
   const algoIndexer = new algosdk.Indexer('', config.indexer, '');
   const algoClient = new algosdk.Algodv2('', config.algoNode, '');
@@ -35,6 +37,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     try {
       const response = await fetch(`${config.c3ApiUrl}/instruments`);
       const jsonData: Instrument[] = await response.json();
+      setInstruments(jsonData);
       const defaultUserCash = jsonData.map((instrument) => ({
         instrument,
         amount: InstrumentAmount.fromDecimal(instrument, '0'),
@@ -61,6 +64,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         coreAppId,
         algoIndexer,
         assetHoldings,
+        instruments,
         algoClient,
         isMainnet,
       }}
