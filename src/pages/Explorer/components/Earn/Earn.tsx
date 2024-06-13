@@ -5,15 +5,19 @@ import { IEarn } from './interfaces';
 import { breakpoints } from '../../../../theme';
 import MobileTable from './Mobile/MobileTable';
 import DesktopTable from './Desktop/DesktopTable';
+import { useGlobalContext } from '../../../../contexts/GlobalContext';
+import { orderInstruments } from '../../../../utils';
 
 const Earn = (props: IEarn) => {
   const { userPool } = props;
+  const { instruments } = useGlobalContext();
 
   const loans: AssetHolding[] = userPool.filter((pool) =>
     pool.amount.isGreaterThanZero()
   );
   const isEmpty: boolean = loans.length <= 0;
   const totalLoaned: number = loans.reduce((acc, { value }) => acc + value, 0);
+  const orderedLoans = orderInstruments(instruments, loans);
 
   const windowSize = useWindowSize();
   const isMobile = useMemo(
@@ -24,9 +28,9 @@ const Earn = (props: IEarn) => {
   return (
     <>
       {isMobile ? (
-        <MobileTable loans={loans} isEmpty={isEmpty} totalLoaned={totalLoaned} />
+        <MobileTable loans={orderedLoans} isEmpty={isEmpty} totalLoaned={totalLoaned} />
       ) : (
-        <DesktopTable loans={loans} isEmpty={isEmpty} totalLoaned={totalLoaned} />
+        <DesktopTable loans={orderedLoans} isEmpty={isEmpty} totalLoaned={totalLoaned} />
       )}
     </>
   );

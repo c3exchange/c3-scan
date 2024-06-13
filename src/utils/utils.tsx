@@ -73,3 +73,28 @@ export const formatApyNumber = (num: number) => {
   if (num % 1 !== 0) return num.toFixed(3);
   return num;
 };
+
+/**
+ * Orders a list of objects by the order of a list of instruments
+ * @param order List of instruments to order by
+ * @param objects List of objects to order
+ * @returns List of objects ordered by the order of the instruments
+ * @example
+ * const order = [{id: 'BTC'}, {id: 'ETH'}, {id: 'USDC'}];
+ * const objects = [{instrument: {id: 'USDC'}}, {instrument: {id: 'BTC'}}, {instrument: {id: 'ETH'}}];
+ * orderInstruments(order, objects);
+ * // Output: [{instrument: {id: 'BTC'}}, {instrument: {id: 'ETH'}}, {instrument: {id: 'USDC'}}]
+ */
+export const orderInstruments = <T extends { instrument: Instrument }>(
+  order: Instrument[],
+  objects: T[]
+): T[] => {
+  if (!objects || !objects.length) return [];
+  const orderedObjects: T[] = [...objects];
+  orderedObjects.sort((a, b) => {
+    const aIndex = order.findIndex((instrument) => instrument.id === a.instrument.id);
+    const bIndex = order.findIndex((instrument) => instrument.id === b.instrument.id);
+    return aIndex - bIndex;
+  });
+  return orderedObjects;
+};
