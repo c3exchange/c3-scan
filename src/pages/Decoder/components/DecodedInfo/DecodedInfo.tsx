@@ -1,5 +1,9 @@
 import { DecodedMessage } from '../../../../interfaces/interfaces';
-import { keyToLabelMapping, processDecodedMessageValue } from '../../../../utils';
+import {
+  isMultiValue,
+  keyToLabelMapping,
+  processDecodedMessageValue,
+} from '../../../../utils';
 import * as S from './styles';
 
 interface IDecodedInfo {
@@ -7,18 +11,18 @@ interface IDecodedInfo {
   secondDecodedMsg?: DecodedMessage;
 }
 
-const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
-  const formatValue = (key: string, value: any) => {
-    const { primaryValue, secondaryValue } = processDecodedMessageValue(key, value);
-    return (
-      <>
-        {primaryValue}
-        {secondaryValue && <S.SecondaryValue>{secondaryValue}</S.SecondaryValue>}
-      </>
-    );
-  };
+const formatValue = (key: string, value: any) => {
+  const { primaryValue, secondaryValue } = processDecodedMessageValue(key, value);
+  return (
+    <>
+      {primaryValue}
+      {secondaryValue && <S.SecondaryValue>{secondaryValue}</S.SecondaryValue>}
+    </>
+  );
+};
 
-  const combinedEntries = Array.from(
+const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
+  const combinedKeys = Array.from(
     new Set([...Object.keys(decodedMsg || {}), ...Object.keys(secondDecodedMsg || {})])
   );
 
@@ -26,8 +30,8 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
     <S.Container container direction="column">
       <S.Title item>Translation (aka Parsed Text)</S.Title>
       {decodedMsg &&
-        combinedEntries &&
-        combinedEntries.map((key) => {
+        combinedKeys &&
+        combinedKeys.map((key) => {
           const msgKey = key as keyof DecodedMessage;
           const label = keyToLabelMapping[msgKey] || msgKey;
           const decodedValue = decodedMsg[msgKey];
@@ -42,6 +46,23 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
                   </S.ValueRight>
                 </S.DoubleValue>
               </S.Row>
+            );
+          }
+          if (isMultiValue(key, decodedValue)) {
+            const entries = Object.entries(decodedValue as any);
+            return (
+              <S.WideRow key={key} _amountValues={entries.length}>
+                <S.Label item>{label}:</S.Label>
+                <S.MultiValue item>
+                  {entries.map(([key, value]) => {
+                    return (
+                      <S.Value key={key} item>
+                        {formatValue(key, value)}
+                      </S.Value>
+                    );
+                  })}
+                </S.MultiValue>
+              </S.WideRow>
             );
           }
 

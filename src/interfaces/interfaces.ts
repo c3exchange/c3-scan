@@ -26,6 +26,7 @@ export interface DecodedMessage {
   creationTime?: string;
   expiresOn?: string;
   account?: string | AccountWithModifier;
+  accountAddresses?: ChainAddressInfoMap;
   nonce?: number;
   sellAssetId?: string;
   sellAmount?: number;
@@ -38,14 +39,10 @@ export interface DecodedMessage {
     chainName: string;
   };
   delegateAddress?: string;
-
-  accountEVM?: string | AccountWithModifier;
-  accountSolana?: string | AccountWithModifier;
-  accountAlgorand?: string | AccountWithModifier;
-  delegateAddressEVM?: string | AccountWithModifier;
-  delegateAddressSolana?: string | AccountWithModifier;
-  delegateAddressAlgorand?: string | AccountWithModifier;
+  delegatedAddresses?: ChainAddressInfoMap;
 }
+
+export type ChainAddressInfoMap = Record<string, ChainAddressInfo>;
 
 export interface AccountWithModifier {
   account: string;

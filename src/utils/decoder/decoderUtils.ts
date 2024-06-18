@@ -1,4 +1,4 @@
-import { DecodedMessage } from '../../interfaces/interfaces';
+import { ChainAddressInfo, DecodedMessage } from '../../interfaces/interfaces';
 import { IPackedInfo, Instrument, ServerInstrument } from '@c3exchange/common';
 
 export const packABIString = (format: IPackedInfo): string => {
@@ -63,9 +63,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   userID: 'User ID',
   creationTime: 'Creation Time',
   account: 'Account',
-  accountEVM: 'Account',
-  accountSolana: 'Account',
-  accountAlgorand: 'Account',
+  accountAddresses: 'Account',
   expiresOn: 'Expiration Time',
   buyAmount: 'Buy Amount',
   buyAssetId: 'Buy Asset',
@@ -76,9 +74,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   sellAssetId: 'Sell Asset',
   chain: 'Chain',
   delegateAddress: 'Delegate Address',
-  delegateAddressEVM: 'Delegate Address',
-  delegateAddressSolana: 'Delegate Address',
-  delegateAddressAlgorand: 'Delegate Address',
+  delegatedAddresses: 'Delegate Address',
 };
 
 export const getEnumKeyByEnumValue = (
@@ -94,6 +90,13 @@ interface ProcessedMessage {
   secondaryValue: string;
 }
 
+/**
+ * Processes the value of a decoded message key to return a primary and secondary value.
+ *
+ * @param {string} key - The key.
+ * @param {any} value - The value.
+ * @returns {ProcessedMessage} - The primary and secondary values.
+ */
 export const processDecodedMessageValue = (key: string, value: any): ProcessedMessage => {
   let result: ProcessedMessage = { primaryValue: '', secondaryValue: '' };
 
@@ -132,6 +135,33 @@ export const processDecodedMessageValue = (key: string, value: any): ProcessedMe
       result.primaryValue = JSON.stringify(value);
   }
   return result;
+};
+
+/**
+ * Determines if the value of a key is an object that should be displayed as a
+ * multi-value object in the decoded message (multiple values in one row).
+ *
+ * @param {any} key - The key.
+ * @param {any} value - The value.
+ * @returns {boolean} - True if the value is a multi-value object, false otherwise.
+ */
+export const isMultiValue = (key: any, value: any) => {
+  if (!value || typeof value !== 'object') return false;
+  switch (key) {
+    case 'accountAddresses':
+    case 'delegatedAddresses':
+      const entries = Object.entries(value as any);
+      return !entries.some(
+        ([, value]) => !hasProperties<ChainAddressInfo>(value, ['address', 'chainName'])
+      );
+    default:
+      return false;
+  }
+};
+
+const hasProperties = <T>(obj: any, properties: (keyof T)[]): obj is T => {
+  if (typeof obj !== 'object') return false;
+  return properties.every((prop) => prop in obj);
 };
 
 /**

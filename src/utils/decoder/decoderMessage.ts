@@ -2,6 +2,7 @@ import {
   DecodedMessage,
   OnChainRequestOp,
   ChainAddressInfo,
+  ChainAddressInfoMap,
 } from '../../interfaces/interfaces';
 import {
   decodeBase64,
@@ -112,7 +113,7 @@ export const unpackPartialData = (
           possibleChainAddresses,
           accountChain
         );
-        let recordChainAddresses = toObjectChainAddresses('account', chainAddresses);
+        const recordChainAddresses = toObjectChainAddresses('account', chainAddresses);
         result['accountAddresses'] = recordChainAddresses;
         bytesRead += 32;
         break;
@@ -264,13 +265,14 @@ function decodeDelegate(operation: Uint8Array, delegationChain: string | null) {
   const publicKeyDelegAddr = decodeAddress(extractedDelegateAddress).publicKey;
   const possibleChainAddresses = getChainAddresses(publicKeyDelegAddr);
   const chainAddresses = filterBySelectedChain(possibleChainAddresses, delegationChain);
-  let recordChainAddresses = toObjectChainAddresses('delegateAddress', chainAddresses);
+  const recordChainAddresses = toObjectChainAddresses('delegateAddress', chainAddresses);
 
   const isEphemeralKeyDelegateMsg = nonce === 0;
   return {
     operationType: isEphemeralKeyDelegateMsg ? 'Ephemeral Key Delegate' : operationType,
-    ...(isEphemeralKeyDelegateMsg ? { delegateAddress } : {}),
-    ...recordChainAddresses,
+    ...(isEphemeralKeyDelegateMsg
+      ? { delegateAddress }
+      : { delegatedAddresses: recordChainAddresses }),
     expiresOn,
     ...(isEphemeralKeyDelegateMsg ? {} : { nonce }),
   };
@@ -309,19 +311,19 @@ export const decodeMessage = (
     switch (operation[0]) {
       case OnChainRequestOp.Withdraw:
         const withdrawDecoded = decodeWithdraw(operation, serverInstruments);
-        return { ...withdrawDecoded, ...accountAddresses };
+        return { ...withdrawDecoded, accountAddresses };
       case OnChainRequestOp.PoolMove:
         const poolMoveDecoded = decodePoolMove(operation, serverInstruments);
-        return { ...poolMoveDecoded, ...accountAddresses };
+        return { ...poolMoveDecoded, accountAddresses };
       case OnChainRequestOp.Settle:
         const settleDecoded = decodeSettle(operation, serverInstruments);
-        return { ...settleDecoded, ...accountAddresses };
+        return { ...settleDecoded, accountAddresses };
       case OnChainRequestOp.Delegate:
         const delegateDecoded = decodeDelegate(
           operation,
           addressesChains.delegationChain
         );
-        return { ...delegateDecoded, ...accountAddresses };
+        return { ...delegateDecoded, accountAddresses };
       default:
         throw new Error(`Unknown operation type: ${operation[0]}`);
     }
@@ -387,8 +389,8 @@ const filterBySelectedChain = (
 const toObjectChainAddresses = (
   paramName: string,
   addresses: ChainAddressInfo[]
-): Record<string, ChainAddressInfo> => {
-  const result: Record<string, ChainAddressInfo> = {};
+): ChainAddressInfoMap => {
+  const result: ChainAddressInfoMap = {};
   addresses.forEach((chainAddress) => {
     result[`${paramName}${chainAddress.chainName}`] = {
       ...chainAddress,

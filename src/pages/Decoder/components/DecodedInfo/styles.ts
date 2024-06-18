@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
+import { createShouldForwardProp } from '../../../../utils';
 export const Container = styled(Grid)(({ theme }) => ({
   fontFamily: 'Manrope',
   background: theme.palette.background.default,
@@ -24,6 +25,23 @@ export const Title = styled(Grid)(() => ({
 export const Row = styled(Grid)(({ theme }) => ({
   background: theme.palette.primary.dark,
   height: '44px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  borderRadius: '8px',
+  marginBottom: '8px',
+  paddingLeft: '10px',
+  paddingRight: '10px',
+}));
+
+interface IWideRow {
+  _amountValues: number;
+}
+export const WideRow = styled(Grid, {
+  shouldForwardProp: createShouldForwardProp(['_amountValues']),
+})<IWideRow>(({ theme, _amountValues }) => ({
+  background: theme.palette.primary.dark,
+  height: `calc((19px + 5px) * ${_amountValues} - 5px + 25px)`,
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -65,6 +83,14 @@ export const DoubleValue = styled(Grid)({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
+});
+
+export const MultiValue = styled(Grid)({
+  gap: '5px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'flex-end',
 });
 
 export const ValueRight = styled(Grid)(({ theme }) => ({
