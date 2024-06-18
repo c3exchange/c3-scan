@@ -42,12 +42,12 @@ export interface DecodedMessage {
   delegatedAddresses?: ChainAddressInfoMap;
 }
 
-export type ChainAddressInfoMap = Record<string, ChainAddressInfo>;
-
 export interface AccountWithModifier {
   account: string;
   modifier: string;
 }
+
+export type ChainAddressInfoMap = Record<string, ChainAddressInfo>;
 
 export interface ChainAddressInfo {
   address: string;
