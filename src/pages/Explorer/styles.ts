@@ -125,3 +125,8 @@ export const TVLChartTitle = styled(Grid)(({ theme }) => ({
   paddingLeft: '32px',
   fontSize: '14px',
 }));
+
+export const TVLChart = styled('div')(() => ({
+  paddingLeft: '13px',
+  width: 'calc(100% - 32px)',
+}));
