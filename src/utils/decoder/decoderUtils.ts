@@ -1,4 +1,8 @@
-import { DecodedMessage } from '../../interfaces/interfaces';
+import {
+  ChainAddressInfo,
+  DecodedMessage,
+  DecodedMessageFieldTypes,
+} from '../../interfaces/interfaces';
 import { IPackedInfo, Instrument, ServerInstrument } from '@c3exchange/common';
 
 export const packABIString = (format: IPackedInfo): string => {
@@ -63,6 +67,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   userID: 'User ID',
   creationTime: 'Creation Time',
   account: 'Account',
+  accountAddresses: 'Account',
   expiresOn: 'Expiration Time',
   buyAmount: 'Buy Amount',
   buyAssetId: 'Buy Asset',
@@ -73,6 +78,7 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   sellAssetId: 'Sell Asset',
   chain: 'Chain',
   delegateAddress: 'Delegate Address',
+  delegatedAddresses: 'Delegate Address',
 };
 
 export const getEnumKeyByEnumValue = (
@@ -83,36 +89,91 @@ export const getEnumKeyByEnumValue = (
   return keys.length > 0 ? keys[0] : undefined;
 };
 
-export const processDecodedMessageValue = (key: string, value: any) => {
-  let primaryValue: string = '';
-  let secondaryValue: string = '';
+interface ProcessedMessage {
+  primaryValue: string;
+  secondaryValue: string;
+}
+
+/**
+ * Processes the value of a decoded message key to return a primary and secondary value.
+ *
+ * @param key - The key.
+ * @param value - The value.
+ * @returns - The primary and secondary values.
+ */
+export const processDecodedMessageValue = (key: string, value: any): ProcessedMessage => {
+  let result: ProcessedMessage = { primaryValue: '', secondaryValue: '' };
 
   if (typeof value !== 'object') {
-    primaryValue = value;
-    return { primaryValue, secondaryValue };
+    return { primaryValue: value.toString(), secondaryValue: '' };
   }
   switch (key) {
     case 'chain':
-      primaryValue = value?.chainId;
-      secondaryValue = ' - ' + value?.chainName;
+      result.primaryValue = value?.chainId;
+      result.secondaryValue = ' - ' + value?.chainName;
       break;
     case 'account':
-      primaryValue = value?.account;
-      secondaryValue = value?.modifier;
+      if (value?.modifier) {
+        result.primaryValue = value?.account;
+        result.secondaryValue = value?.modifier;
+      }
+      break;
+    case 'delegateAddress':
+      if (value?.modifier) {
+        result.primaryValue = value?.account;
+        result.secondaryValue = value?.modifier;
+      }
+      break;
+    case 'accountEVM':
+    case 'accountSolana':
+    case 'accountAlgorand':
+    case 'delegateAddressEVM':
+    case 'delegateAddressSolana':
+    case 'delegateAddressAlgorand':
+      if (value?.chainName) {
+        result.primaryValue = value?.address;
+        result.secondaryValue = ` - ${value?.chainName}`;
+      }
       break;
     default:
-      primaryValue = JSON.stringify(value);
+      result.primaryValue = JSON.stringify(value);
   }
+  return result;
+};
 
-  return { primaryValue, secondaryValue };
+/**
+ * Determines if the value of a key is an object that should be displayed as a
+ * multi-value object in the decoded message (multiple values in one row).
+ *
+ * @param key - The key.
+ * @param value - The value.
+ * @returns - True if the value is a multi-value object, false otherwise.
+ */
+export const isMultiValue = (key: string, value: DecodedMessageFieldTypes) => {
+  if (!value || typeof value !== 'object') return false;
+  switch (key) {
+    case 'accountAddresses':
+    case 'delegatedAddresses':
+      const entries = Object.entries(value);
+      return !entries.some(
+        ([, value]) => !hasProperties<ChainAddressInfo>(value, ['address', 'chainName'])
+      );
+    default:
+      return false;
+  }
+};
+
+const hasProperties = <T>(obj: any, properties: (keyof T)[]): obj is T => {
+  if (typeof obj !== 'object') return false;
+  return properties.every((prop) => prop in obj);
 };
 
 /**
  * Converts a URL parameter to a base64 encoded string.
  * Replacing certain url characters with their base64 equivalent.
  *
- * @param {string} urlParam - The URL parameter.
- * @returns {string} - The base64 encoded string.
+ * @param urlParam - The URL parameter.
+ * @returns - The base64 encoded string.
  */
 export const urlParamToBase64 = (urlParam: string | null): string => {
   if (!urlParam) return '';

@@ -1,0 +1,26 @@
+export enum TimeInMilliseconds {
+  ONE_SECOND = 1000,
+  HALF_SECOND = 500,
+  TWO_SECONDS = 2000,
+  THREE_SECONDS = 3000,
+  FIVE_SECONDS = 5000,
+  SEVEN_SECONDS = 7000,
+  TEN_SECONDS = 10000,
+  ONE_MINUTE = 60000,
+  THREE_MINUTES = 180000,
+  ONE_HOUR = 3600000,
+  ONE_DAY = 24 * 60 * 60 * 1000,
+  ONE_WEEK = 7 * 24 * 60 * 60 * 1000,
+}
+
+export enum TimeInSeconds {
+  ONE_MINUTE = 60,
+  ONE_HOUR = 3600,
+  ONE_DAY = 24 * 60 * 60,
+  ONE_WEEK = 7 * 24 * 60 * 60,
+}
+
+export const DEFAULT_ADDR_STATE_RETRY_COUNT = 1;
+export const DEFAULT_ADDR_STATE_RETRY_INTERVAL_TIME = TimeInMilliseconds.TWO_SECONDS;
+
+export const MOBILE_HEADER_HEIGHT = 80;

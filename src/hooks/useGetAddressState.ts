@@ -9,10 +9,17 @@ import {
   parseCoreUserState,
 } from '@c3exchange/common';
 import { usePrices } from './usePrices';
+import {
+  DEFAULT_ADDR_STATE_RETRY_COUNT,
+  DEFAULT_ADDR_STATE_RETRY_INTERVAL_TIME,
+} from '../constants/constants';
+
 /**
  * Retrieves both cash and principal positions for a user's account.
- * @param {CoreUserState} userPositions - User positions mapping slot IDs to position details.
- * @param {ServerInstrument[]} serverInstruments - Array of instruments available on the server.
+ * @param userPositions - User positions mapping slot IDs to position details.
+ * @param assetHoldings - Array of asset holdings for the user.
+ * @param getUSDPrice - Function to retrieve the USD price of an instrument.
+ * @param serverInstruments - Array of instruments available on the server.
  * @returns An object containing arrays of cash and principal accounts with non-zero positions.
  */
 const retrieveNonZeroPositions = (
@@ -83,8 +90,6 @@ export const useGetAddressState = (
   }, [address]);
 
   const [addressStateError, setAddrStateError] = useState<boolean>(false);
-  const maxRetries = 1;
-  const timeBetweenRetries = 2000;
 
   const getAddressOnChainState = async (
     addressToSearch: string,
@@ -112,12 +117,12 @@ export const useGetAddressState = (
       console.log('Error:', error);
       setUserCash([]);
       setUserPool([]);
-      if (retryCount < maxRetries) {
+      if (retryCount < DEFAULT_ADDR_STATE_RETRY_COUNT) {
         setTimeout(() => {
           getAddressOnChainState(addressToSearch, coreAppId, retryCount + 1);
-        }, timeBetweenRetries);
+        }, DEFAULT_ADDR_STATE_RETRY_INTERVAL_TIME);
       }
-      if (retryCount === maxRetries) {
+      if (retryCount === DEFAULT_ADDR_STATE_RETRY_COUNT) {
         setAddrStateError(true);
       }
     }

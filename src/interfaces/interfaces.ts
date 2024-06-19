@@ -26,6 +26,7 @@ export interface DecodedMessage {
   creationTime?: string;
   expiresOn?: string;
   account?: string | AccountWithModifier;
+  accountAddresses?: ChainAddressInfoMap;
   nonce?: number;
   sellAssetId?: string;
   sellAmount?: number;
@@ -38,11 +39,24 @@ export interface DecodedMessage {
     chainName: string;
   };
   delegateAddress?: string;
+  delegatedAddresses?: ChainAddressInfoMap;
 }
+
+export type DecodedMessageFieldTypes =
+  | DecodedMessage[keyof DecodedMessage]
+  | ChainAddressInfo;
+export type MultiValueFieldTypes = ChainAddressInfoMap;
 
 export interface AccountWithModifier {
   account: string;
   modifier: string;
+}
+
+export type ChainAddressInfoMap = Record<string, ChainAddressInfo>;
+
+export interface ChainAddressInfo {
+  address: string;
+  chainName: string;
 }
 
 export enum OnChainRequestOp {
