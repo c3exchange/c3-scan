@@ -16,8 +16,10 @@ import {
 
 /**
  * Retrieves both cash and principal positions for a user's account.
- * @param {CoreUserState} userPositions - User positions mapping slot IDs to position details.
- * @param {ServerInstrument[]} serverInstruments - Array of instruments available on the server.
+ * @param userPositions - User positions mapping slot IDs to position details.
+ * @param assetHoldings - Array of asset holdings for the user.
+ * @param getUSDPrice - Function to retrieve the USD price of an instrument.
+ * @param serverInstruments - Array of instruments available on the server.
  * @returns An object containing arrays of cash and principal accounts with non-zero positions.
  */
 const retrieveNonZeroPositions = (

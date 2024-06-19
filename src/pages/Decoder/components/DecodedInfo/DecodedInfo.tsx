@@ -1,4 +1,8 @@
-import { DecodedMessage, MultiValueFieldTypes } from '../../../../interfaces/interfaces';
+import {
+  DecodedMessage,
+  DecodedMessageFieldTypes,
+  MultiValueFieldTypes,
+} from '../../../../interfaces/interfaces';
 import {
   isMultiValue,
   keyToLabelMapping,
@@ -11,7 +15,7 @@ interface IDecodedInfo {
   secondDecodedMsg?: DecodedMessage;
 }
 
-const formatValue = (key: string, value: any) => {
+const formatValue = (key: string, value: DecodedMessageFieldTypes) => {
   const { primaryValue, secondaryValue } = processDecodedMessageValue(key, value);
   return (
     <>

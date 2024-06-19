@@ -97,9 +97,9 @@ interface ProcessedMessage {
 /**
  * Processes the value of a decoded message key to return a primary and secondary value.
  *
- * @param {string} key - The key.
- * @param {any} value - The value.
- * @returns {ProcessedMessage} - The primary and secondary values.
+ * @param key - The key.
+ * @param value - The value.
+ * @returns - The primary and secondary values.
  */
 export const processDecodedMessageValue = (key: string, value: any): ProcessedMessage => {
   let result: ProcessedMessage = { primaryValue: '', secondaryValue: '' };
@@ -145,9 +145,9 @@ export const processDecodedMessageValue = (key: string, value: any): ProcessedMe
  * Determines if the value of a key is an object that should be displayed as a
  * multi-value object in the decoded message (multiple values in one row).
  *
- * @param {any} key - The key.
- * @param {any} value - The value.
- * @returns {boolean} - True if the value is a multi-value object, false otherwise.
+ * @param key - The key.
+ * @param value - The value.
+ * @returns - True if the value is a multi-value object, false otherwise.
  */
 export const isMultiValue = (key: string, value: DecodedMessageFieldTypes) => {
   if (!value || typeof value !== 'object') return false;
@@ -172,8 +172,8 @@ const hasProperties = <T>(obj: any, properties: (keyof T)[]): obj is T => {
  * Converts a URL parameter to a base64 encoded string.
  * Replacing certain url characters with their base64 equivalent.
  *
- * @param {string} urlParam - The URL parameter.
- * @returns {string} - The base64 encoded string.
+ * @param urlParam - The URL parameter.
+ * @returns - The base64 encoded string.
  */
 export const urlParamToBase64 = (urlParam: string | null): string => {
   if (!urlParam) return '';

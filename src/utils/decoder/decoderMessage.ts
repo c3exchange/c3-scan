@@ -56,8 +56,8 @@ export const settleFormat = packABIString(orderDataFormat);
 /**
  * Decodes the welcome message.
  *
- * @param {string} encodedMessage - The encoded message.
- * @returns {Object} - An object containing the operation type, user ID, and creation time.
+ * @param encodedMessage - The encoded message.
+ * @returns - An object containing the operation type, user ID, and creation time.
  */
 const decodeWelcomeMessage = (encodedMessage: string) => {
   const finalWordMatcher = /([A-Za-z0-9+/=]+)\s*$/;
@@ -82,8 +82,9 @@ interface UnpackedData {
 /**
  * Decodes the partial data of the header of a signed message.
  *
- * @param {Uint8Array} data - The data to decode.
- * @returns {UnpackedData} - An object containing the result and the number of bytes read.
+ * @param data - The data to decode.
+ * @param accountChain - The account chain.
+ * @returns - An object containing the result and the number of bytes read.
  */
 export const unpackPartialData = (
   data: Uint8Array,
@@ -285,9 +286,9 @@ export type AddressesChains = {
 /**
  * Decodes a message corresponding to it's operation type.
  *
- * @param {string} encodeMessage - The encoded message.
- * @param {ServerInstrument[]} serverInstruments - The server instruments.
- * @returns {DecodedMessage} - An object containing the decoded message.
+ * @param encodeMessage - The encoded message.
+ * @param serverInstruments - The server instruments.
+ * @returns - An object containing the decoded message.
  */
 export const decodeMessage = (
   encodeMessage: string,
@@ -336,8 +337,8 @@ export const decodeMessage = (
 /**
  * Gets all the valid addresses and corresponding chains for a public key.
  *
- * @param {Uint8Array} publicKey - The public key.
- * @returns {ChainAddressInfo[]} - An array containing the chain addresses.
+ * @param publicKey - The public key.
+ * @returns - An array containing the chain addresses.
  */
 function getChainAddresses(publicKey: Uint8Array): ChainAddressInfo[] {
   const chainAddressesInfo = new Array<ChainAddressInfo>();

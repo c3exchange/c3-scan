@@ -33,10 +33,10 @@ const validABISelectors = [
 /**
  * Decodes the signed messages from the details of the transactions from the group.
  *
- * @param {Array} groupTxs - The group of transactions.
- * @param {Array} onChainC3State - The on-chain C3 state.
- * @param {string} queryAccountId - The query account ID.
- * @returns {Array} - An array containing the decoded messages of a group of transactions.
+ * @param groupTxs - The group of transactions.
+ * @param onChainC3State - The on-chain C3 state.
+ * @param queryAccountId - The query account ID.
+ * @returns - An array containing the decoded messages of a group of transactions.
  */
 export const decodeMsgFromTxDetails = (
   groupTxs: any,
@@ -127,9 +127,9 @@ export function mapABIArraytoUintArray(abiArray: ABIValue[], format: IPackedInfo
  * Takes the prefix of a signed message.
  * Returns the account type of the target of the signed message.
  *
- * @param {string} prefix - The prefix of the signed message.
- * @param {number} dataLength - The length of the encoded signed data.
- * @returns {number} - The account type of the target of the signed message.
+ * @param prefix - The prefix of the signed message.
+ * @param dataLength - The length of the encoded signed data.
+ * @returns - The account type of the target of the signed message.
  */
 const prefixToAccountType = (prefix: string, dataLength: number): C3AccountType => {
   const accountTypes = C3_ACCOUNT_TYPES.filter((accType) => {
@@ -147,9 +147,9 @@ const accountTypeToChainId = (accType: number) => {
 /**
  * Returns the account ID of the target of the signed message.
  *
- * @param {Array} signedOpUintArray - The signed operation uint array.
- * @param {Array} delegChainUintArray - The delegation chain uint array.
- * @returns {string} - The account ID of the target of the signed message.
+ * @param signedOpUintArray - The signed operation uint array.
+ * @param delegChainUintArray - The delegation chain uint array.
+ * @returns - The account ID of the target of the signed message.
  */
 const getTxAccountId = (signedOpUintArray: any, delegChainUintArray: any) => {
   // If there is no delegation chain, the account ID corresponds to the target of the signed operation.
