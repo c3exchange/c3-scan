@@ -18,6 +18,7 @@ import TooltipInfo from '../../components/TooltipInfo/TooltipInfo';
 import Icon from '../../components/Icon/Icon';
 import useCopy from '../../hooks/useCopy';
 import EmptyTable from '../../components/EmptyTable/EmptyTable';
+import TVLChart from './components/TVLChart/TVLChart';
 
 import * as S from './styles';
 
@@ -154,18 +155,7 @@ const Explorer = () => {
           )}
         </>
       )}
-      <S.TVLChartContainer item mobile={12}>
-        <S.TVLChartTitle>Total Value Locked Chart</S.TVLChartTitle>
-        <S.TVLChart>
-          <iframe
-            width="100%"
-            height="360px"
-            src="https://defillama.com/chart/protocol/c3-exchange?tvl=true&denomination=USD&theme=dark"
-            title="C3"
-            frameBorder="0"
-          ></iframe>
-        </S.TVLChart>
-      </S.TVLChartContainer>
+      <TVLChart />
       <Grid item mobile={12}>
         <Grid container columnSpacing={2}>
           <Grid item mobile={12} mediumDesktop={8}>
