@@ -18,6 +18,7 @@ import TooltipInfo from '../../components/TooltipInfo/TooltipInfo';
 import Icon from '../../components/Icon/Icon';
 import useCopy from '../../hooks/useCopy';
 import EmptyTable from '../../components/EmptyTable/EmptyTable';
+import TVLChart from './components/TVLChart/TVLChart';
 
 import * as S from './styles';
 
@@ -154,6 +155,7 @@ const Explorer = () => {
           )}
         </>
       )}
+      <TVLChart />
       <Grid item mobile={12}>
         <Grid container columnSpacing={2}>
           <Grid item mobile={12} mediumDesktop={8}>
