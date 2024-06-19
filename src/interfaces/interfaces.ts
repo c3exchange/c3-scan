@@ -42,6 +42,9 @@ export interface DecodedMessage {
   delegatedAddresses?: ChainAddressInfoMap;
 }
 
+export type DecodedMessageFieldTypes = DecodedMessage[keyof DecodedMessage];
+export type MultiValueFieldTypes = ChainAddressInfoMap;
+
 export interface AccountWithModifier {
   account: string;
   modifier: string;

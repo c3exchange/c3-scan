@@ -1,4 +1,4 @@
-import { DecodedMessage } from '../../../../interfaces/interfaces';
+import { DecodedMessage, MultiValueFieldTypes } from '../../../../interfaces/interfaces';
 import {
   isMultiValue,
   keyToLabelMapping,
@@ -49,7 +49,7 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
             );
           }
           if (isMultiValue(key, decodedValue)) {
-            const entries = Object.entries(decodedValue as any);
+            const entries = Object.entries(decodedValue as MultiValueFieldTypes);
             return (
               <S.WideRow key={key} _amountValues={entries.length}>
                 <S.Label item>{label}:</S.Label>

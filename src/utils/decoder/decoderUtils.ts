@@ -1,4 +1,8 @@
-import { ChainAddressInfo, DecodedMessage } from '../../interfaces/interfaces';
+import {
+  ChainAddressInfo,
+  DecodedMessage,
+  DecodedMessageFieldTypes,
+} from '../../interfaces/interfaces';
 import { IPackedInfo, Instrument, ServerInstrument } from '@c3exchange/common';
 
 export const packABIString = (format: IPackedInfo): string => {
@@ -145,12 +149,12 @@ export const processDecodedMessageValue = (key: string, value: any): ProcessedMe
  * @param {any} value - The value.
  * @returns {boolean} - True if the value is a multi-value object, false otherwise.
  */
-export const isMultiValue = (key: any, value: any) => {
+export const isMultiValue = (key: string, value: DecodedMessageFieldTypes) => {
   if (!value || typeof value !== 'object') return false;
   switch (key) {
     case 'accountAddresses':
     case 'delegatedAddresses':
-      const entries = Object.entries(value as any);
+      const entries = Object.entries(value);
       return !entries.some(
         ([, value]) => !hasProperties<ChainAddressInfo>(value, ['address', 'chainName'])
       );
