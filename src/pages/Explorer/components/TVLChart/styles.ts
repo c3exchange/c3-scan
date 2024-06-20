@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import styled from '@mui/material/styles/styled';
 
-export const BaseTVLChartContainer = styled(Grid)(({ theme }) => ({
+const BaseTVLChartContainer = styled(Grid)(({ theme }) => ({
   height: '408px',
   minHeight: '408px',
   maxHeight: '408px',
@@ -10,7 +10,7 @@ export const BaseTVLChartContainer = styled(Grid)(({ theme }) => ({
   marginBottom: '16px',
 }));
 
-export const BaseTVLChartTitle = styled(Grid)(({ theme }) => ({
+const BaseTVLChartTitle = styled(Grid)(() => ({
   fontFamily: 'Bricolage Grotesque',
   height: '38px',
   minHeight: '38px',
@@ -20,10 +20,7 @@ export const BaseTVLChartTitle = styled(Grid)(({ theme }) => ({
   fontSize: '14px',
 }));
 
-export const BaseTVLChart = styled('div')(({ theme }) => ({
-  paddingLeft: '0px',
-  width: '100%',
-}));
+const BaseTVLChart = styled('div')();
 
 export const TVLChartContainerMobile = styled(BaseTVLChartContainer)();
 
@@ -32,6 +29,9 @@ export const TVLChartTitleMobile = styled(BaseTVLChartTitle)(() => ({
 }));
 
 export const TVLChartMobile = styled(BaseTVLChart)(({ theme }) => ({
+  paddingLeft: '0px',
+  width: '100%',
+  height: '370px',
   background: theme.palette.background.default,
   borderRadius: theme.spacing(1),
 }));
@@ -45,4 +45,7 @@ export const TVLChartTitleDesktop = styled(BaseTVLChartTitle)(({ theme }) => ({
   paddingLeft: '32px',
 }));
 
-export const TVLChartDesktop = styled(BaseTVLChart)();
+export const TVLChartDesktop = styled(BaseTVLChart)(() => ({
+  paddingLeft: '13px',
+  width: 'calc(100% - 32px)',
+}));
