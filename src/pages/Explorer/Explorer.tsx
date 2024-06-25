@@ -91,7 +91,6 @@ const Explorer = () => {
       setUserAddress('');
       setWrongAddress(true);
       setEnableRefresh(false);
-      console.error('Invalid address: ', inputAddress, error);
     }
   };
 
@@ -155,7 +154,7 @@ const Explorer = () => {
           )}
         </>
       )}
-      <TVLChart />
+      {!C3Address && !wrongAddress && <TVLChart />}
       <Grid item mobile={12}>
         <Grid container columnSpacing={2}>
           <Grid item mobile={12} mediumDesktop={8}>
