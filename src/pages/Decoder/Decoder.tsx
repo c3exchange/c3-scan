@@ -48,9 +48,14 @@ const Decoder = () => {
   const queryBlockIndex = queryParameters.get('blockIndex');
   const queryAccountId = queryParameters.get('accountId');
 
-  const addressesChains: AddressesChains = { accountChain: null, delegationChain: null };
+  const addressesChains: AddressesChains = {
+    accountChain: null,
+    delegationChain: null,
+    liquidateeChain: null,
+  };
   addressesChains.accountChain = queryParameters.get('accountChain');
   addressesChains.delegationChain = queryParameters.get('delegationChain');
+  addressesChains.liquidateeChain = queryParameters.get('liquidateeChain');
 
   // Decode URL parameters on initial page load
   const [initialURLDecodeDone, setInitialURLDecodeDone] = useState(false);
@@ -73,7 +78,12 @@ const Decoder = () => {
     if (!onChainC3State.length) return;
     const groupId = urlParamToBase64(queryGroupId);
     const groupTxs = await getGroupTxs(groupId, queryBlock, queryBlockIndex);
-    const messages = decodeMsgFromTxDetails(groupTxs, onChainC3State, queryAccountId);
+    const messages = decodeMsgFromTxDetails(
+      groupTxs,
+      onChainC3State,
+      queryAccountId,
+      addressesChains
+    );
     if (messages?.[0]) setDecodedMessage(messages[0]);
     if (messages?.[1]) setSecondDecodedMessage(messages[1]);
   };
