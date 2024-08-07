@@ -33,7 +33,7 @@ export default class Formatter {
   };
 
   precision = (value?: number): Formatter => {
-    if (this.raw.isLessThan(1)) {
+    if (this.raw.abs().isLessThan(1)) {
       const precision = value || 2;
       return Formatter.fromString(this.raw.toPrecision(precision));
     }
