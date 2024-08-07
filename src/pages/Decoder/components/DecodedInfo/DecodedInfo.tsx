@@ -55,7 +55,7 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
           if (isMultiValue(key, decodedValue)) {
             const entries = Object.entries(decodedValue as MultiValueFieldTypes);
             return (
-              <S.WideRow key={key} _amountValues={entries.length}>
+              <S.WideRow key={key} _amountValues={entries.length || 1}>
                 <S.Label item>{label}:</S.Label>
                 <S.MultiValue item>
                   {entries.map(([key, value]) => {

@@ -2,6 +2,7 @@ import {
   ChainAddressInfo,
   DecodedMessage,
   DecodedMessageFieldTypes,
+  LiqAssetInfo,
 } from '../../interfaces/interfaces';
 import { IPackedInfo, Instrument, ServerInstrument } from '@c3exchange/common';
 
@@ -79,6 +80,10 @@ export const keyToLabelMapping: { [key in keyof DecodedMessage]?: string } = {
   chain: 'Chain',
   delegateAddress: 'Delegate Address',
   delegatedAddresses: 'Delegate Address',
+  liquidationTarget: 'Liquidation Target',
+  liquidatorAddress: 'Liquidator',
+  cash: 'Cash',
+  pool: 'Pool',
 };
 
 export const getEnumKeyByEnumValue = (
@@ -107,32 +112,36 @@ export const processDecodedMessageValue = (key: string, value: any): ProcessedMe
   if (typeof value !== 'object') {
     return { primaryValue: value.toString(), secondaryValue: '' };
   }
-  switch (key) {
+
+  const keyParts = key.split('~');
+  switch (keyParts[0]) {
     case 'chain':
-      result.primaryValue = value?.chainId;
-      result.secondaryValue = ' - ' + value?.chainName;
-      break;
-    case 'account':
-      if (value?.modifier) {
-        result.primaryValue = value?.account;
-        result.secondaryValue = value?.modifier;
+      if (value?.chainName) {
+        result.primaryValue = value?.chainId;
+        result.secondaryValue = ' - ' + value?.chainName;
       }
       break;
+    case 'account':
     case 'delegateAddress':
       if (value?.modifier) {
         result.primaryValue = value?.account;
         result.secondaryValue = value?.modifier;
       }
       break;
-    case 'accountEVM':
-    case 'accountSolana':
-    case 'accountAlgorand':
-    case 'delegateAddressEVM':
-    case 'delegateAddressSolana':
-    case 'delegateAddressAlgorand':
+    case 'accountAddresses':
+    case 'delegatedAddresses':
+    case 'liquidationTarget':
+    case 'liquidatorAddress':
       if (value?.chainName) {
         result.primaryValue = value?.address;
         result.secondaryValue = ` - ${value?.chainName}`;
+      }
+      break;
+    case 'cash':
+    case 'pool':
+      if (value?.name) {
+        result.primaryValue = value?.amount;
+        result.secondaryValue = ` ${value?.name}`;
       }
       break;
     default:
@@ -154,9 +163,15 @@ export const isMultiValue = (key: string, value: DecodedMessageFieldTypes) => {
   switch (key) {
     case 'accountAddresses':
     case 'delegatedAddresses':
-      const entries = Object.entries(value);
-      return !entries.some(
-        ([, value]) => !hasProperties<ChainAddressInfo>(value, ['address', 'chainName'])
+    case 'liquidationTarget':
+    case 'liquidatorAddress':
+      return Object.entries(value).every(([, value]) =>
+        hasProperties<ChainAddressInfo>(value, ['address', 'chainName'])
+      );
+    case 'cash':
+    case 'pool':
+      return Object.entries(value).every(([, value]) =>
+        hasProperties<LiqAssetInfo>(value, ['name', 'amount'])
       );
     default:
       return false;
