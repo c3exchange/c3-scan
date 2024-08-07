@@ -75,12 +75,6 @@ export const decodeMsgFromTxDetails = (
         signedMessageFormat
       );
 
-      console.log('opCode', opCode);
-      console.log('signedOperation', signedOperation);
-      console.log('signedOpABIFormat', signedOpABIFormat);
-      console.log('decodedSignedOp', decodedSignedOp);
-      console.log('signedOpUintArray', signedOpUintArray);
-
       const delegationChain = decodeBase64(txArgs[3]);
       const delegChainABIFormat = packABIString(signedMessageFormat) + '[]';
       const decodedDelegChain = decodeABIValue(delegationChain, delegChainABIFormat);
@@ -90,19 +84,6 @@ export const decodeMsgFromTxDetails = (
 
       const accountId = getTxAccountId(signedOpUintArray, delegChainUintArray);
       let account: string | AccountWithModifier = truncateText(accountId, [9, 4], true);
-
-      // #F00
-      // const address = accountIdToUserAddress(accountId);
-      // let a: string = getChainNameByChainId(chainId as ChainId);
-      // if (isEVMChain(a as ChainName)) a = 'EVM';
-      // let accountAddresses = { [`accountAddresses~${a}`]: { address, chainName: a } };
-      // console.log('accountAddresses', accountAddresses, chainId, a);
-
-      // #FF0 get undecoded message
-      // const decoder = new TextDecoder('utf-8');
-      // console.log('decoder', decoder);
-      // const base64String = decoder.decode(signedOpUintArray[2]);
-      // console.log('base64String', base64String);
 
       const operation = signedOpUintArray[1];
       let decodedMessage;
