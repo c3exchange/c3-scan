@@ -295,7 +295,7 @@ export function decodeLiquidation(
 ) {
   const operationType = getEnumKeyByEnumValue(
     OnChainRequestOp,
-    OnChainRequestOp.Liquidate
+    OnChainRequestOp.Liquidation
   );
   const liquidationResult = decodeABIValue(operation, liquidationFormat);
   liquidationResult[3].forEach((asset: any) => {
@@ -329,9 +329,9 @@ export function decodeLiquidation(
   const liquidationDecoded: DecodedMessage = {
     operationType,
     liquidationTarget: recordChainAddresses,
+    cash: Object.keys(cash).length ? cash : 'No cash involved',
+    pool,
   };
-  if (Object.keys(cash).length) liquidationDecoded.cash = cash;
-  if (Object.keys(pool).length) liquidationDecoded.pool = pool;
   return liquidationDecoded;
 }
 
@@ -382,17 +382,17 @@ export const decodeMessage = (
           addressesChains.delegationChain
         );
         return { ...delegateDecoded, accountAddresses };
-      case OnChainRequestOp.Liquidate:
+      case OnChainRequestOp.Liquidation:
         const liquidationDecoded = decodeLiquidation(
           operation,
           serverInstruments,
           addressesChains.liquidateeChain
         );
-        console.log('liquidationDecoded', {
-          ...liquidationDecoded,
+        return {
+          operationType: undefined,
           liquidatorAddress: accountAddresses,
-        });
-        return { ...liquidationDecoded, liquidatorAddress: accountAddresses };
+          ...liquidationDecoded,
+        };
       default:
         throw new Error(`Unknown operation type: ${operation[0]}`);
     }

@@ -109,7 +109,11 @@ export const decodeMsgFromTxDetails = (
             onChainC3State,
             addressesChains?.liquidateeChain ?? null
           );
-          messages.push({ ...decodedMessage, liquidatorAddress: account });
+          messages.push({
+            operationType: undefined,
+            liquidatorAddress: account,
+            ...decodedMessage,
+          });
           break;
         default:
           break;

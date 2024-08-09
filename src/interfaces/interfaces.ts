@@ -39,7 +39,7 @@ export interface DecodedMessage {
   delegatedAddresses?: ChainAddressInfoObj;
   liquidationTarget?: ChainAddressInfoObj;
   liquidatorAddress?: string | ChainAddressInfoObj;
-  cash?: LiqAssetInfoObj;
+  cash?: LiqAssetInfoObj | string;
   pool?: LiqAssetInfoObj;
 }
 
@@ -78,7 +78,7 @@ export enum OnChainRequestOp {
   Withdraw = 1,
   PoolMove = 2,
   Delegate = 3,
-  Liquidate = 4,
+  Liquidation = 4,
   AccountMove = 5,
   Settle = 6,
 }
