@@ -170,9 +170,8 @@ export function decodeWithdraw(operation: Uint8Array, appState: ServerInstrument
   // the address and calculate the correct address for the target chain.
   const algorandAddress = withdrawResult[3][1];
   const publicKey = decodeAddress(algorandAddress).publicKey;
-  const targetAddress =
+  const target =
     CHAIN_UTILS[chainId as SupportedChainId].getAddressByPublicKey(publicKey);
-  const target = truncateText(targetAddress, [8, 8]);
 
   const amount = Number(
     InstrumentAmount.fromContract(
