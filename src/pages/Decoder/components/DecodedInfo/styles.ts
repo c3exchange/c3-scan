@@ -24,14 +24,18 @@ export const Title = styled(Grid)(() => ({
 
 export const Row = styled(Grid)(({ theme }) => ({
   background: theme.palette.primary.dark,
-  height: '44px',
+  minHeight: '44px',
+  width: '100%',
   display: 'flex',
+  flexWrap: 'wrap',
   justifyContent: 'space-between',
   alignItems: 'center',
   borderRadius: '8px',
   marginBottom: '8px',
   paddingLeft: '10px',
   paddingRight: '10px',
+  paddingTop: '12.5px',
+  paddingBottom: '12.5px',
 }));
 
 interface IWideRow {
@@ -60,7 +64,7 @@ export const Label = styled(Grid)(({ theme }) => ({
 
 export const LabelDoubleValue = styled(Grid)(({ theme }) => ({
   color: theme.palette.text.primary,
-  width: '20%',
+  width: '25%',
   fontSize: '14px',
   textAlign: 'left',
 }));
@@ -69,6 +73,8 @@ export const Value = styled(Grid)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   fontWeight: 500,
   fontSize: '14px',
+  textAlign: 'right',
+  flexGrow: 1,
 }));
 
 export const SecondaryValue = styled('span')(({ theme }) => ({
@@ -76,14 +82,6 @@ export const SecondaryValue = styled('span')(({ theme }) => ({
   fontWeight: 300,
   fontSize: '14px',
 }));
-
-export const DoubleValue = styled(Grid)({
-  width: '70%',
-  gap: '5%',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-});
 
 export const MultiValue = styled(Grid)({
   gap: '5px',
@@ -93,7 +91,21 @@ export const MultiValue = styled(Grid)({
   alignItems: 'flex-end',
 });
 
-export const ValueRight = styled(Grid)(({ theme }) => ({
+export const DoubleMsgValues = styled(Grid)({
+  width: '70%',
+  gap: '5%',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+export const FirstMsgValue = styled(Grid)(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  fontWeight: 500,
+  fontSize: '14px',
+}));
+
+export const SecondMsgValue = styled(Grid)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   fontWeight: 500,
   fontSize: '14px',

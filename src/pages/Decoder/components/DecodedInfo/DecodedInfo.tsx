@@ -43,12 +43,12 @@ const DecodedInfo = ({ decodedMsg, secondDecodedMsg }: IDecodedInfo) => {
             return (
               <S.Row key={key}>
                 <S.LabelDoubleValue item>{label}:</S.LabelDoubleValue>
-                <S.DoubleValue item>
-                  <S.Value item>{formatValue(key, decodedValue)}</S.Value>
-                  <S.ValueRight item>
+                <S.DoubleMsgValues item>
+                  <S.FirstMsgValue item>{formatValue(key, decodedValue)}</S.FirstMsgValue>
+                  <S.SecondMsgValue item>
                     {formatValue(key, secondDecodedMsg[msgKey])}
-                  </S.ValueRight>
-                </S.DoubleValue>
+                  </S.SecondMsgValue>
+                </S.DoubleMsgValues>
               </S.Row>
             );
           }
