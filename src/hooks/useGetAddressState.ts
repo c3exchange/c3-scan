@@ -89,7 +89,7 @@ export const useGetAddressState = (
     addressRef.current = address;
   }, [address]);
 
-  const [addressStateError, setAddrStateError] = useState<boolean>(false);
+  const [addressStateError, setAddrStateError] = useState<string>('');
 
   const getAddressOnChainState = async (
     addressToSearch: string,
@@ -112,8 +112,8 @@ export const useGetAddressState = (
       );
       setUserCash(cash);
       setUserPool(pool);
-      setAddrStateError(false);
-    } catch (error) {
+      setAddrStateError('');
+    } catch (error: any) {
       console.log('Error:', error);
       setUserCash([]);
       setUserPool([]);
@@ -123,7 +123,11 @@ export const useGetAddressState = (
         }, DEFAULT_ADDR_STATE_RETRY_INTERVAL_TIME);
       }
       if (retryCount === DEFAULT_ADDR_STATE_RETRY_COUNT) {
-        setAddrStateError(true);
+        if (error.response?.status === 404) {
+          setAddrStateError('No data found for this C3 account');
+        } else {
+          setAddrStateError('Error getting C3 account data Please try again');
+        }
       }
     }
   };
@@ -131,7 +135,7 @@ export const useGetAddressState = (
   const setClearState = () => {
     setUserCash([]);
     setUserPool([]);
-    setAddrStateError(false);
+    setAddrStateError('');
   };
 
   const refreshAddressOnChainState = () => {

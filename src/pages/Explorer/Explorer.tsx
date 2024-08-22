@@ -45,7 +45,7 @@ const Explorer = () => {
   const { userCash, userPool, addressStateError, refreshAddressOnChainState } =
     useGetAddressState(C3Address, onChainC3State);
   useEffect(() => {
-    if (userCash.length || addressStateError) {
+    if (userCash.length || !!addressStateError) {
       setIsAddrStateLoading(false);
     }
   }, [userCash, userPool, addressStateError]);
@@ -171,7 +171,7 @@ const Explorer = () => {
                   <S.WrongAddressTableText>
                     {wrongAddress
                       ? 'No matching C3 account was found for this address'
-                      : 'Error getting C3 account data Please try again'}
+                      : addressStateError}
                   </S.WrongAddressTableText>
                 </EmptyTable>
               </S.WrongAddressContainer>
