@@ -26,7 +26,7 @@ export interface DecodedMessage {
   creationTime?: string;
   expiresOn?: string;
   account?: string | AccountWithModifier;
-  accountAddresses?: ChainAddressInfoMap;
+  accountAddresses?: ChainAddressInfoObj;
   nonce?: number;
   sellAssetId?: string;
   sellAmount?: number;
@@ -34,29 +34,42 @@ export interface DecodedMessage {
   buyAssetId?: string;
   buyAmount?: number;
   maxRepay?: number;
-  chain?: {
-    chainId: number;
-    chainName: string;
-  };
+  chain?: ChainInfo;
   delegateAddress?: string;
-  delegatedAddresses?: ChainAddressInfoMap;
+  delegatedAddresses?: ChainAddressInfoObj;
+  liquidationTarget?: ChainAddressInfoObj;
+  liquidatorAddress?: string | ChainAddressInfoObj;
+  cash?: LiqAssetInfoObj | string;
+  pool?: LiqAssetInfoObj;
 }
+
+type ChainInfo = {
+  chainId: number;
+  chainName: string;
+};
 
 export type DecodedMessageFieldTypes =
   | DecodedMessage[keyof DecodedMessage]
-  | ChainAddressInfo;
-export type MultiValueFieldTypes = ChainAddressInfoMap;
+  | SubMultiValuesFieldTypes;
+
+export type MultiValueFieldTypes = ChainAddressInfoObj | LiqAssetInfoObj;
+type SubMultiValuesFieldTypes = ChainAddressInfo | LiqAssetInfo;
 
 export interface AccountWithModifier {
   account: string;
   modifier: string;
 }
 
-export type ChainAddressInfoMap = Record<string, ChainAddressInfo>;
-
+export type ChainAddressInfoObj = Record<string, ChainAddressInfo>;
 export interface ChainAddressInfo {
   address: string;
   chainName: string;
+}
+
+export type LiqAssetInfoObj = Record<string, LiqAssetInfo>;
+export interface LiqAssetInfo {
+  name: string;
+  amount: string;
 }
 
 export enum OnChainRequestOp {
@@ -65,7 +78,7 @@ export enum OnChainRequestOp {
   Withdraw = 1,
   PoolMove = 2,
   Delegate = 3,
-  Liquidate = 4,
+  Liquidation = 4,
   AccountMove = 5,
   Settle = 6,
 }

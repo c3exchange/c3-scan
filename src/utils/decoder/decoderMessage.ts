@@ -2,7 +2,8 @@ import {
   DecodedMessage,
   OnChainRequestOp,
   ChainAddressInfo,
-  ChainAddressInfoMap,
+  ChainAddressInfoObj,
+  LiqAssetInfoObj,
 } from '../../interfaces/interfaces';
 import {
   decodeBase64,
@@ -31,11 +32,13 @@ import {
   packABIString,
 } from './decoderUtils';
 import { decodeAddress } from 'algosdk';
+import Formatter from '../formatter';
 
 export const withdrawFormat = '(byte,uint8,uint64,(uint16,address),uint64,uint64)';
 export const poolMoveFormat = '(byte,uint8,uint64)';
 export const delegateFormat = '(byte,address,uint64,uint64)';
 export const accountMoveFormat = '(byte,address,(uint8,uint64)[],(uint8,uint64)[])';
+export const liquidationFormat = '(byte,address,(uint8,uint64)[],(uint8,uint64)[])';
 export const ORDER_OPERATION_STR = '06';
 
 const orderDataFormat: IPackedInfo = {
@@ -114,7 +117,10 @@ export const unpackPartialData = (
           possibleChainAddresses,
           accountChain
         );
-        const recordChainAddresses = toObjectChainAddresses('account', chainAddresses);
+        const recordChainAddresses = toObjectChainAddresses(
+          'accountAddresses',
+          chainAddresses
+        );
         result['accountAddresses'] = recordChainAddresses;
         bytesRead += 32;
         break;
@@ -265,7 +271,10 @@ function decodeDelegate(operation: Uint8Array, delegationChain: string | null) {
   const publicKeyDelegAddr = decodeAddress(extractedDelegateAddress).publicKey;
   const possibleChainAddresses = getChainAddresses(publicKeyDelegAddr);
   const chainAddresses = filterBySelectedChain(possibleChainAddresses, delegationChain);
-  const recordChainAddresses = toObjectChainAddresses('delegateAddress', chainAddresses);
+  const recordChainAddresses = toObjectChainAddresses(
+    'delegatedAddresses',
+    chainAddresses
+  );
 
   const isEphemeralKeyDelegateMsg = nonce === 0;
   return {
@@ -278,9 +287,57 @@ function decodeDelegate(operation: Uint8Array, delegationChain: string | null) {
   };
 }
 
+export function decodeLiquidation(
+  operation: Uint8Array,
+  appState: ServerInstrument[],
+  liquidateeChain: string | null
+) {
+  const operationType = getEnumKeyByEnumValue(
+    OnChainRequestOp,
+    OnChainRequestOp.Liquidation
+  );
+  const liquidationResult = decodeABIValue(operation, liquidationFormat);
+  liquidationResult[3].forEach((asset: any) => {
+    asset[1] = convertUint64toInt64(asset[1]);
+  });
+
+  const extractedliquidationTarget: string = liquidationResult[1];
+  const publicKeyDelegAddr = decodeAddress(extractedliquidationTarget).publicKey;
+  const possibleChainAddresses = getChainAddresses(publicKeyDelegAddr);
+  const chainAddresses = filterBySelectedChain(possibleChainAddresses, liquidateeChain);
+  const recordChainAddresses = toObjectChainAddresses(
+    'liquidationTarget',
+    chainAddresses
+  );
+
+  function parseLiquidationAssetsInfo(assetsArray: any[], parameterName: string) {
+    return assetsArray.reduce((acc: LiqAssetInfoObj, asset: any) => {
+      const instrument = getInstrumentfromSlotId(Number(asset[0]), appState);
+      const instrumentAmount = InstrumentAmount.fromContract(instrument, asset[1]);
+      acc[`${parameterName}~${instrument.asaUnitName}`] = {
+        name: instrument.asaUnitName,
+        amount: Formatter.fromInstrumentAmount(instrumentAmount).precision(5).formatted(),
+      };
+      return acc;
+    }, {});
+  }
+
+  const cash: LiqAssetInfoObj = parseLiquidationAssetsInfo(liquidationResult[2], 'cash');
+  const pool: LiqAssetInfoObj = parseLiquidationAssetsInfo(liquidationResult[3], 'pool');
+
+  const liquidationDecoded: DecodedMessage = {
+    operationType,
+    liquidationTarget: recordChainAddresses,
+    cash: Object.keys(cash).length ? cash : 'No cash involved',
+    pool,
+  };
+  return liquidationDecoded;
+}
+
 export type AddressesChains = {
   accountChain: string | null;
   delegationChain: string | null;
+  liquidateeChain: string | null;
 };
 /**
  * Decodes a message corresponding to it's operation type.
@@ -324,6 +381,17 @@ export const decodeMessage = (
           addressesChains.delegationChain
         );
         return { ...delegateDecoded, accountAddresses };
+      case OnChainRequestOp.Liquidation:
+        const liquidationDecoded = decodeLiquidation(
+          operation,
+          serverInstruments,
+          addressesChains.liquidateeChain
+        );
+        return {
+          operationType: undefined,
+          liquidatorAddress: accountAddresses,
+          ...liquidationDecoded,
+        };
       default:
         throw new Error(`Unknown operation type: ${operation[0]}`);
     }
@@ -341,25 +409,22 @@ export const decodeMessage = (
  */
 function getChainAddresses(publicKey: Uint8Array): ChainAddressInfo[] {
   const chainAddressesInfo = new Array<ChainAddressInfo>();
-  const toChainAddrInfo = (chain: string, address: string): ChainAddressInfo => {
-    return { address, chainName: chain };
-  };
 
   if (publicKey.length === 20) {
     const address = CHAIN_UTILS[CHAIN_ID_ETH].getAddressByPublicKey(publicKey);
-    chainAddressesInfo.push(toChainAddrInfo('EVM', address));
+    chainAddressesInfo.push({ address: address, chainName: 'EVM' });
   }
   if (publicKey.length === 32) {
     const first12Bytes = publicKey.subarray(0, 12);
 
     if (first12Bytes.every((byte) => byte === 0)) {
       const evmAddress = CHAIN_UTILS[CHAIN_ID_ETH].getAddressByPublicKey(publicKey);
-      chainAddressesInfo.push(toChainAddrInfo('EVM', evmAddress));
+      chainAddressesInfo.push({ address: evmAddress, chainName: 'EVM' });
     } else {
       const algoAddress = CHAIN_UTILS[CHAIN_ID_ALGORAND].getAddressByPublicKey(publicKey);
-      chainAddressesInfo.push(toChainAddrInfo('Algorand', algoAddress));
+      chainAddressesInfo.push({ address: algoAddress, chainName: 'Algorand' });
       const solAddress = CHAIN_UTILS[CHAIN_ID_SOLANA].getAddressByPublicKey(publicKey);
-      chainAddressesInfo.push(toChainAddrInfo('Solana', solAddress));
+      chainAddressesInfo.push({ address: solAddress, chainName: 'Solana' });
     }
   }
   return chainAddressesInfo;
@@ -389,10 +454,10 @@ const filterBySelectedChain = (
 const toObjectChainAddresses = (
   paramName: string,
   addresses: ChainAddressInfo[]
-): ChainAddressInfoMap => {
-  const result: ChainAddressInfoMap = {};
+): ChainAddressInfoObj => {
+  const result: ChainAddressInfoObj = {};
   addresses.forEach((chainAddress) => {
-    result[`${paramName}${chainAddress.chainName}`] = {
+    result[`${paramName}~${chainAddress.chainName}`] = {
       ...chainAddress,
       address: truncateText(chainAddress.address, [8, 8]),
     };

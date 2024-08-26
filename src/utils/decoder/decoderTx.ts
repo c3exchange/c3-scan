@@ -17,17 +17,25 @@ import {
 import { ABIValue } from 'algosdk';
 import { truncateText } from '../utils';
 import { getEnumKeyByEnumValue, packABIString } from './decoderUtils';
-import { decodePoolMove, decodeSettle, decodeWithdraw } from './decoderMessage';
+import {
+  decodePoolMove,
+  decodeSettle,
+  decodeWithdraw,
+  decodeLiquidation,
+  AddressesChains,
+} from './decoderMessage';
 
 const POOL_MOVE_ABI_SELECTOR = '6904886c';
 const ADD_ORDER_ABI_SELECTOR = 'e80737cd';
 const SETTLE_ABI_SELECTOR = '05c23896';
 const WITHDRAW_ABI_SELECTOR = '1de3bc55';
+const LIQUIDATE_ABI_SELECTOR = '7716a1b3';
 const validABISelectors = [
   POOL_MOVE_ABI_SELECTOR,
   ADD_ORDER_ABI_SELECTOR,
   SETTLE_ABI_SELECTOR,
   WITHDRAW_ABI_SELECTOR,
+  LIQUIDATE_ABI_SELECTOR,
 ];
 
 /**
@@ -41,7 +49,8 @@ const validABISelectors = [
 export const decodeMsgFromTxDetails = (
   groupTxs: any,
   onChainC3State: ServerInstrument[],
-  queryAccountId: string | null
+  queryAccountId: string | null,
+  addressesChains?: AddressesChains
 ): DecodedMessage[] | undefined => {
   try {
     let messages: DecodedMessage[] = [];
@@ -84,17 +93,31 @@ export const decodeMsgFromTxDetails = (
           decodedMessage = decodeSettle(operation, onChainC3State);
           if (queryAccountId && queryAccountId === accountId)
             account = { account, modifier: ' (you)' };
+          messages.push({ ...decodedMessage, account });
           break;
         case POOL_MOVE_ABI_SELECTOR:
           decodedMessage = decodePoolMove(operation, onChainC3State);
+          messages.push({ ...decodedMessage, account });
           break;
         case WITHDRAW_ABI_SELECTOR:
           decodedMessage = decodeWithdraw(operation, onChainC3State);
+          messages.push({ ...decodedMessage, account });
+          break;
+        case LIQUIDATE_ABI_SELECTOR:
+          decodedMessage = decodeLiquidation(
+            operation,
+            onChainC3State,
+            addressesChains?.liquidateeChain ?? null
+          );
+          messages.push({
+            operationType: undefined,
+            liquidatorAddress: account,
+            ...decodedMessage,
+          });
           break;
         default:
           break;
       }
-      messages.push({ ...decodedMessage, account });
     }
     return messages;
   } catch (error) {
